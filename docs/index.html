@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenDisplay Android — open-source second monitor for your Mac</title>
+<meta name="description" content="Use your Android tablet or phone as a real second monitor for your Mac. Open-source client, same protocol as the original OpenDisplay, no account, no subscription.">
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #0b0d10;
+    --bg-elev: #14171b;
+    --border: #23272d;
+    --text: #e8eaed;
+    --text-dim: #9aa2ad;
+    --accent: #5fd0a3;
+    --accent-dim: #2e5c48;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fafaf9;
+      --bg-elev: #ffffff;
+      --border: #e5e5e3;
+      --text: #16181c;
+      --text-dim: #5a6068;
+      --accent: #1f8a5f;
+      --accent-dim: #d6f0e3;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.55;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  code, .mono { font-family: var(--mono); }
+
+  header.site {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  header.site .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 14px; padding-bottom: 14px; gap: 16px; flex-wrap: wrap;
+  }
+  header.site .brand { font-weight: 700; letter-spacing: -0.02em; }
+  header.site nav { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.92rem; }
+  header.site nav a { color: var(--text-dim); }
+  header.site nav a:hover { color: var(--text); }
+
+  .hero { padding: 72px 0 48px; }
+  .hero h1 { font-size: clamp(1.9rem, 4.2vw, 2.7rem); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
+  .hero p.lead { font-size: 1.15rem; color: var(--text-dim); max-width: 60ch; margin: 0 0 20px; }
+  .specs { font-family: var(--mono); font-size: 0.85rem; color: var(--text-dim); margin-bottom: 28px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 600;
+    border: 1px solid var(--border);
+  }
+  .btn:hover { text-decoration: none; }
+  .btn.primary { background: var(--accent); color: #06110c; border-color: var(--accent); }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.ghost { color: var(--text); background: var(--bg-elev); }
+  .btn.ghost:hover { border-color: var(--accent); }
+
+  .status-badge {
+    display: inline-block; font-family: var(--mono); font-size: 0.78rem;
+    color: var(--accent); background: var(--accent-dim);
+    border-radius: 6px; padding: 3px 9px; margin-bottom: 18px;
+  }
+
+  section { padding: 44px 0; border-top: 1px solid var(--border); }
+  section h2 { font-size: 1.5rem; letter-spacing: -0.01em; margin: 0 0 8px; }
+  section p.section-sub { color: var(--text-dim); margin: 0 0 28px; max-width: 65ch; }
+
+  .diagram {
+    font-family: var(--mono); font-size: 0.82rem; white-space: pre;
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; overflow-x: auto; color: var(--text-dim);
+  }
+  .diagram .hl { color: var(--accent); }
+
+  .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px;
+  }
+  .step .tag { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 6px; display: block; }
+  .step h3 { margin: 0 0 8px; font-size: 1.1rem; }
+  .step p { color: var(--text-dim); margin: 0 0 14px; font-size: 0.92rem; }
+
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 32px; }
+  @media (max-width: 640px) { .features { grid-template-columns: 1fr; } }
+  .feature { padding: 14px 0; border-bottom: 1px solid var(--border); display: flex; gap: 14px; }
+  .feature .num { font-family: var(--mono); color: var(--text-dim); font-size: 0.8rem; padding-top: 2px; min-width: 26px; }
+  .feature h4 { margin: 0 0 4px; font-size: 0.98rem; }
+  .feature p { margin: 0; color: var(--text-dim); font-size: 0.88rem; }
+
+  table.compare { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  table.compare th, table.compare td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+  table.compare th { color: var(--text-dim); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  table.compare td.yes { color: var(--accent); }
+  table.compare td.no { color: var(--text-dim); }
+  table.compare tr.self { background: var(--accent-dim); }
+  .table-scroll { overflow-x: auto; }
+
+  details.faq { border-bottom: 1px solid var(--border); padding: 14px 0; }
+  details.faq summary { cursor: pointer; font-weight: 600; font-size: 0.98rem; list-style: none; }
+  details.faq summary::-webkit-details-marker { display: none; }
+  details.faq summary::before { content: "+ "; color: var(--accent); font-family: var(--mono); }
+  details.faq[open] summary::before { content: "− "; }
+  details.faq p { color: var(--text-dim); margin: 10px 0 0; font-size: 0.92rem; }
+
+  footer { padding: 40px 0 60px; color: var(--text-dim); font-size: 0.85rem; }
+  footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 14px; }
+  footer .links a { color: var(--text-dim); }
+  footer .links a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">OpenDisplay <span style="color:var(--text-dim);font-weight:400;">Android</span></div>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#install">Install</a>
+      <a href="#compare">Compare</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contribute">Contribute</a>
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero" style="border-top:none;">
+    <span class="status-badge">early alpha · tested on real hardware</span>
+    <h1>Use your Android tablet or phone as a second monitor for your Mac.</h1>
+    <p class="lead">
+      An unofficial, open-source Android client for
+      <a href="https://opendisplay.app/">OpenDisplay</a> — the original project only ships an
+      iOS/iPadOS client. This one speaks the same network protocol, with no changes required on
+      the Mac app. No account, no subscription, no dongle.
+    </p>
+    <div class="specs">Android 8.0+ (API 26) · macOS (via the original OpenDisplay app) · GPL-3.0</div>
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/josepacelli/opendisplay-android/releases/latest">Download APK (v0.0.1)</a>
+      <a class="btn ghost" href="https://github.com/josepacelli/opendisplay-android">View on GitHub</a>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <h2>How it works</h2>
+    <p class="section-sub">
+      The Mac side stays the original OpenDisplay app, unmodified. The Android device listens and
+      the Mac connects — that's what lets it work over WiFi with zero manual setup, via mDNS
+      discovery.
+    </p>
+    <div class="diagram">MAC (server, original OpenDisplay app)              ANDROID (this project)
+CGVirtualDisplay
+  → ScreenCaptureKit → VideoToolbox H.264
+  → TCP <span class="hl">[4-byte length][Annex-B frame]</span> ══════→ listens on port 9000
+                                                    → MediaCodec (Surface) → screen
+  ← control JSON (hello, touch, scroll, ping) ══════</div>
+  </section>
+
+  <section id="install">
+    <h2>Installation</h2>
+    <p class="section-sub">Two sides, two roles.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="tag">01 · MAC</span>
+        <h3>The server</h3>
+        <p>Captures a virtual display and streams the video. It's the original OpenDisplay
+        program, unmodified.</p>
+        <a href="https://github.com/peetzweg/opendisplay">peetzweg/opendisplay →</a>
+      </div>
+      <div class="step">
+        <span class="tag">02 · ANDROID</span>
+        <h3>The receiver</h3>
+        <p>Receives the video and sends touch/scroll back. A debug APK is available on the
+        releases page, or build it from source.</p>
+        <a href="https://github.com/josepacelli/opendisplay-android/releases/latest">Download APK →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>Features</h2>
+    <p class="section-sub">What already works today, validated against the real Mac app.</p>
+    <div class="features">
+      <div class="feature"><span class="num">001</span><div><h4>Hardware H.264 video</h4><p><code>MediaCodec</code> decoding straight to a Surface, no CPU conversion.</p></div></div>
+      <div class="feature"><span class="num">002</span><div><h4>Automatic discovery</h4><p>mDNS (<code>_opensidecar._tcp</code>) — the Mac finds the Android device on its own on the same network.</p></div></div>
+      <div class="feature"><span class="num">003</span><div><h4>Touch and scroll</h4><p>One finger becomes a click/drag, two fingers become scroll.</p></div></div>
+      <div class="feature"><span class="num">004</span><div><h4>Remote cursor</h4><p>A dot or decoded sprite, mirroring the Mac's cursor.</p></div></div>
+      <div class="feature"><span class="num">005</span><div><h4>Foreground service</h4><p>Survives the app going to background and resumes correctly after unlocking the screen.</p></div></div>
+      <div class="feature"><span class="num">006</span><div><h4>Error recovery</h4><p>Decoder errors trigger an automatic keyframe request, without dropping the connection.</p></div></div>
+      <div class="feature"><span class="num">007</span><div><h4>Manual fallback</h4><p>Editable mDNS name and IP:port connection for when automatic discovery fails.</p></div></div>
+      <div class="feature"><span class="num">008</span><div><h4>USB via <code>adb forward</code></h4><p>No dependency on <code>usbmuxd</code> — the same TCP transport WiFi already uses, over the cable.</p></div></div>
+      <div class="feature"><span class="num">009</span><div><h4>No account, no telemetry</h4><p>Same philosophy as the original project: no central server.</p></div></div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <h2>Compare</h2>
+    <p class="section-sub">Against the best-known alternatives for using an Android tablet as an external monitor.</p>
+    <div class="table-scroll">
+      <table class="compare">
+        <thead>
+          <tr><th></th><th>OpenDisplay Android</th><th>Duet Display</th><th>Spacedesk</th></tr>
+        </thead>
+        <tbody>
+          <tr class="self"><td>Price</td><td class="yes">Free</td><td class="no">Paid</td><td class="no">Free (core)</td></tr>
+          <tr class="self"><td>Open source</td><td class="yes">GPL-3.0</td><td class="no">No</td><td class="no">No</td></tr>
+          <tr class="self"><td>Account required</td><td class="yes">No</td><td class="no">Yes</td><td class="no">No</td></tr>
+          <tr class="self"><td>Same protocol as OpenDisplay Mac</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+          <tr class="self"><td>Central server</td><td class="yes">None</td><td class="no">Yes</td><td class="no">No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>FAQ</h2>
+
+    <details class="faq">
+      <summary>Is this the same app as OpenDisplay for iOS?</summary>
+      <p>No. It's an independent client, written from scratch in Kotlin, that implements the same
+      network protocol to interoperate with the original Mac app. The official project only
+      ships an iOS/iPadOS client.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Is it on Google Play?</summary>
+      <p>Not yet. The current version is a debug APK distributed via GitHub Releases — install it
+      with <code>adb install</code> or by copying the APK to the device (enable "unknown
+      sources").</p>
+    </details>
+
+    <details class="faq">
+      <summary>Does it need WiFi?</summary>
+      <p>It works over WiFi with automatic mDNS discovery. You can also connect over USB via
+      <code>adb forward</code>, reusing the same TCP path — see the repository for instructions.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Does it work on any Android tablet or phone?</summary>
+      <p>Requires Android 8.0 (API 26) or higher. Tested on real hardware (Samsung Galaxy Tab,
+      Android 16), but not yet across a wide range of devices — touch/scroll/cursor are
+      implemented but with limited field validation so far.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Does it change anything on the Mac app?</summary>
+      <p>No. The Mac side stays the original OpenDisplay app, with no modification whatsoever —
+      any protocol mismatch is this project's responsibility, not upstream's.</p>
+    </details>
+
+    <details class="faq">
+      <summary>What's the license?</summary>
+      <p>GPL-3.0, same as the original project. Open source, free to use including commercially;
+      distributed modified versions must remain open source under the same license.</p>
+    </details>
+  </section>
+
+  <section id="contribute">
+    <h2>Contribute</h2>
+    <p class="section-sub">
+      Issues, bug reports and pull requests are welcome on the
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub repository</a>, which
+      also has the architecture, protocol and build details.
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/releases">Releases</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/issues">Issues</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE">License (GPL-3.0)</a>
+      <a href="https://opendisplay.app/">Original project (Mac/iOS)</a>
+    </div>
+    <div>Not affiliated with the maintainer of the original OpenDisplay project. Speaks the same protocol, maintained separately.</div>
+  </div>
+</footer>
+
+</body>
+</html>

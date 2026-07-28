@@ -1,0 +1,81 @@
+# OpenDisplay Android
+
+Unofficial Android client for [OpenDisplay](https://github.com/peetzweg/opendisplay): turns an
+Android tablet or phone into a **real external monitor** for a Mac, speaking the same network
+protocol as the official app — with no changes required on the Mac side.
+
+The original OpenDisplay project only ships an iOS/iPadOS client. This repository is the Android
+version, written from scratch in Kotlin, compatible with the same Mac sender.
+
+It's not an e-ink reader. It's a low-latency H.264 video receiver + touch injector, filling the
+role of Sidecar/Duet Display in a free, open-source way.
+
+## How it works
+
+```
+MAC (sender, original project, unmodified)         ANDROID (this project)
+CGVirtualDisplay
+  → ScreenCaptureKit → VideoToolbox H.264
+  → TCP [4-byte length BE][Annex-B frame] ══════→ listens on port 9000
+                                                        → MediaCodec (Surface) → SurfaceView
+  ← control JSON (hello, touch, scroll, ping) ════
+```
+
+The Android device listens and the Mac connects — that's what lets it work over WiFi with zero
+manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
+
+## Features
+
+- H.264 video reception via `MediaCodec` (hardware decoding), straight to a `Surface`.
+- Handshake, ping/pong and mDNS discovery compatible with the original Mac sender's protocol.
+- One-finger touch becomes a mouse click/drag; a two-finger gesture becomes scroll.
+- Overlaid remote cursor (dot or decoded sprite, mirroring the Mac's cursor).
+- Foreground service: the connection survives the app going to background and resumes correctly
+  after unlocking the screen.
+- Editable mDNS name and manual IP:port connection, for when automatic discovery fails.
+- Optional performance HUD (fps, end-to-end latency, RTT).
+- Adaptive UI (Jetpack Compose) for phone and tablet.
+
+## Requirements
+
+- Android 8.0 (API 26) or higher.
+- Same WiFi network as the Mac (or a USB connection via `adb forward` — see below).
+- The original [OpenDisplay](https://github.com/peetzweg/opendisplay) Mac app, unmodified.
+
+## Build
+
+```sh
+./gradlew assembleDebug          # build
+./gradlew installDebug           # install on a connected device/emulator
+adb logcat -s OpenDisplay:*      # app logs
+```
+
+Requires the Android SDK installed, with `ANDROID_HOME`/`local.properties` pointing to it.
+
+To produce a signed release APK, set up a release keystore and a `keystore.properties` file at
+the repo root (both kept out of version control) — see `app/build.gradle.kts` for the expected
+format, then run `./gradlew assembleRelease`.
+
+## Usage
+
+1. Open the app on Android — it starts advertising itself via mDNS and listening on port 9000.
+2. On the Mac, open the original OpenDisplay app in `extend` mode (WiFi) and pick the Android
+   device from the list.
+3. If automatic discovery fails, use the Android app's settings screen to see the IP:port and
+   connect manually from the Mac side.
+
+USB connection details (via `adb forward`, without requiring `usbmuxd`) are covered in
+[peetzweg/opendisplay's `Mac/OpenSidecarMacApp.swift`](https://github.com/peetzweg/opendisplay) —
+the Mac app dials plain TCP to a configured `host`/`port` override when set, which `adb forward`
+can tunnel over USB to this app's existing listener on port 9000.
+
+## Relationship to the original project
+
+This is an independent client, maintained separately, that implements the same network protocol
+as [OpenDisplay](https://github.com/peetzweg/opendisplay) (`peetzweg/opendisplay`) to interoperate
+with the original Mac app without requiring any change to it. It is not affiliated with the
+original project's author.
+
+## License
+
+GPL-3.0, the same license as the original project. See [`LICENSE`](LICENSE).

@@ -1,0 +1,30 @@
+*.iml
+.gradle/
+/local.properties
+.idea/
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Working notes updated after every phase, deliberately not committed —
+# see CLAUDE.md.
+/ESTADO_ATUAL.md
+local.properties
+
+# Release signing — the keystore itself lives outside the repo entirely
+# (~/keystores/opendisplay-android/), but keystore.properties (which points
+# to it and holds the passwords) must never be committed either.
+/keystore.properties
+*.jks
+*.keystore
+
+# Personal release script (pedido do usuário) — automatiza build+assinatura+
+# release no GitHub, mas fica só nesta máquina, não versionado.
+/release.sh
+
+# Config/doc do Claude Code — fica só local, não versionado (pedido do usuário).
+/CLAUDE.md
+/.claude/
