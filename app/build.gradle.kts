@@ -21,8 +21,8 @@ android {
         applicationId = "com.peetzweg.opensidecar.android"
         minSdk = 26
         targetSdk = 36
-        versionCode = 0
-        versionName = "0.0.0"
+        versionCode = 1
+        versionName = "0.0.1"
     }
 
     signingConfigs {
