@@ -14,11 +14,11 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.peetzweg.opensidecar.android"
+    namespace = "io.github.josepacelli.opendisplay"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.peetzweg.opensidecar.android"
+        applicationId = "io.github.josepacelli.opendisplay"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

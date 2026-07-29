@@ -1,0 +1,10 @@
+Copyright (c) 2026 Philip Poloczek (upstream OpenDisplay, https://github.com/peetzweg/opendisplay)
+Copyright (c) 2026 Jose Pacelli (Android client)
+
+Licensed under the GNU General Public License, version 3 (GPL-3.0).
+See LICENSE for the full license text.
+
+Portions of this Android client (protocol constants, wire framing, and Annex-B NAL
+parsing) are ported from the upstream Swift client and remain copyright Philip Poloczek;
+see the per-file notices in app/src/main/java/io/github/josepacelli/opendisplay/protocol/,
+net/AnnexB.kt, net/PhoneReceiver.kt, and net/Framing.kt.

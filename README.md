@@ -5,7 +5,8 @@ Android tablet or phone into a **real external monitor** for a Mac, speaking the
 protocol as the official app — with no changes required on the Mac side.
 
 The original OpenDisplay project only ships an iOS/iPadOS client. This repository is the Android
-version, written from scratch in Kotlin, compatible with the same Mac sender.
+version: the wire protocol, framing and Annex-B handling are ported from the upstream Swift
+client, while the Android UI and `MediaCodec` pipeline are written fresh in Kotlin.
 
 It's not an e-ink reader. It's a low-latency H.264 video receiver + touch injector, filling the
 role of Sidecar/Duet Display in a free, open-source way.
@@ -78,4 +79,5 @@ original project's author.
 
 ## License
 
-GPL-3.0, the same license as the original project. See [`LICENSE`](LICENSE).
+GPL-3.0, the same license as the original project. See [`LICENSE`](LICENSE) and
+[`NOTICE`](NOTICE) for copyright notices.
