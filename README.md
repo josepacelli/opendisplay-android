@@ -1,5 +1,7 @@
 # OpenDisplay Android
 
+**[Website & download →](https://josepacelli.github.io/opendisplay-android)**
+
 Unofficial Android client for [OpenDisplay](https://github.com/peetzweg/opendisplay): turns an
 Android tablet or phone into a **real external monitor** for a Mac, speaking the same network
 protocol as the official app — with no changes required on the Mac side.
