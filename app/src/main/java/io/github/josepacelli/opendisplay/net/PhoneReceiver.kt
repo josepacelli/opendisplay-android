@@ -99,6 +99,23 @@ class PhoneReceiver(context: Context) {
         private const val WATCHDOG_TIMEOUT_MS = 5_000L
         private const val PING_INTERVAL_MS = 2_000L
         private const val READ_BUFFER_SIZE = 64 * 1024
+        private val ALLOWED_STORE_HOSTS = setOf("github.com", "play.google.com")
+
+        /** The `store` field on `updateRequired` comes from an unauthenticated peer (the Mac
+         * side of this socket has no auth — see SECURITY.md/SCR-001) — validated here, at the
+         * wire boundary, so no future UI code has to remember to sanitize it before turning it
+         * into a clickable link/intent. */
+        internal fun sanitizedStoreUrl(raw: String?): String? {
+            if (raw.isNullOrBlank()) return null
+            val uri = try {
+                java.net.URI(raw)
+            } catch (e: Exception) {
+                return null
+            }
+            if (uri.scheme != "https") return null
+            if (uri.host !in ALLOWED_STORE_HOSTS) return null
+            return raw
+        }
     }
 
     private val appContext = context.applicationContext
@@ -490,7 +507,7 @@ class PhoneReceiver(context: Context) {
                     "message",
                     "Atualize o OpenDisplay para continuar usando este segundo display.",
                 )
-                val store = if (obj.has("store")) obj.optString("store") else null
+                val store = sanitizedStoreUrl(if (obj.has("store")) obj.optString("store") else null)
                 _peerSignal.value = PeerSignal.UpdateAndroid(message, store)
             }
 
