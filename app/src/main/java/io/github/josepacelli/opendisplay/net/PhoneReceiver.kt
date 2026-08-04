@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.IOException
 import java.io.OutputStream
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.ServerSocket
 import java.net.Socket
@@ -62,6 +63,10 @@ sealed class PeerSignal {
 
     /** The Mac refuses this pairing until this Android app updates. */
     data class UpdateAndroid(val message: String, val storeUrl: String?) : PeerSignal()
+
+    /** A different device connected while one was already active. The socket has no peer
+     * authentication (see SECURITY.md/SCR-001), so this can't be prevented — only surfaced. */
+    data class PeerReplaced(val previousAddress: String, val newAddress: String) : PeerSignal()
 }
 
 /** One second window of pipeline health — trimmed-down parity with the iOS
@@ -123,13 +128,20 @@ class PhoneReceiver(context: Context) {
     private val running = AtomicBoolean(false)
     private val sendLock = Any()
 
-    private var serverSocket: ServerSocket? = null
+    /** Two listeners instead of one bound to every interface (0.0.0.0): loopback for the
+     * documented USB/`adb forward` path (adbd delivers forwarded traffic to 127.0.0.1 on the
+     * device), WiFi for normal discovery — narrows exposure on a multi-homed device (active
+     * VPN/tethering alongside WiFi) without breaking either transport. See SECURITY.md/SCR-006. */
+    private var loopbackServerSocket: ServerSocket? = null
+    private var wifiServerSocket: ServerSocket? = null
+    private var advertised = false
 
     @Volatile private var socket: Socket? = null
 
     @Volatile private var outputStream: OutputStream? = null
 
-    private var acceptJob: Job? = null
+    private var loopbackAcceptJob: Job? = null
+    private var wifiAcceptJob: Job? = null
     private var readJob: Job? = null
     private var pingJob: Job? = null
     private var watchdogJob: Job? = null
@@ -200,27 +212,42 @@ class PhoneReceiver(context: Context) {
      */
     fun start(port: Int = DEFAULT_PORT) {
         if (!running.compareAndSet(false, true)) return
-        acceptJob = scope.launch { listenLoop(port) }
+        loopbackAcceptJob = scope.launch {
+            // IPv4 explicitly, not InetAddress.getLoopbackAddress() (returns ::1 on this
+            // hardware) — the Mac's `adb forward` override dials 127.0.0.1 specifically.
+            listenLoop(port, { InetAddress.getByName("127.0.0.1") }) { loopbackServerSocket = it }
+        }
+        wifiAcceptJob = scope.launch {
+            listenLoop(port, { NetworkInfo.localIPv4InetAddress() }) { wifiServerSocket = it }
+        }
         pingJob = scope.launch { pingLoop() }
         watchdogJob = scope.launch { watchdogLoop() }
     }
 
     fun stop() {
         if (!running.compareAndSet(true, false)) return
-        acceptJob?.cancel()
+        loopbackAcceptJob?.cancel()
+        wifiAcceptJob?.cancel()
         readJob?.cancel()
         pingJob?.cancel()
         watchdogJob?.cancel()
         closeConnection()
-        try {
-            serverSocket?.close()
-        } catch (_: IOException) {
-            // already gone
-        }
-        serverSocket = null
+        closeServerSocket(loopbackServerSocket)
+        closeServerSocket(wifiServerSocket)
+        loopbackServerSocket = null
+        wifiServerSocket = null
+        advertised = false
         unadvertise()
         _connected.value = false
         _status.value = "Stopped"
+    }
+
+    private fun closeServerSocket(server: ServerSocket?) {
+        try {
+            server?.close()
+        } catch (_: IOException) {
+            // already gone
+        }
     }
 
     /** The device locked — nobody can see the stream. Tells the Mac (so it
@@ -326,16 +353,24 @@ class PhoneReceiver(context: Context) {
 
     // region Listener + connection lifecycle
 
-    private fun listenLoop(port: Int) {
+    /** Shared by the loopback and WiFi listeners — [resolveBindAddress] is re-evaluated on every
+     * retry so e.g. the WiFi listener starts working as soon as WiFi comes up, even if it wasn't
+     * available yet when [start] was called. */
+    private fun listenLoop(port: Int, resolveBindAddress: () -> InetAddress?, storeSocket: (ServerSocket) -> Unit) {
         while (running.get()) {
+            val bindAddress = resolveBindAddress()
+            if (bindAddress == null) {
+                Thread.sleep(1000)
+                continue
+            }
             try {
                 val server = ServerSocket()
                 server.reuseAddress = true
-                server.bind(InetSocketAddress(port))
-                serverSocket = server
-                advertise(port)
+                server.bind(InetSocketAddress(bindAddress, port))
+                storeSocket(server)
+                advertiseOnce(port)
                 _status.value = "Listening on :$port"
-                Log.info("listening on :$port")
+                Log.info("listening on ${bindAddress.hostAddress}:$port")
                 while (running.get()) {
                     val client = server.accept()
                     Log.info("new connection from ${client.remoteSocketAddress}")
@@ -343,15 +378,26 @@ class PhoneReceiver(context: Context) {
                 }
             } catch (e: IOException) {
                 if (!running.get()) return
-                Log.warn("listener failed, retrying in 1s", e)
-                _status.value = "Listener failed — restarting…"
+                Log.warn("listener on ${bindAddress.hostAddress} failed, retrying in 1s", e)
                 Thread.sleep(1000)
             }
         }
     }
 
+    private fun advertiseOnce(port: Int) {
+        if (advertised) return
+        advertised = true
+        advertise(port)
+    }
+
     private fun acceptConnection(client: Socket) {
+        val previousAddress = socket?.remoteSocketAddress?.toString()
+        val newAddress = client.remoteSocketAddress?.toString()
         closeConnection() // replace any existing connection, like the Mac replacing its dial
+        if (previousAddress != null && newAddress != null && previousAddress != newAddress) {
+            Log.warn("peer changed mid-session: $previousAddress -> $newAddress")
+            _peerSignal.value = PeerSignal.PeerReplaced(previousAddress, newAddress)
+        }
         client.tcpNoDelay = true // touch/scroll are tiny packets; Nagle would batch them into lag
         socket = client
         outputStream = client.getOutputStream()
@@ -394,7 +440,7 @@ class PhoneReceiver(context: Context) {
                 socket = null
                 outputStream = null
                 _connected.value = false
-                _status.value = "Listening on :${serverSocket?.localPort ?: DEFAULT_PORT}"
+                _status.value = "Listening on :$lastBoundPort"
             }
             try {
                 client.close()

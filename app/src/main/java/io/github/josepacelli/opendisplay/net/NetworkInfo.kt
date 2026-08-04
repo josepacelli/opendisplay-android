@@ -15,14 +15,18 @@ import java.net.NetworkInterface
  */
 object NetworkInfo {
 
-    fun localIPv4Address(): String? {
+    fun localIPv4Address(): String? = localIPv4InetAddress()?.hostAddress
+
+    /** Same lookup as [localIPv4Address], as an [Inet4Address] ready to bind a
+     * [java.net.ServerSocket] to directly — so the socket only listens on the
+     * WiFi-reachable interface instead of every interface (see SECURITY.md/SCR-006). */
+    fun localIPv4InetAddress(): Inet4Address? {
         return try {
             NetworkInterface.getNetworkInterfaces().asSequence()
                 .filter { it.isUp && !it.isLoopback }
                 .flatMap { it.inetAddresses.asSequence() }
                 .filterIsInstance<Inet4Address>()
                 .firstOrNull()
-                ?.hostAddress
         } catch (e: Exception) {
             null
         }
