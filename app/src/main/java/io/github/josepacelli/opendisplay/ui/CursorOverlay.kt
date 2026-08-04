@@ -64,7 +64,20 @@ fun CursorOverlay(receiver: PhoneReceiver, modifier: Modifier = Modifier) {
     }
 }
 
+/** A remote cursor sprite is a small hotspot icon by definition — this caps how big a
+ * peer-supplied PNG can claim to be before it's actually decoded (bounds-only pass first),
+ * so a crafted header with huge dimensions can't force an oversized allocation. */
+private const val MAX_SPRITE_DIMENSION_PX = 256
+
 private fun decodeSprite(image: CursorImage): DecodedSprite? {
+    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    BitmapFactory.decodeByteArray(image.png, 0, image.png.size, bounds)
+    if (bounds.outWidth <= 0 || bounds.outHeight <= 0 ||
+        bounds.outWidth > MAX_SPRITE_DIMENSION_PX || bounds.outHeight > MAX_SPRITE_DIMENSION_PX
+    ) {
+        Log.warn("cursor sprite rejected: ${bounds.outWidth}x${bounds.outHeight}")
+        return null
+    }
     val bitmap = try {
         BitmapFactory.decodeByteArray(image.png, 0, image.png.size)?.asImageBitmap()
     } catch (e: Exception) {
