@@ -4,13 +4,16 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- painel de tras (origem): apenas contorno -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M30,28 H62 A6,6 0 0 1 68,34 V54 A6,6 0 0 1 62,60 H30 A6,6 0 0 1 24,54 V34 A6,6 0 0 1 30,28 Z" />
+    <!-- painel da frente (destino): solido, oculta o canto do painel de tras -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M29,38 h50 a6,6 0 0 1 6,6 v22 a6,6 0 0 1 -6,6 h-50 a6,6 0 0 1 -6,-6 v-22 a6,6 0 0 1 6,-6 z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M46,74 h16 v6 h-16 z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M40,80 h28 v4 h-28 z" />
+        android:pathData="M44,44 H76 A6,6 0 0 1 82,50 V70 A6,6 0 0 1 76,76 H44 A6,6 0 0 1 38,70 V50 A6,6 0 0 1 44,44 Z" />
 </vector>

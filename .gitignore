@@ -28,3 +28,15 @@ local.properties
 # Config/doc do Claude Code — fica só local, não versionado (pedido do usuário).
 /CLAUDE.md
 /.claude/
+
+# Espelho (desatualizado) do CLAUDE.md gerado por outra ferramenta de agente —
+# mesmo tratamento: só local, não versionado.
+/AGENTS.md
+/.agents/
+
+# Artefatos de sessão de dev (screenshots do playwright, previews de design).
+/.playwright-mcp/
+/docs/icon-proposta/
+
+# APKs soltos na raiz — a release oficial vai pro GitHub Releases, não pro git.
+/*.apk
