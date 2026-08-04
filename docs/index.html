@@ -122,6 +122,14 @@
   details.faq[open] summary::before { content: "− "; }
   details.faq p { color: var(--text-dim); margin: 10px 0 0; font-size: 0.92rem; }
 
+  .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 640px) { .gallery { grid-template-columns: 1fr; } }
+  .gallery figure { margin: 0; }
+  .gallery img {
+    display: block; width: 100%; border-radius: 12px; border: 1px solid var(--border);
+  }
+  .gallery figcaption { color: var(--text-dim); font-size: 0.85rem; margin-top: 10px; }
+
   footer { padding: 40px 0 60px; color: var(--text-dim); font-size: 0.85rem; }
   footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 14px; }
   footer .links a { color: var(--text-dim); }
@@ -136,6 +144,7 @@
     <nav>
       <a href="#features">Features</a>
       <a href="#how-it-works">How it works</a>
+      <a href="#screenshots">Screenshots</a>
       <a href="#install">Install</a>
       <a href="#compare">Compare</a>
       <a href="#faq">FAQ</a>
@@ -174,6 +183,21 @@
 CGVirtualDisplay
   → ScreenCaptureKit → VideoToolbox H.264
   → TCP </div>
+  </section>
+
+  <section id="screenshots">
+    <h2>Screenshots</h2>
+    <p class="section-sub">Real hardware, real WiFi connection — no staged mockups.</p>
+    <div class="gallery">
+      <figure>
+        <img src="screenshots/tablet-mirroring-site.jpeg" alt="Android tablet on a desk, mirroring this landing page from the Mac over WiFi" loading="lazy">
+        <figcaption>The tablet mirroring this very page, streamed live from the Mac over WiFi.</figcaption>
+      </figure>
+      <figure>
+        <img src="screenshots/mac-arrange-displays.jpeg" alt="macOS Displays settings showing the Arrange Displays dialog with the Android tablet listed as a third screen" loading="lazy">
+        <figcaption>Recognized on the Mac as a regular third display in System Settings → Displays.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <section id="install">
