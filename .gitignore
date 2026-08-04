@@ -40,3 +40,7 @@ local.properties
 
 # APKs soltos na raiz — a release oficial vai pro GitHub Releases, não pro git.
 /*.apk
+
+# Scripts pessoais de instalação via ADB — só local, não versionados (pedido do usuário).
+/install.sh
+/scripts/
