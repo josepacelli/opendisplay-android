@@ -117,6 +117,8 @@ private fun PeerSignalBanner(signal: PeerSignal, modifier: Modifier = Modifier) 
     val message = when (signal) {
         is PeerSignal.UpdateMac -> signal.message
         is PeerSignal.UpdateAndroid -> signal.message
+        is PeerSignal.PeerReplaced ->
+            "Conexão assumida por outro dispositivo (${signal.newAddress}). Se não foi você, verifique quem está na rede."
     }
     Surface(
         modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),

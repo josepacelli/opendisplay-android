@@ -64,10 +64,11 @@ fun CursorOverlay(receiver: PhoneReceiver, modifier: Modifier = Modifier) {
     }
 }
 
-/** A remote cursor sprite is a small hotspot icon by definition — this caps how big a
- * peer-supplied PNG can claim to be before it's actually decoded (bounds-only pass first),
- * so a crafted header with huge dimensions can't force an oversized allocation. */
-private const val MAX_SPRITE_DIMENSION_PX = 256
+/** Caps how big a peer-supplied cursor PNG can claim to be before it's actually decoded
+ * (bounds-only pass first), so a crafted header with huge dimensions can't force an oversized
+ * allocation. The real Mac app sends sprites up to ~280x400 (HiDPI drag/resize cursors) — 1024
+ * leaves real headroom while still rejecting a decompression-bomb-style claim. */
+private const val MAX_SPRITE_DIMENSION_PX = 1024
 
 private fun decodeSprite(image: CursorImage): DecodedSprite? {
     val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
