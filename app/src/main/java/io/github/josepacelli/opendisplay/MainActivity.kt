@@ -101,14 +101,16 @@ class MainActivity : ComponentActivity() {
      * wrong there. Falls back to `DisplayMetrics` below API 30 (minSdk 26).
      */
     private fun reportPanelSize(receiver: PhoneReceiver) {
+        val density = resources.displayMetrics.density.toDouble()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val metrics = windowManager.currentWindowMetrics
             val bounds = metrics.bounds
-            receiver.setPanelSize(bounds.width(), bounds.height(), metrics.density.toDouble())
+            receiver.setPanelSize(bounds.width(), bounds.height(), density)
         } else {
             @Suppress("DEPRECATION")
             val metrics = resources.displayMetrics
-            receiver.setPanelSize(metrics.widthPixels, metrics.heightPixels, metrics.density.toDouble())
+            receiver.setPanelSize(metrics.widthPixels, metrics.heightPixels, density)
         }
     }
 }
