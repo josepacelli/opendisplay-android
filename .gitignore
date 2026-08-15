@@ -47,3 +47,7 @@ local.properties
 
 # Rascunho de conteúdo pra ficha do Play Store — só local (pedido do usuário).
 /PLAY_STORE_LISTING.md
+
+# Ícone hi-res, feature graphic e screenshots pro upload manual no Play
+# Console — não fazem parte do app nem do site, só local (pedido do usuário).
+/docs/play-store-assets/
