@@ -57,10 +57,16 @@
   header.site nav a { color: var(--text-dim); }
   header.site nav a:hover { color: var(--text); }
   .gh-stars {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-family: var(--mono); font-size: 0.85em; color: var(--accent); margin-left: 4px;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--text-dim); border: 1px solid var(--border); border-radius: 999px;
+    padding: 4px 6px 4px 10px;
   }
-  .gh-stars svg { width: 13px; height: 13px; flex: none; stroke: currentColor; fill: none; }
+  .gh-stars:hover { color: var(--text); border-color: var(--accent); text-decoration: none; }
+  .gh-stars svg { width: 14px; height: 14px; flex: none; stroke: currentColor; fill: none; }
+  .gh-stars .count {
+    font-family: var(--mono); font-size: 0.78rem; font-weight: 600; color: var(--text);
+    background: var(--bg-elev); border-radius: 999px; padding: 2px 8px;
+  }
 
   .hero { padding: 72px 0 48px; }
   .hero h1 { font-size: clamp(1.9rem, 4.2vw, 2.7rem); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
@@ -154,7 +160,13 @@
       <a href="#compare">Compare</a>
       <a href="#faq">FAQ</a>
       <a href="#contribute">Contribute</a>
-      <a href="https://github.com/josepacelli/opendisplay-android">GitHub <span class="gh-stars" id="gh-stars"></span></a>
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub</a>
+      <a class="gh-stars" href="https://github.com/josepacelli/opendisplay-android/stargazers" id="gh-stars">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        Stars <span class="count" id="gh-stars-count">···</span>
+      </a>
     </nav>
   </div>
 </header>
@@ -335,13 +347,8 @@ CGVirtualDisplay
     .then((r) => (r.ok ? r.json() : null))
     .then((data) => {
       if (!data || typeof data.stargazers_count !== "number") return;
-      const el = document.getElementById("gh-stars");
-      if (!el) return;
-      el.innerHTML =
-        '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-        '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>' +
-        "</svg>" +
-        data.stargazers_count;
+      const el = document.getElementById("gh-stars-count");
+      if (el) el.textContent = data.stargazers_count;
     })
     .catch(() => {});
 </script>
