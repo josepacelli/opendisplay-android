@@ -45,8 +45,10 @@ local.properties
 /install.sh
 /scripts/
 
-# Rascunho de conteúdo pra ficha do Play Store — só local (pedido do usuário).
+# Rascunho de conteúdo e guia de publicação pra ficha do Play Store — só
+# local (pedido do usuário).
 /PLAY_STORE_LISTING.md
+/PLAY_STORE_PUBLISHING_GUIDE.md
 
 # Ícone hi-res, feature graphic e screenshots pro upload manual no Play
 # Console — não fazem parte do app nem do site, só local (pedido do usuário).
