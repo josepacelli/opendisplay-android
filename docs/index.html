@@ -56,6 +56,7 @@
   header.site nav { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.92rem; }
   header.site nav a { color: var(--text-dim); }
   header.site nav a:hover { color: var(--text); }
+  .gh-stars { font-family: var(--mono); font-size: 0.85em; color: var(--accent); margin-left: 4px; }
 
   .hero { padding: 72px 0 48px; }
   .hero h1 { font-size: clamp(1.9rem, 4.2vw, 2.7rem); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
@@ -149,7 +150,7 @@
       <a href="#compare">Compare</a>
       <a href="#faq">FAQ</a>
       <a href="#contribute">Contribute</a>
-      <a href="https://github.com/josepacelli/opendisplay-android">GitHub</a>
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub <span class="gh-stars" id="gh-stars"></span></a>
     </nav>
   </div>
 </header>
@@ -324,5 +325,16 @@ CGVirtualDisplay
   </div>
 </footer>
 
+
+<script>
+  fetch("https://api.github.com/repos/josepacelli/opendisplay-android")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (!data || typeof data.stargazers_count !== "number") return;
+      const el = document.getElementById("gh-stars");
+      if (el) el.textContent = "★ " + data.stargazers_count;
+    })
+    .catch(() => {});
+</script>
 </body>
 </html>
