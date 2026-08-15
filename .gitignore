@@ -44,3 +44,6 @@ local.properties
 # Scripts pessoais de instalação via ADB — só local, não versionados (pedido do usuário).
 /install.sh
 /scripts/
+
+# Rascunho de conteúdo pra ficha do Play Store — só local (pedido do usuário).
+/PLAY_STORE_LISTING.md
