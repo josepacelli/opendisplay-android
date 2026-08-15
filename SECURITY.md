@@ -29,17 +29,18 @@ Structured review against OWASP ASVS 4.0.3 / CWE Top 25, scoped to the network/p
 
 | ID | Title | Severity | CWE | Status |
 |---|---|---|---|---|
-| SCR-001 | No peer authentication on the control/video socket | Medium | CWE-306 | Accepted risk (inherited from upstream protocol) |
-| SCR-002 | Cursor sprite bitmap decoded without dimension validation | Medium | CWE-400 | Open — see [SDD.md](SDD.md) |
-| SCR-003 | Unvalidated `store` URL forwarded from an untrusted peer | Low | CWE-601 | Open — see [SDD.md](SDD.md) |
+| SCR-001 | No peer authentication on the control/video socket | Medium | CWE-306 | Accepted risk (inherited from upstream protocol) — UI now warns when a different peer replaces an active session, but doesn't block it |
+| SCR-002 | Cursor sprite bitmap decoded without dimension validation | Medium | CWE-400 | Fixed — bounds-only decode rejects oversized sprites before allocation |
+| SCR-003 | Unvalidated `store` URL forwarded from an untrusted peer | Low | CWE-601 | Fixed — validated against an `https://` + host allowlist at ingestion |
 | SCR-004 | Persistent install ID broadcast in cleartext over mDNS | Informational | CWE-200 | Accepted risk (required by protocol) |
-| SCR-005 | `allowBackup="true"` with no data extraction rules | Informational | CWE-312 | Open — see [SDD.md](SDD.md) |
-| SCR-006 | Listener bound to all network interfaces, not just WiFi | Informational | — | Accepted risk (required for the documented USB/`adb forward` path) |
+| SCR-005 | `allowBackup="true"` with no data extraction rules | Informational | CWE-312 | Fixed — `dataExtractionRules` excludes app preferences from backup/transfer |
+| SCR-006 | Listener bound to all network interfaces, not just WiFi | Informational | — | Mitigated — binds to loopback (USB path) and the current WiFi IP instead of `0.0.0.0`, no longer all interfaces |
 
-Remediation design for the three actionable findings (SCR-002, SCR-003, SCR-005) is in
-[`SDD.md`](SDD.md). SCR-001, SCR-004 and SCR-006 are accepted risks: fixing them would mean
-diverging from the wire protocol the Mac app speaks, which this project cannot do unilaterally
-(see `CLAUDE.md`'s "Protocolo — fonte da verdade" section).
+SCR-002, SCR-003 and SCR-005 were fixed outright (see git history for the implementation). SCR-001
+and SCR-006 later got mitigations that reduce exposure without removing the underlying risk — a
+full fix would mean diverging from the wire protocol the Mac app speaks, which this project cannot
+do unilaterally (see `CLAUDE.md`'s "Protocolo — fonte da verdade" section). SCR-004 remains an
+accepted risk, unchanged.
 
 ## What this app deliberately does not have
 
