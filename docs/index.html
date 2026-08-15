@@ -56,7 +56,11 @@
   header.site nav { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.92rem; }
   header.site nav a { color: var(--text-dim); }
   header.site nav a:hover { color: var(--text); }
-  .gh-stars { font-family: var(--mono); font-size: 0.85em; color: var(--accent); margin-left: 4px; }
+  .gh-stars {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--mono); font-size: 0.85em; color: var(--accent); margin-left: 4px;
+  }
+  .gh-stars svg { width: 13px; height: 13px; flex: none; stroke: currentColor; fill: none; }
 
   .hero { padding: 72px 0 48px; }
   .hero h1 { font-size: clamp(1.9rem, 4.2vw, 2.7rem); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
@@ -332,7 +336,12 @@ CGVirtualDisplay
     .then((data) => {
       if (!data || typeof data.stargazers_count !== "number") return;
       const el = document.getElementById("gh-stars");
-      if (el) el.textContent = "★ " + data.stargazers_count;
+      if (!el) return;
+      el.innerHTML =
+        '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>' +
+        "</svg>" +
+        data.stargazers_count;
     })
     .catch(() => {});
 </script>
