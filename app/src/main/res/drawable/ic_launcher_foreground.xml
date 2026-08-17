@@ -7,13 +7,29 @@
     <!-- painel de tras (origem): apenas contorno -->
     <path
         android:fillColor="#00000000"
-        android:strokeColor="#FFFFFF"
+        android:strokeColor="#1A1A1A"
         android:strokeWidth="5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:pathData="M30,28 H62 A6,6 0 0 1 68,34 V54 A6,6 0 0 1 62,60 H30 A6,6 0 0 1 24,54 V34 A6,6 0 0 1 30,28 Z" />
+    <!-- bugdroid do painel de tras: cupula verde escura + olhos -->
+    <path
+        android:fillColor="#0F9D58"
+        android:pathData="M34,40 A6,6 0 0 1 46,40 Z" />
+    <path android:fillColor="#1A1A1A" android:pathData="M37.4,36.3 A0.8,1.2 0 0 1 39,36.3 A0.8,1.2 0 0 1 37.4,36.3 Z" />
+    <path android:fillColor="#1A1A1A" android:pathData="M41,36.3 A0.8,1.2 0 0 1 42.6,36.3 A0.8,1.2 0 0 1 41,36.3 Z" />
     <!-- painel da frente (destino): solido, oculta o canto do painel de tras -->
     <path
         android:fillColor="#FFFFFF"
+        android:strokeColor="#1A1A1A"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
         android:pathData="M44,44 H76 A6,6 0 0 1 82,50 V70 A6,6 0 0 1 76,76 H44 A6,6 0 0 1 38,70 V50 A6,6 0 0 1 44,44 Z" />
+    <!-- bugdroid do painel da frente: cupula verde clara + olhos -->
+    <path
+        android:fillColor="#3DDC84"
+        android:pathData="M50,62 A10,10 0 0 1 70,62 Z" />
+    <path android:fillColor="#1A1A1A" android:pathData="M56.9,56.4 A1.1,1.6 0 0 1 59.1,56.4 A1.1,1.6 0 0 1 56.9,56.4 Z" />
+    <path android:fillColor="#1A1A1A" android:pathData="M60.9,56.4 A1.1,1.6 0 0 1 63.1,56.4 A1.1,1.6 0 0 1 60.9,56.4 Z" />
 </vector>
