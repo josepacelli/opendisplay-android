@@ -43,7 +43,8 @@ manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
 
 - Android 8.0 (API 26) or higher. **v0.0.7 and earlier crash on launch on Android 12–13
   (API 30-33)** — `WindowMetrics.getDensity()` was gated behind the wrong API level; fixed in
-  v0.0.8, use that or newer.
+  v0.0.8, use that or newer (reported by [@gaeaearth](https://github.com/gaeaearth), fixed by
+  [@edoardomich](https://github.com/edoardomich) in [#5](https://github.com/josepacelli/opendisplay-android/pull/5)).
 - Same WiFi network as the Mac (or a USB connection via `adb forward` — see below).
 - The original [OpenDisplay](https://github.com/peetzweg/opendisplay) Mac app, unmodified.
 
@@ -80,6 +81,13 @@ This is an independent client, maintained separately, that implements the same n
 as [OpenDisplay](https://github.com/peetzweg/opendisplay) (`peetzweg/opendisplay`) to interoperate
 with the original Mac app without requiring any change to it. It is not affiliated with the
 original project's author.
+
+## Acknowledgments
+
+- [@gaeaearth](https://github.com/gaeaearth) reported the Android 12/13 launch crash
+  ([#4](https://github.com/josepacelli/opendisplay-android/issues/4)).
+- [@edoardomich](https://github.com/edoardomich) fixed it
+  ([#5](https://github.com/josepacelli/opendisplay-android/pull/5)).
 
 ## License
 
