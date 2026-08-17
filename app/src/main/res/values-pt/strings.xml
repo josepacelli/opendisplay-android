@@ -16,4 +16,8 @@
     <string name="settings_cancel">Cancelar</string>
 
     <string name="peer_replaced_warning">Conexão assumida por outro dispositivo (%1$s). Se não foi você, verifique quem está na rede.</string>
+
+    <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
+    <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
+    <string name="about_github">GitHub</string>
 </resources>

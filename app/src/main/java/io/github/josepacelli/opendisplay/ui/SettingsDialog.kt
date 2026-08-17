@@ -1,9 +1,12 @@
 package io.github.josepacelli.opendisplay.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -14,7 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.josepacelli.opendisplay.R
@@ -32,6 +38,12 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     val currentName by receiver.serviceName.collectAsState()
     var draftName by remember { mutableStateOf(currentName) }
     val addressHint = remember { receiver.localAddressHint() }
+    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val versionName = remember {
+        @Suppress("DEPRECATION")
+        runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull()
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -57,6 +69,21 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 4.dp),
                 )
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = versionName?.let { stringResource(R.string.about_version, it) }
+                            ?: stringResource(R.string.about_version_unknown),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                    TextButton(onClick = {
+                        uriHandler.openUri("https://github.com/josepacelli/opendisplay-android")
+                    }) { Text(stringResource(R.string.about_github)) }
+                }
             }
         },
         confirmButton = {
