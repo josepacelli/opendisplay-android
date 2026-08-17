@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 import io.github.josepacelli.opendisplay.service.ReceiverService
 import io.github.josepacelli.opendisplay.ui.ReceiverScreen
@@ -66,7 +67,7 @@ class MainActivity : ComponentActivity() {
                 if (receiver == null) {
                     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
                         Text(
-                            text = "Starting…",
+                            text = stringResource(R.string.status_starting),
                             color = Color.White,
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.align(Alignment.Center),

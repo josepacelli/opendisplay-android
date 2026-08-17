@@ -20,7 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PeerSignal
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 
@@ -82,7 +84,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
                 onClick = { showSettings = true },
                 modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp),
             ) {
-                Text("Configurações", color = Color.White)
+                Text(stringResource(R.string.settings_title), color = Color.White)
             }
         }
 
@@ -121,7 +123,7 @@ private fun PeerSignalBanner(signal: PeerSignal, modifier: Modifier = Modifier) 
         is PeerSignal.UpdateMac -> signal.message
         is PeerSignal.UpdateAndroid -> signal.message
         is PeerSignal.PeerReplaced ->
-            "Conexão assumida por outro dispositivo (${signal.newAddress}). Se não foi você, verifique quem está na rede."
+            stringResource(R.string.peer_replaced_warning, signal.newAddress)
     }
     Surface(
         modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),

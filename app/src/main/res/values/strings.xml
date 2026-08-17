@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">OpenDisplay</string>
+
+    <string name="status_starting">Starting…</string>
+    <string name="status_stopped">Stopped</string>
+    <string name="status_listening">Listening on :%1$d</string>
+
+    <string name="notification_waiting">Waiting for your Mac to connect…</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_name_label">Name announced on the network (shown in the Mac\'s connection menu):</string>
+    <string name="settings_manual_hint">If the Mac can\'t find this device automatically over WiFi, enter the address below manually in the Mac app:</string>
+    <string name="settings_address_unavailable">IP address unavailable — check your WiFi connection.</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_cancel">Cancel</string>
+
+    <string name="peer_replaced_warning">Connection taken over by another device (%1$s). If this wasn\'t you, check who\'s on the network.</string>
 </resources>

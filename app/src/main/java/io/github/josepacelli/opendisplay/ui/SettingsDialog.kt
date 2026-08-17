@@ -15,7 +15,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 
 /**
@@ -33,11 +35,11 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Configurações") },
+        title = { Text(stringResource(R.string.settings_title)) },
         text = {
             Column {
                 Text(
-                    text = "Nome anunciado na rede (aparece no menu de conexão do Mac):",
+                    text = stringResource(R.string.settings_name_label),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 OutlinedTextField(
@@ -47,12 +49,11 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 16.dp),
                 )
                 Text(
-                    text = "Se o Mac não encontrar este aparelho automaticamente por WiFi, " +
-                        "informe o endereço abaixo manualmente no app do Mac:",
+                    text = stringResource(R.string.settings_manual_hint),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
-                    text = addressHint ?: "Endereço IP indisponível — verifique a conexão WiFi.",
+                    text = addressHint ?: stringResource(R.string.settings_address_unavailable),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 4.dp),
                 )
@@ -62,10 +63,10 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
             TextButton(onClick = {
                 receiver.setServiceName(draftName)
                 onDismiss()
-            }) { Text("Salvar") }
+            }) { Text(stringResource(R.string.settings_save)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.settings_cancel)) }
         },
     )
 }

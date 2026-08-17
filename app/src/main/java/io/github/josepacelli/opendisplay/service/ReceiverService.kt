@@ -15,6 +15,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.github.josepacelli.opendisplay.MainActivity
+import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 import io.github.josepacelli.opendisplay.util.Log
 
@@ -123,7 +124,7 @@ class ReceiverService : Service() {
             val manager = getSystemService(NotificationManager::class.java)
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "OpenDisplay",
+                getString(R.string.app_name),
                 NotificationManager.IMPORTANCE_LOW,
             )
             manager.createNotificationChannel(channel)
@@ -138,8 +139,8 @@ class ReceiverService : Service() {
         // TODO(fase 9): dedicated status icon/text (fps, transport) instead
         // of this static placeholder — needs a real launcher-style small icon.
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("OpenDisplay")
-            .setContentText("Waiting for your Mac to connect…")
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(getString(R.string.notification_waiting))
             .setSmallIcon(android.R.drawable.presence_video_online)
             .setContentIntent(pendingIntent)
             .setOngoing(true)

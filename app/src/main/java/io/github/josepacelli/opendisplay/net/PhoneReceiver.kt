@@ -9,6 +9,7 @@ import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.util.Base64
+import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.protocol.WireMessage
 import io.github.josepacelli.opendisplay.protocol.WireProtocol
 import io.github.josepacelli.opendisplay.util.Log
@@ -148,7 +149,7 @@ class PhoneReceiver(context: Context) {
 
     @Volatile private var lastDataReceivedAt = System.currentTimeMillis()
 
-    private val _status = MutableStateFlow("Starting…")
+    private val _status = MutableStateFlow(appContext.getString(R.string.status_starting))
     val status: StateFlow<String> = _status.asStateFlow()
 
     private val _connected = MutableStateFlow(false)
@@ -239,7 +240,7 @@ class PhoneReceiver(context: Context) {
         advertised = false
         unadvertise()
         _connected.value = false
-        _status.value = "Stopped"
+        _status.value = appContext.getString(R.string.status_stopped)
     }
 
     private fun closeServerSocket(server: ServerSocket?) {
@@ -369,7 +370,7 @@ class PhoneReceiver(context: Context) {
                 server.bind(InetSocketAddress(bindAddress, port))
                 storeSocket(server)
                 advertiseOnce(port)
-                _status.value = "Listening on :$port"
+                _status.value = appContext.getString(R.string.status_listening, port)
                 Log.info("listening on ${bindAddress.hostAddress}:$port")
                 while (running.get()) {
                     val client = server.accept()

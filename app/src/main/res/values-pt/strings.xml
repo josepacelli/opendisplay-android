@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenDisplay</string>
+
+    <string name="status_starting">Iniciando…</string>
+    <string name="status_stopped">Parado</string>
+    <string name="status_listening">Escutando na porta :%1$d</string>
+
+    <string name="notification_waiting">Aguardando seu Mac conectar…</string>
+
+    <string name="settings_title">Configurações</string>
+    <string name="settings_name_label">Nome anunciado na rede (aparece no menu de conexão do Mac):</string>
+    <string name="settings_manual_hint">Se o Mac não encontrar este aparelho automaticamente por WiFi, informe o endereço abaixo manualmente no app do Mac:</string>
+    <string name="settings_address_unavailable">Endereço IP indisponível — verifique a conexão WiFi.</string>
+    <string name="settings_save">Salvar</string>
+    <string name="settings_cancel">Cancelar</string>
+
+    <string name="peer_replaced_warning">Conexão assumida por outro dispositivo (%1$s). Se não foi você, verifique quem está na rede.</string>
+</resources>
