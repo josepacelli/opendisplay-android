@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OpenDisplay</string>
+    <string name="app_name">OpenDisplayAndroid</string>
 
     <string name="status_starting">Iniciando…</string>
     <string name="status_stopped">Parado</string>
