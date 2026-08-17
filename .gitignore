@@ -53,3 +53,6 @@ local.properties
 # Ícone hi-res, feature graphic e screenshots pro upload manual no Play
 # Console — não fazem parte do app nem do site, só local (pedido do usuário).
 /docs/play-store-assets/
+
+# Notas de build/release (conta gh a usar etc.) — só local (pedido do usuário).
+/BUILD.md
