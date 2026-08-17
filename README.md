@@ -41,7 +41,9 @@ manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
 
 ## Requirements
 
-- Android 8.0 (API 26) or higher.
+- Android 8.0 (API 26) or higher. **v0.0.7 and earlier crash on launch on Android 12–13
+  (API 30-33)** — `WindowMetrics.getDensity()` was gated behind the wrong API level; fixed in
+  v0.0.8, use that or newer.
 - Same WiFi network as the Mac (or a USB connection via `adb forward` — see below).
 - The original [OpenDisplay](https://github.com/peetzweg/opendisplay) Mac app, unmodified.
 
