@@ -16,4 +16,8 @@
     <string name="settings_cancel">Cancel</string>
 
     <string name="peer_replaced_warning">Connection taken over by another device (%1$s). If this wasn\'t you, check who\'s on the network.</string>
+
+    <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
+    <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
+    <string name="about_github">GitHub</string>
 </resources>
