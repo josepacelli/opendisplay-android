@@ -71,6 +71,32 @@ header.site nav a.gh-stars svg { width: 14px; height: 14px; flex: none; stroke: 
 .btn.ghost { color: var(--text); background: var(--bg-elev); }
 .btn.ghost:hover { border-color: var(--accent); }
 
+.kofi-badge-wrap { text-align: center; margin-top: 28px; }
+.kofi-badge {
+  display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  justify-content: center;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-elev);
+  padding: 10px 18px;
+  font-size: 0.9rem; color: var(--text-dim);
+}
+.kofi-badge-icon { font-size: 1rem; }
+
+#support { text-align: center; }
+.support-eyebrow {
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+}
+.support-logo { font-size: 1.4rem; font-weight: 800; margin-bottom: 20px; }
+.support-title {
+  font-size: clamp(1.4rem, 3.4vw, 1.9rem); max-width: 32ch;
+  margin: 0 auto 26px; letter-spacing: -0.01em;
+}
+.support-copy { max-width: 62ch; margin: 0 auto; color: var(--text-dim); text-align: left; }
+.support-copy p { margin: 0 0 16px; }
+.support-copy a { color: var(--accent); }
+#support .kofi-badge-wrap { margin-top: 32px; }
+
 .status-badge {
   display: inline-block; font-family: var(--mono); font-size: 0.78rem;
   color: var(--accent); background: var(--accent-dim);
