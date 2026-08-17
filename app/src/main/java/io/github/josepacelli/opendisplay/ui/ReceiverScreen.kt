@@ -69,6 +69,9 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
         }
 
         if (!connected) {
+            // Scrim over the video box — otherwise the last decoded frame
+            // stays visible behind the status text after a disconnect.
+            Box(modifier = Modifier.fillMaxSize().background(Color.Black))
             Text(
                 text = status,
                 color = Color.White,
