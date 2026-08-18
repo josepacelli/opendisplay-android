@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.hardware.usb.UsbAccessory
+import android.hardware.usb.UsbManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -46,11 +48,15 @@ class MainActivity : ComponentActivity() {
     private var boundReceiver by mutableStateOf<PhoneReceiver?>(null)
     private var bound = false
 
+    /** Accessory received before the service finished binding; opened once bound. */
+    private var pendingAccessory: UsbAccessory? = null
+
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val receiver = (service as? ReceiverService.LocalBinder)?.receiver ?: return
             reportPanelSize(receiver)
             boundReceiver = receiver
+            openPendingAccessory(receiver)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -64,10 +70,47 @@ class MainActivity : ComponentActivity() {
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
+    /** The cable arrived while the app was already open (see `singleTop`). */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        takeAccessory(intent)
+    }
+
+    private fun takeAccessory(intent: Intent?) {
+        val accessory = intent?.usbAccessory() ?: return
+        pendingAccessory = accessory
+        boundReceiver?.let { openPendingAccessory(it) }
+    }
+
+    private fun openPendingAccessory(receiver: PhoneReceiver) {
+        val accessory = pendingAccessory ?: return
+        pendingAccessory = null
+        val manager = getSystemService(UsbManager::class.java)
+        // Null means the cable left before we got here — a normal race, not an error.
+        val descriptor = manager?.openAccessory(accessory)
+        if (descriptor == null) {
+            Log.warn("USB accessory vanished before it could be opened")
+            return
+        }
+        receiver.attachAccessory(descriptor)
+    }
+
+    private fun Intent.usbAccessory(): UsbAccessory? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getParcelableExtra(UsbManager.EXTRA_ACCESSORY, UsbAccessory::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            getParcelableExtra(UsbManager.EXTRA_ACCESSORY)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         requestNotificationPermissionIfNeeded()
+
+        // Launch intent may carry the accessory; claimed once the service binds.
+        takeAccessory(intent)
 
         val serviceIntent = Intent(this, ReceiverService::class.java)
         startForegroundService(serviceIntent)
