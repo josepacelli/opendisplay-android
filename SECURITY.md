@@ -42,6 +42,24 @@ full fix would mean diverging from the wire protocol the Mac app speaks, which t
 do unilaterally (see `CLAUDE.md`'s "Protocolo — fonte da verdade" section). SCR-004 remains an
 accepted risk, unchanged.
 
+## Security review — 2026-08-18
+
+Follow-up pass covering everything added since the review above (notification permission/toggle,
+disconnect action, screen-timeout fixes, localization) plus a fresh read of the original scope.
+SCR-002 through SCR-006 verified still intact, no regressions.
+
+| ID | Title | Severity | CWE | Status |
+|---|---|---|---|---|
+| SCR-007 | Unbounded cursor sprite dimensions (`nw`/`nh`) from peer can crash the Compose layout pass | Medium | CWE-20 | Open — see [#34](https://github.com/josepacelli/opendisplay-android/issues/34) |
+
+SCR-007: `PhoneReceiver.handleCursorImage()` reads `nw`/`nh`/`ax`/`ay` from the untrusted peer's
+`cursorImg` message with no upper-bound check, and `CursorOverlay.kt`'s `CursorSprite` uses them
+directly to size a `Constraints.fixed(...)` measure call — an extreme value (e.g. `"nw": 1e9`) is
+plausibly outside what Compose's `Constraints` can represent, on the UI thread, on every
+recomposition after the message arrives. Distinct from the bitmap-decode bounds check already
+fixed in SCR-002 (that one guards `BitmapFactory`; this one guards the separate normalized-size
+fields used purely for layout). See the issue for full detail and proposed fix.
+
 ## What this app deliberately does not have
 
 No accounts, no telemetry, no central server, no TLS on the wire protocol — same philosophy as
