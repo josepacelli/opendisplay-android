@@ -8,15 +8,31 @@
 
     <string name="notification_waiting">Waiting for your Mac to connect…</string>
 
+    <string name="idle_instruction_wifi">Choose this device under WiFi in the Mac app</string>
+    <string name="idle_instruction_keep_open">Keep this app open — streaming starts automatically</string>
+
     <string name="settings_title">Settings</string>
+    <string name="settings_section_status">Status</string>
+    <string name="settings_status_listening">Listening</string>
+    <string name="settings_status_listening_value">Port %1$d</string>
+    <string name="settings_status_connection">Connection</string>
+    <string name="settings_status_connection_waiting">Waiting for Mac</string>
+    <string name="settings_status_connection_connected">Connected</string>
+    <string name="settings_section_name">Name</string>
     <string name="settings_name_label">Name announced on the network (shown in the Mac\'s connection menu):</string>
+    <string name="settings_section_network">Network</string>
     <string name="settings_manual_hint">If the Mac can\'t find this device automatically over WiFi, enter the address below manually in the Mac app:</string>
     <string name="settings_address_unavailable">IP address unavailable — check your WiFi connection.</string>
+    <string name="settings_section_how_to_connect">How to connect</string>
+    <string name="settings_howto_wifi">Both devices on the same WiFi network, then pick this device in the Mac app\'s connection menu.</string>
+    <string name="settings_howto_rotate">Rotate the device for a vertical second monitor.</string>
+    <string name="settings_howto_touch">Touch: tap to click, drag to drag, two-finger pan to scroll.</string>
     <string name="settings_save">Save</string>
     <string name="settings_cancel">Cancel</string>
 
     <string name="peer_replaced_warning">Connection taken over by another device (%1$s). If this wasn\'t you, check who\'s on the network.</string>
 
+    <string name="settings_section_about">About</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
     <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
     <string name="about_github">GitHub</string>

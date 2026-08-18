@@ -1,16 +1,25 @@
 package io.github.josepacelli.opendisplay.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,7 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.josepacelli.opendisplay.R
@@ -74,18 +85,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
             // Scrim over the video box — otherwise the last decoded frame
             // stays visible behind the status text after a disconnect.
             Box(modifier = Modifier.fillMaxSize().background(Color.Black))
-            Text(
-                text = status,
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(24.dp),
-            )
-            TextButton(
-                onClick = { showSettings = true },
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp),
-            ) {
-                Text(stringResource(R.string.settings_title), color = Color.White)
-            }
+            IdleContent(status = status, onSettingsClick = { showSettings = true })
         }
 
         peerSignal?.let { signal ->
@@ -99,6 +99,72 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
 
     if (showSettings) {
         SettingsDialog(receiver = receiver, onDismiss = { showSettings = false })
+    }
+}
+
+/**
+ * No-Mac-connected state — mirrors the upstream iOS client's `IdleView`:
+ * logo, title, a colored status dot, a short instructions card and a
+ * proper Settings button, instead of a bare status line.
+ */
+@Composable
+private fun IdleContent(status: String, onSettingsClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.widthIn(max = 420.dp).padding(24.dp),
+    ) {
+        // The app icon is an adaptive icon (mipmap XML with separate
+        // background/foreground layers) — painterResource can't load that
+        // directly, so recreate the round launcher look from its layers.
+        Box(
+            modifier = Modifier.size(96.dp).clip(CircleShape).background(Color.White),
+            contentAlignment = Alignment.Center,
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(R.string.app_name),
+            color = Color.White,
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // This content only renders while disconnected — the dot mirrors
+            // the iOS IdleView's semantics (green = connected), so it's
+            // orange here by construction, not a value read from `status`.
+            Box(modifier = Modifier.size(8.dp).background(Color(0xFFFFA000), CircleShape))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = status, color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyMedium)
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Surface(
+            color = Color.White.copy(alpha = 0.08f),
+            shape = MaterialTheme.shapes.medium,
+        ) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                InstructionRow(stringResource(R.string.idle_instruction_wifi))
+                Spacer(modifier = Modifier.height(14.dp))
+                InstructionRow(stringResource(R.string.idle_instruction_keep_open))
+            }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        OutlinedButton(onClick = onSettingsClick) {
+            Text(stringResource(R.string.settings_title))
+        }
+    }
+}
+
+@Composable
+private fun InstructionRow(text: String) {
+    Row(verticalAlignment = Alignment.Top) {
+        Text(text = "•", color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodySmall)
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(text = text, color = Color.White.copy(alpha = 0.9f), style = MaterialTheme.typography.bodySmall)
     }
 }
 
