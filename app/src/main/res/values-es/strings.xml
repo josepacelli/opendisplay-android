@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenDisplay</string>
+
+    <string name="status_starting">Iniciando…</string>
+    <string name="status_stopped">Detenido</string>
+    <string name="status_listening">Escuchando en el puerto :%1$d</string>
+
+    <string name="notification_title">OpenDisplay para Android · v%1$s</string>
+    <string name="notification_action_disconnect">Desconectar</string>
+
+    <string name="idle_instruction_wifi">Elige este dispositivo en WiFi en la app del Mac</string>
+    <string name="idle_instruction_keep_open">Mantén esta app abierta — la transmisión empieza automáticamente</string>
+
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_section_status">Estado</string>
+    <string name="settings_status_listening">Escuchando</string>
+    <string name="settings_status_listening_value">Puerto %1$d</string>
+    <string name="settings_status_connection">Conexión</string>
+    <string name="settings_status_connection_waiting">Esperando al Mac</string>
+    <string name="settings_status_connection_connected">Conectado</string>
+    <string name="settings_section_notification">Notificación</string>
+    <string name="settings_notification_show">Mostrar notificación</string>
+    <string name="settings_section_name">Nombre</string>
+    <string name="settings_name_label">Nombre anunciado en la red (aparece en el menú de conexión del Mac):</string>
+    <string name="settings_section_network">Red</string>
+    <string name="settings_manual_hint">Dirección de este dispositivo en la red, mostrada solo para depuración. El descubrimiento automático por WiFi (mDNS) es la única forma en que el Mac se conecta — no existe opción para escribirla manualmente en la app del Mac:</string>
+    <string name="settings_address_unavailable">Dirección IP no disponible — comprueba tu conexión WiFi.</string>
+    <string name="settings_section_how_to_connect">Cómo conectar</string>
+    <string name="settings_howto_wifi">Ambos dispositivos en la misma red WiFi y luego elige este dispositivo en el menú de conexión de la app del Mac.</string>
+    <string name="settings_howto_rotate">Gira el dispositivo para obtener un segundo monitor vertical.</string>
+    <string name="settings_howto_touch">Toque: tocar para hacer clic, arrastrar para mover, deslizar con dos dedos para desplazar.</string>
+    <string name="settings_save">Guardar</string>
+    <string name="settings_cancel">Cancelar</string>
+
+    <string name="peer_replaced_warning">Conexión tomada por otro dispositivo (%1$s). Si no fuiste tú, revisa quién está en la red.</string>
+
+    <string name="settings_section_about">Acerca de</string>
+    <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
+    <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
+    <string name="about_github">GitHub</string>
+</resources>
