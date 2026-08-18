@@ -85,9 +85,15 @@ original project's author.
 
 ## Acknowledgments
 
-- [@gaeaearth](https://github.com/gaeaearth) reported the Android 12/13 launch crash
-  ([#4](https://github.com/josepacelli/opendisplay-android/issues/4)).
-- [@edoardomich](https://github.com/edoardomich) fixed it
+- [@gaeaearth](https://github.com/gaeaearth) has been this project's most active early tester —
+  reported the Android 12/13 launch crash
+  ([#4](https://github.com/josepacelli/opendisplay-android/issues/4)), the screen-timeout/
+  reconnect issues ([#10](https://github.com/josepacelli/opendisplay-android/issues/10), also the
+  suggestion behind the idle-screen fix in
+  [#28](https://github.com/josepacelli/opendisplay-android/issues/28)), and the misleading
+  manual-connection hint ([#18](https://github.com/josepacelli/opendisplay-android/issues/18)).
+  Thank you for the sustained, careful bug reports.
+- [@edoardomich](https://github.com/edoardomich) fixed the Android 12/13 launch crash
   ([#5](https://github.com/josepacelli/opendisplay-android/pull/5)).
 
 ## License
