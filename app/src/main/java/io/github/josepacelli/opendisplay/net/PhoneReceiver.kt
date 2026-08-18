@@ -625,11 +625,16 @@ class PhoneReceiver(context: Context) {
             Log.warn("bad cursorImg base64", e)
             return
         }
+        // Clamped, not just defaulted: these size a Compose Layout measure call
+        // in CursorOverlay, and an untrusted peer sending something wild like
+        // "nw": 1e9 would push that past what Constraints.fixed() can
+        // represent — a same-LAN crash, no auth needed (SECURITY.md/SCR-007).
+        // 4.0 is generous headroom over anything the real Mac app sends.
         _cursorImage.tryEmit(
             CursorImage(
                 png = png,
-                normalizedWidth = obj.optDouble("nw", 0.0),
-                normalizedHeight = obj.optDouble("nh", 0.0),
+                normalizedWidth = obj.optDouble("nw", 0.0).coerceIn(0.0, 4.0),
+                normalizedHeight = obj.optDouble("nh", 0.0).coerceIn(0.0, 4.0),
                 anchorX = obj.optDouble("ax", 0.0),
                 anchorY = obj.optDouble("ay", 0.0),
             ),

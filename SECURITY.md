@@ -50,15 +50,21 @@ SCR-002 through SCR-006 verified still intact, no regressions.
 
 | ID | Title | Severity | CWE | Status |
 |---|---|---|---|---|
-| SCR-007 | Unbounded cursor sprite dimensions (`nw`/`nh`) from peer can crash the Compose layout pass | Medium | CWE-20 | Open — see [#34](https://github.com/josepacelli/opendisplay-android/issues/34) |
+| SCR-007 | Unbounded cursor sprite dimensions (`nw`/`nh`) from peer, no upper-bound check | Low | CWE-20 | Fixed (hardening) — see [#34](https://github.com/josepacelli/opendisplay-android/issues/34) |
 
-SCR-007: `PhoneReceiver.handleCursorImage()` reads `nw`/`nh`/`ax`/`ay` from the untrusted peer's
-`cursorImg` message with no upper-bound check, and `CursorOverlay.kt`'s `CursorSprite` uses them
-directly to size a `Constraints.fixed(...)` measure call — an extreme value (e.g. `"nw": 1e9`) is
-plausibly outside what Compose's `Constraints` can represent, on the UI thread, on every
-recomposition after the message arrives. Distinct from the bitmap-decode bounds check already
-fixed in SCR-002 (that one guards `BitmapFactory`; this one guards the separate normalized-size
-fields used purely for layout). See the issue for full detail and proposed fix.
+SCR-007: `PhoneReceiver.handleCursorImage()` read `nw`/`nh`/`ax`/`ay` from the untrusted peer's
+`cursorImg` message with no upper-bound check, and `CursorOverlay.kt`'s `CursorSprite` used them
+directly to size a `Constraints.fixed(...)` measure call. Initial write-up theorized this could
+crash the app (an extreme value like `"nw": 1e9` seemed likely to exceed what Compose's
+`Constraints` can represent). **Verified against a real crafted-peer exploit attempt** (a raw
+Python TCP client sending `cursor` + a `cursorImg` with `nw=nh=1e9` straight at the unpatched
+build) — **it did not crash**: no fatal exception, same process ID throughout, app kept working
+normally afterward. `Constraints.fixed(a, a)` with a matching min/max apparently doesn't hit the
+same bit-packing ceiling this write-up assumed. Downgraded from the originally-reported Medium
+accordingly. Still fixed as defense-in-depth (`nw`/`nh` now clamped to `0.0..4.0` at ingestion,
+mirroring the SCR-002 bounds-check pattern) — relying on an external library's undocumented
+handling of out-of-range input isn't a real guarantee, even though this specific crash theory
+didn't pan out.
 
 ## What this app deliberately does not have
 
