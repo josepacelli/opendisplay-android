@@ -285,6 +285,18 @@ class PhoneReceiver(context: Context) {
         }
     }
 
+    /** User-initiated disconnect (the status bar notification's "Disconnect"
+     * action) — same `closing` semantics as [shutDown] so the Mac doesn't
+     * linger waiting for a wake, but unlike [shutDown] this keeps listening
+     * and advertising, so picking this device again on the Mac reconnects
+     * right away instead of needing the app relaunched. */
+    fun disconnect() {
+        scope.launch(Dispatchers.IO) {
+            if (connected.value) sendControlBlocking(JSONObject().put("type", WireMessage.CLOSING))
+            closeConnection()
+        }
+    }
+
     /** Real panel size in pixels + density, from the Activity/Compose layer.
      * Re-sends `hello` if we're already connected and the size actually
      * changed (rotation) — mirrors `setOrientation` on iOS, which rebuilds
@@ -404,7 +416,7 @@ class PhoneReceiver(context: Context) {
         outputStream = client.getOutputStream()
         lastDataReceivedAt = System.currentTimeMillis()
         _connected.value = true
-        _status.value = "Connected"
+        _status.value = appContext.getString(R.string.settings_status_connection_connected)
         if (devicePixelsWide == 0) {
             Log.warn("sending hello before panel size is known — caller should call setPanelSize() first")
         }
@@ -441,7 +453,7 @@ class PhoneReceiver(context: Context) {
                 socket = null
                 outputStream = null
                 _connected.value = false
-                _status.value = "Listening on :$lastBoundPort"
+                _status.value = appContext.getString(R.string.status_listening, lastBoundPort)
             }
             try {
                 client.close()

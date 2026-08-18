@@ -6,7 +6,8 @@
     <string name="status_stopped">Parado</string>
     <string name="status_listening">Escutando na porta :%1$d</string>
 
-    <string name="notification_waiting">Aguardando seu Mac conectar…</string>
+    <string name="notification_title">OpenDisplay para Android · v%1$s</string>
+    <string name="notification_action_disconnect">Desconectar</string>
 
     <string name="idle_instruction_wifi">Escolha este aparelho em WiFi no app do Mac</string>
     <string name="idle_instruction_keep_open">Mantenha este app aberto — a transmissão começa automaticamente</string>

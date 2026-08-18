@@ -18,6 +18,12 @@ import io.github.josepacelli.opendisplay.MainActivity
 import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 import io.github.josepacelli.opendisplay.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 /**
  * Foreground service so the TCP listener + NSD advertisement survive past
@@ -44,6 +50,8 @@ class ReceiverService : Service() {
     private val binder = LocalBinder()
     lateinit var receiver: PhoneReceiver
         private set
+
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     private var screenReceiverRegistered = false
     private val screenReceiver = object : BroadcastReceiver() {
@@ -73,10 +81,20 @@ class ReceiverService : Service() {
         receiver = PhoneReceiver(applicationContext)
         startForeground(NOTIFICATION_ID, buildNotification())
         registerScreenReceiver()
+        // Status/connection change -> the notification is the only UI visible
+        // while the app isn't in the foreground, so it needs to stay live too.
+        serviceScope.launch {
+            combine(receiver.status, receiver.connected) { _, _ -> Unit }
+                .collect { updateNotification() }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        receiver.start() // idempotent — safe if already running
+        if (intent?.action == ACTION_DISCONNECT) {
+            receiver.disconnect()
+        } else {
+            receiver.start() // idempotent — safe if already running
+        }
         return START_STICKY
     }
 
@@ -95,6 +113,7 @@ class ReceiverService : Service() {
     override fun onDestroy() {
         unregisterScreenReceiverIfNeeded()
         receiver.shutDown()
+        serviceScope.cancel()
         super.onDestroy()
     }
 
@@ -136,25 +155,43 @@ class ReceiverService : Service() {
             manager.createNotificationChannel(channel)
         }
         val openIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
+        val contentIntent = PendingIntent.getActivity(
             this,
             0,
             openIntent,
             PendingIntent.FLAG_IMMUTABLE,
         )
-        // TODO(fase 9): dedicated status icon/text (fps, transport) instead
-        // of this static placeholder — needs a real launcher-style small icon.
-        return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.notification_waiting))
+        // TODO(fase 9): dedicated status icon instead of this system
+        // placeholder — needs a real launcher-style small icon.
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle(getString(R.string.notification_title, versionName() ?: "?"))
+            .setContentText(receiver.status.value)
             .setSmallIcon(android.R.drawable.presence_video_online)
-            .setContentIntent(pendingIntent)
+            .setContentIntent(contentIntent)
             .setOngoing(true)
-            .build()
+        if (receiver.connected.value) {
+            val disconnectIntent = PendingIntent.getService(
+                this,
+                0,
+                Intent(this, ReceiverService::class.java).setAction(ACTION_DISCONNECT),
+                PendingIntent.FLAG_IMMUTABLE,
+            )
+            builder.addAction(
+                android.R.drawable.ic_lock_power_off,
+                getString(R.string.notification_action_disconnect),
+                disconnectIntent,
+            )
+        }
+        return builder.build()
     }
+
+    @Suppress("DEPRECATION")
+    private fun versionName(): String? =
+        runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull()
 
     companion object {
         private const val NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "opendisplay_receiver"
+        private const val ACTION_DISCONNECT = "io.github.josepacelli.opendisplay.action.DISCONNECT"
     }
 }
