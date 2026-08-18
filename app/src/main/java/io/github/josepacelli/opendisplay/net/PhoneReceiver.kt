@@ -101,6 +101,7 @@ class PhoneReceiver(context: Context) {
         private const val PREFS_NAME = "opendisplay"
         private const val KEY_INSTALL_ID = "installID"
         private const val KEY_SERVICE_NAME = "serviceName"
+        private const val KEY_SHOW_NOTIFICATION = "showNotification"
         private const val DEFAULT_SERVICE_NAME = "OpenDisplay Android"
         private const val WATCHDOG_TIMEOUT_MS = 5_000L
         private const val PING_INTERVAL_MS = 2_000L
@@ -191,6 +192,12 @@ class PhoneReceiver(context: Context) {
      * generic "iPhone" without an entitlement personal teams can't get). */
     private val _serviceName = MutableStateFlow(loadServiceName())
     val serviceName: StateFlow<String> = _serviceName.asStateFlow()
+
+    /** Whether [io.github.josepacelli.opendisplay.service.ReceiverService] should
+     * show its status notification (connection status, version, disconnect
+     * action — see #22) — user-editable in Settings (#26). Defaults on. */
+    private val _showNotification = MutableStateFlow(loadShowNotification())
+    val showNotification: StateFlow<Boolean> = _showNotification.asStateFlow()
 
     /** Clock sync (NTP-style): offset = macClock - ourClock, from the ping/pong
      * sample with the lowest RTT. Mirrors PhoneReceiver.swift exactly. */
@@ -329,6 +336,16 @@ class PhoneReceiver(context: Context) {
             unadvertise()
             advertise(lastBoundPort)
         }
+    }
+
+    /** Turn the status notification on/off and persist the choice. */
+    fun setShowNotification(show: Boolean) {
+        if (show == _showNotification.value) return
+        _showNotification.value = show
+        appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_SHOW_NOTIFICATION, show)
+            .apply()
     }
 
     /** Best-effort local IPv4 address for manually typing into the Mac app's
@@ -748,6 +765,11 @@ class PhoneReceiver(context: Context) {
     private fun loadServiceName(): String {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getString(KEY_SERVICE_NAME, null) ?: Build.MODEL ?: DEFAULT_SERVICE_NAME
+    }
+
+    private fun loadShowNotification(): Boolean {
+        val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_SHOW_NOTIFICATION, true)
     }
 
     private fun nowMs(): Double = System.currentTimeMillis().toDouble()
