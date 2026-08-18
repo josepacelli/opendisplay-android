@@ -35,7 +35,7 @@ manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
 - Overlaid remote cursor (dot or decoded sprite, mirroring the Mac's cursor).
 - Foreground service: the connection survives the app going to background and resumes correctly
   after unlocking the screen.
-- Editable mDNS name and manual IP:port connection, for when automatic discovery fails.
+- Editable mDNS name; the settings screen also shows this device's own address for troubleshooting.
 - Optional performance HUD (fps, end-to-end latency, RTT).
 - Adaptive UI (Jetpack Compose) for phone and tablet.
 
@@ -67,8 +67,9 @@ format, then run `./gradlew assembleRelease`.
 1. Open the app on Android — it starts advertising itself via mDNS and listening on port 9000.
 2. On the Mac, open the original OpenDisplay app in `extend` mode (WiFi) and pick the Android
    device from the list.
-3. If automatic discovery fails, use the Android app's settings screen to see the IP:port and
-   connect manually from the Mac side.
+3. If the Mac doesn't see the device, check that both are on the same WiFi network and that it
+   isn't blocking multicast/mDNS traffic — the Mac app has no manual IP-entry field, so WiFi
+   discovery is the only supported path (USB is the fallback, see below).
 
 USB connection details (via `adb forward`, without requiring `usbmuxd`) are covered in
 [peetzweg/opendisplay's `Mac/OpenSidecarMacApp.swift`](https://github.com/peetzweg/opendisplay) —
