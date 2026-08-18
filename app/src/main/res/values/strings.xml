@@ -21,7 +21,7 @@
     <string name="settings_section_name">Name</string>
     <string name="settings_name_label">Name announced on the network (shown in the Mac\'s connection menu):</string>
     <string name="settings_section_network">Network</string>
-    <string name="settings_manual_hint">If the Mac can\'t find this device automatically over WiFi, enter the address below manually in the Mac app:</string>
+    <string name="settings_manual_hint">This device\'s address on the network, shown for troubleshooting. WiFi auto-discovery (mDNS) is the only way the Mac connects — there\'s no manual-entry option in the Mac app:</string>
     <string name="settings_address_unavailable">IP address unavailable — check your WiFi connection.</string>
     <string name="settings_section_how_to_connect">How to connect</string>
     <string name="settings_howto_wifi">Both devices on the same WiFi network, then pick this device in the Mac app\'s connection menu.</string>
