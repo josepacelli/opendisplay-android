@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +57,16 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val peerSignal by receiver.peerSignal.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
     var showSettings by remember { mutableStateOf(false) }
+
+    // The dialog only makes sense while disconnected (see SettingsDialog's
+    // doc comment) — if the Mac connects while it happens to be open, the
+    // now-actively-rendering VideoSurface behind it swallows further mouse
+    // input meant for the dialog, leaving it stuck open. Closing it the
+    // moment we connect sidesteps that instead of relying on it staying
+    // dismissible on top of live video.
+    LaunchedEffect(connected) {
+        if (connected) showSettings = false
+    }
 
     val aspect = videoDims?.let { it.width.toFloat() / it.height.toFloat() }
         ?: run {
