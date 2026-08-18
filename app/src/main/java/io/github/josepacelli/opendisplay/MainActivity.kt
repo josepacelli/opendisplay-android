@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -55,6 +56,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Mirrors iOS's `isIdleTimerDisabled = true`: this app IS the screen
+        // while it's open, so the system's inactivity timeout must not fire
+        // (issue #10). Doesn't block a manual power-button lock — screen
+        // lock/unlock still goes through PhoneReceiver.enterSleep()/wake()
+        // via ReceiverService's SCREEN_OFF/USER_PRESENT receiver.
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val serviceIntent = Intent(this, ReceiverService::class.java)
         startForegroundService(serviceIntent)
