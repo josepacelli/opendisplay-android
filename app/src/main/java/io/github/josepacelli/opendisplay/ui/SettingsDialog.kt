@@ -12,6 +12,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,6 +41,7 @@ import io.github.josepacelli.opendisplay.net.PhoneReceiver
 fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     val currentName by receiver.serviceName.collectAsState()
     val connected by receiver.connected.collectAsState()
+    val showNotification by receiver.showNotification.collectAsState()
     var draftName by remember { mutableStateOf(currentName) }
     val addressHint = remember { receiver.localAddressHint() }
     val context = LocalContext.current
@@ -66,6 +68,21 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                             else R.string.settings_status_connection_waiting,
                         ),
                     )
+                }
+
+                SettingsSection(stringResource(R.string.settings_section_notification)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.settings_notification_show),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f).padding(end = 8.dp),
+                        )
+                        Switch(checked = showNotification, onCheckedChange = { receiver.setShowNotification(it) })
+                    }
                 }
 
                 SettingsSection(stringResource(R.string.settings_section_name)) {

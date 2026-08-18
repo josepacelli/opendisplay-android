@@ -84,7 +84,7 @@ class ReceiverService : Service() {
         // Status/connection change -> the notification is the only UI visible
         // while the app isn't in the foreground, so it needs to stay live too.
         serviceScope.launch {
-            combine(receiver.status, receiver.connected) { _, _ -> Unit }
+            combine(receiver.status, receiver.connected, receiver.showNotification) { _, _, _ -> Unit }
                 .collect { updateNotification() }
         }
     }
@@ -140,8 +140,16 @@ class ReceiverService : Service() {
     }
 
     private fun updateNotification() {
-        val manager = getSystemService(NotificationManager::class.java)
-        manager?.notify(NOTIFICATION_ID, buildNotification())
+        val manager = getSystemService(NotificationManager::class.java) ?: return
+        // startForeground() always needs *a* notification to satisfy the OS
+        // contract (see onCreate) — turning the setting off just cancels it
+        // right back out from the shade; the foreground service itself is
+        // unaffected either way.
+        if (receiver.showNotification.value) {
+            manager.notify(NOTIFICATION_ID, buildNotification())
+        } else {
+            manager.cancel(NOTIFICATION_ID)
+        }
     }
 
     private fun buildNotification(): Notification {
