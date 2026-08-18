@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -67,12 +68,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         requestNotificationPermissionIfNeeded()
-        // Mirrors iOS's `isIdleTimerDisabled = true`: this app IS the screen
-        // while it's open, so the system's inactivity timeout must not fire
-        // (issue #10). Doesn't block a manual power-button lock — screen
-        // lock/unlock still goes through PhoneReceiver.enterSleep()/wake()
-        // via ReceiverService's SCREEN_OFF/USER_PRESENT receiver.
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val serviceIntent = Intent(this, ReceiverService::class.java)
         startForegroundService(serviceIntent)
@@ -92,6 +87,23 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 } else {
+                    // Mirrors iOS's `isIdleTimerDisabled = true`: this app IS the
+                    // screen while a Mac is actually mirroring, so the system's
+                    // inactivity timeout must not fire mid-session (issue #10).
+                    // Only while connected, though — idle/waiting should time out
+                    // normally like any other app (issue #28). Doesn't block a
+                    // manual power-button lock either way — screen lock/unlock
+                    // still goes through PhoneReceiver.enterSleep()/wake() via
+                    // ReceiverService's SCREEN_OFF/SCREEN_ON receiver.
+                    LaunchedEffect(receiver) {
+                        receiver.connected.collect { connected ->
+                            if (connected) {
+                                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                            } else {
+                                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                            }
+                        }
+                    }
                     ReceiverScreen(receiver = receiver)
                 }
             }
