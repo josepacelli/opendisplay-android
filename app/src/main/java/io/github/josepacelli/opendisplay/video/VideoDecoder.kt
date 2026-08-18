@@ -103,8 +103,15 @@ class VideoDecoder(
             // Non-blocking dequeue: low latency means "latest frame wins" —
             // if the codec is momentarily busy, drop rather than wait,
             // mirroring the Mac encoder's own pendingEncodes backpressure.
+            // But dropping a NAL isn't free on H.264: P-frames reference the
+            // previous decoded frame, so a dropped access unit corrupts every
+            // frame after it until a fresh IDR arrives — request one instead
+            // of waiting for the Mac's own periodic keyframe (up to 60s away).
             val index = mediaCodec.dequeueInputBuffer(0)
-            if (index < 0) return
+            if (index < 0) {
+                signalDesync()
+                return
+            }
             val inputBuffer = mediaCodec.getInputBuffer(index) ?: return
             inputBuffer.clear()
             var size = 0
@@ -124,12 +131,21 @@ class VideoDecoder(
     /** Tears the codec down and forgets the last-seen SPS/PPS, so even a
      * keyframe with byte-identical headers to before triggers a fresh
      * [reconfigure] (headersChanged in [submit] only fires on a *change*).
-     * Debounced to at most once a second — a stuck codec would otherwise
-     * fail every single frame and spam keyframe requests. */
+     * For a codec that's actually broken (threw on configure/queue) —
+     * rebuilding is the only way back. */
     private fun signalError() {
         release()
         currentSps = null
         currentPps = null
+        signalDesync()
+    }
+
+    /** The decoder fell out of sync with the encoder's reference chain — a
+     * dropped/corrupt access unit, not necessarily a broken codec — so just
+     * ask the Mac for a fresh IDR. Debounced to at most once a second: a
+     * stuck codec/persistent backlog would otherwise fail every single frame
+     * and spam keyframe requests. */
+    private fun signalDesync() {
         val now = System.currentTimeMillis()
         if (now - lastErrorSignalAt > 1000) {
             lastErrorSignalAt = now
