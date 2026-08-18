@@ -20,7 +20,7 @@
     <string name="settings_status_connection_waiting">Esperando al Mac</string>
     <string name="settings_status_connection_connected">Conectado</string>
     <string name="settings_section_notification">Notificación</string>
-    <string name="settings_notification_show">Mostrar notificación de estado</string>
+    <string name="settings_notification_show">Mostrar notificación</string>
     <string name="settings_section_name">Nombre</string>
     <string name="settings_name_label">Nombre anunciado en la red (aparece en el menú de conexión del Mac):</string>
     <string name="settings_section_network">Red</string>

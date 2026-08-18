@@ -20,7 +20,7 @@
     <string name="settings_status_connection_waiting">Waiting for Mac</string>
     <string name="settings_status_connection_connected">Connected</string>
     <string name="settings_section_notification">Notification</string>
-    <string name="settings_notification_show">Show status notification</string>
+    <string name="settings_notification_show">Show notification</string>
     <string name="settings_section_name">Name</string>
     <string name="settings_name_label">Name announced on the network (shown in the Mac\'s connection menu):</string>
     <string name="settings_section_network">Network</string>
