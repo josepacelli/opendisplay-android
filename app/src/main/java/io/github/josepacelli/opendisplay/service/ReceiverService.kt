@@ -31,7 +31,7 @@ import io.github.josepacelli.opendisplay.util.Log
  * one session and one `hello` regardless of how many times the Activity is
  * recreated (rotation without `configChanges`, low-memory recreation, etc.).
  *
- * Screen lock/unlock is wired to [PhoneReceiver.enterSleep]/[PhoneReceiver.wake] —
+ * Screen off/on is wired to [PhoneReceiver.enterSleep]/[PhoneReceiver.wake] —
  * mirrors the iOS receiver's behavior of refusing connections while nobody
  * can see the screen, rather than just letting the link silently die.
  */
@@ -53,8 +53,14 @@ class ReceiverService : Service() {
                     Log.info("screen off — entering sleep")
                     receiver.enterSleep()
                 }
-                Intent.ACTION_USER_PRESENT -> {
-                    Log.info("screen unlocked — waking")
+                Intent.ACTION_SCREEN_ON -> {
+                    // Not ACTION_USER_PRESENT: Android only sends that when a
+                    // *secure* keyguard is actually dismissed, which some
+                    // devices (no secure lock, some OEM power-saving paths —
+                    // reproduced on a Samsung One UI tablet) never fire on a
+                    // plain screen-on, leaving the receiver stuck "Stopped"
+                    // forever (issue #20). SCREEN_ON always fires.
+                    Log.info("screen on — waking")
                     receiver.wake()
                     updateNotification()
                 }
@@ -96,7 +102,7 @@ class ReceiverService : Service() {
         if (screenReceiverRegistered) return
         val filter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
-            addAction(Intent.ACTION_USER_PRESENT)
+            addAction(Intent.ACTION_SCREEN_ON)
         }
         // NOT_EXPORTED: these are protected system broadcasts, no other app
         // needs to (or should be able to) send us a fake SCREEN_OFF/USER_PRESENT.
