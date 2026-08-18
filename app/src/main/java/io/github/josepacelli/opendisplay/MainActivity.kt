@@ -1,9 +1,11 @@
 package io.github.josepacelli.opendisplay
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +14,8 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,9 +57,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // No-op result handler: if denied, the foreground service still runs fine —
+    // only its persistent notification (status/version/disconnect, see #22)
+    // silently won't show, same as before this permission request existed.
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        requestNotificationPermissionIfNeeded()
         // Mirrors iOS's `isIdleTimerDisabled = true`: this app IS the screen
         // while it's open, so the system's inactivity timeout must not fire
         // (issue #10). Doesn't block a manual power-button lock — screen
@@ -99,6 +110,17 @@ class MainActivity : ComponentActivity() {
             bound = false
         }
         super.onDestroy()
+    }
+
+    /** POST_NOTIFICATIONS is a runtime permission from API 33 (Tiramisu) on —
+     * without asking, a fresh install defaults it to denied and the
+     * foreground service's status notification (#22) just silently never
+     * shows, with no indication to the user anything's missing (issue #24). */
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        if (!granted) notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
     /**
