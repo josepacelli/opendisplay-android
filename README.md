@@ -95,6 +95,9 @@ original project's author.
   Thank you for the sustained, careful bug reports.
 - [@edoardomich](https://github.com/edoardomich) fixed the Android 12/13 launch crash
   ([#5](https://github.com/josepacelli/opendisplay-android/pull/5)).
+- [@jpbhdrey](https://github.com/jpbhdrey) built the USB accessory (AOA) transport
+  ([#33](https://github.com/josepacelli/opendisplay-android/pull/33)) — plug the cable, tap the
+  system's prompt, no developer options or `adb` dance required.
 
 ## License
 

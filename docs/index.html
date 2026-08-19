@@ -142,7 +142,7 @@ CGVirtualDisplay
       <div class="feature"><span class="num">005</span><div><h4>Foreground service</h4><p>Survives the app going to background and resumes correctly after unlocking the screen.</p></div></div>
       <div class="feature"><span class="num">006</span><div><h4>Error recovery</h4><p>Decoder errors trigger an automatic keyframe request, without dropping the connection.</p></div></div>
       <div class="feature"><span class="num">007</span><div><h4>Manual fallback</h4><p>Editable mDNS name and IP:port connection for when automatic discovery fails.</p></div></div>
-      <div class="feature"><span class="num">008</span><div><h4>USB via <code>adb forward</code></h4><p>No dependency on <code>usbmuxd</code> — the same TCP transport WiFi already uses, over the cable.</p></div></div>
+      <div class="feature"><span class="num">008</span><div><h4>USB accessory (AOA)</h4><p>Plug the cable, tap the system's prompt, done — no <code>adb</code>, no developer options, no <code>usbmuxd</code>.</p></div></div>
       <div class="feature"><span class="num">009</span><div><h4>No account, no telemetry</h4><p>Same philosophy as the original project: no central server.</p></div></div>
     </div>
   </section>
@@ -185,8 +185,10 @@ CGVirtualDisplay
 
     <details class="faq">
       <summary>Does it need WiFi?</summary>
-      <p>It works over WiFi with automatic mDNS discovery. You can also connect over USB via
-      <code>adb forward</code>, reusing the same TCP path — see the repository for instructions.</p>
+      <p>It works over WiFi with automatic mDNS discovery. You can also connect over USB as a
+      native accessory (AOA) — plug the cable and tap the system's prompt, no <code>adb</code>
+      required. See the repository for details, including a fallback for Mac apps without AOA
+      support yet.</p>
     </details>
 
     <details class="faq">
@@ -227,6 +229,10 @@ CGVirtualDisplay
       one-person side project better. And to
       <a href="https://github.com/edoardomich">@edoardomich</a>, who fixed that Android 12/13
       launch crash (<a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>).
+      And to <a href="https://github.com/jpbhdrey">@jpbhdrey</a>, who built the USB accessory
+      (AOA) transport (<a href="https://github.com/josepacelli/opendisplay-android/pull/33">#33</a>)
+      — plug the cable, tap the system's prompt, done, no developer options or <code>adb</code>
+      dance required.
     </p>
   </section>
 
