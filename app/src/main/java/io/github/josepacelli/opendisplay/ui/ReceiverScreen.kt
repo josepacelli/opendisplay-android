@@ -55,6 +55,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val status by receiver.status.collectAsState()
     val connected by receiver.connected.collectAsState()
     val peerSignal by receiver.peerSignal.collectAsState()
+    val showPerfHud by receiver.showPerfHud.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
     var showSettings by remember { mutableStateOf(false) }
 
@@ -103,7 +104,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
             PeerSignalBanner(signal, modifier = Modifier.align(Alignment.TopCenter).padding(top = 32.dp))
         }
 
-        if (connected) {
+        if (connected && showPerfHud) {
             PerfHud(receiver, modifier = Modifier.align(Alignment.TopStart).padding(8.dp))
         }
     }
@@ -179,8 +180,9 @@ private fun InstructionRow(text: String) {
     }
 }
 
-/** Small always-on readout, parity with the iOS receiver's perf overlay —
- * fps / end-to-end latency / control-channel round trip. */
+/** Small readout, parity with the iOS receiver's perf overlay — fps /
+ * end-to-end latency / control-channel round trip. Optional, toggled in
+ * Settings (#36). */
 @Composable
 private fun PerfHud(receiver: PhoneReceiver, modifier: Modifier = Modifier) {
     val perf by receiver.perf.collectAsState()

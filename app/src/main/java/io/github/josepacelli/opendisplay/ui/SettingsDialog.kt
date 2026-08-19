@@ -42,6 +42,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     val currentName by receiver.serviceName.collectAsState()
     val connected by receiver.connected.collectAsState()
     val showNotification by receiver.showNotification.collectAsState()
+    val showPerfHud by receiver.showPerfHud.collectAsState()
     var draftName by remember { mutableStateOf(currentName) }
     val addressHint = remember { receiver.localAddressHint() }
     val context = LocalContext.current
@@ -82,6 +83,21 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                             modifier = Modifier.weight(1f).padding(end = 8.dp),
                         )
                         Switch(checked = showNotification, onCheckedChange = { receiver.setShowNotification(it) })
+                    }
+                }
+
+                SettingsSection(stringResource(R.string.settings_section_perf_hud)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.settings_perf_hud_show),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f).padding(end = 8.dp),
+                        )
+                        Switch(checked = showPerfHud, onCheckedChange = { receiver.setShowPerfHud(it) })
                     }
                 }
 
