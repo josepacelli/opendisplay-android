@@ -8,6 +8,7 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.ParcelFileDescriptor
 import android.util.Base64
 import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.protocol.WireMessage
@@ -139,7 +140,8 @@ class PhoneReceiver(context: Context) {
     private var wifiServerSocket: ServerSocket? = null
     private var advertised = false
 
-    @Volatile private var socket: Socket? = null
+    /** The live connection. Identity check for "still the active session". */
+    @Volatile private var link: Link? = null
 
     @Volatile private var outputStream: OutputStream? = null
 
@@ -320,7 +322,7 @@ class PhoneReceiver(context: Context) {
         devicePixelsWide = widthPx
         devicePixelsHigh = heightPx
         deviceScale = density
-        if (changed && socket?.isConnected == true) {
+        if (changed && link != null) {
             Log.info("panel size changed -> ${widthPx}x$heightPx — resending hello")
             sendHello()
         }
@@ -421,7 +423,7 @@ class PhoneReceiver(context: Context) {
                 while (running.get()) {
                     val client = server.accept()
                     Log.info("new connection from ${client.remoteSocketAddress}")
-                    acceptConnection(client)
+                    acceptConnection(SocketLink(client))
                 }
             } catch (e: IOException) {
                 if (!running.get()) return
@@ -437,17 +439,17 @@ class PhoneReceiver(context: Context) {
         advertise(port)
     }
 
-    private fun acceptConnection(client: Socket) {
-        val previousAddress = socket?.remoteSocketAddress?.toString()
-        val newAddress = client.remoteSocketAddress?.toString()
+    /** Takes over the session with [newLink] — TCP accept or USB attach.
+     * Everything past this point is transport-blind. */
+    private fun acceptConnection(newLink: Link) {
+        val previousLabel = link?.label
         closeConnection() // replace any existing connection, like the Mac replacing its dial
-        if (previousAddress != null && newAddress != null && previousAddress != newAddress) {
-            Log.warn("peer changed mid-session: $previousAddress -> $newAddress")
-            _peerSignal.value = PeerSignal.PeerReplaced(previousAddress, newAddress)
+        if (previousLabel != null && previousLabel != newLink.label) {
+            Log.warn("peer changed mid-session: $previousLabel -> ${newLink.label}")
+            _peerSignal.value = PeerSignal.PeerReplaced(previousLabel, newLink.label)
         }
-        client.tcpNoDelay = true // touch/scroll are tiny packets; Nagle would batch them into lag
-        socket = client
-        outputStream = client.getOutputStream()
+        link = newLink
+        outputStream = newLink.output
         lastDataReceivedAt = System.currentTimeMillis()
         _connected.value = true
         _status.value = appContext.getString(R.string.settings_status_connection_connected)
@@ -455,17 +457,24 @@ class PhoneReceiver(context: Context) {
             Log.warn("sending hello before panel size is known — caller should call setPanelSize() first")
         }
         sendHello()
-        readJob = scope.launch { readLoop(client) }
+        readJob = scope.launch { readLoop(newLink) }
     }
 
-    private fun readLoop(client: Socket) {
+    /** Starts a session from a `USB_ACCESSORY_ATTACHED` intent. No accept
+     * loop for USB — the cable itself is the event. */
+    fun attachAccessory(descriptor: ParcelFileDescriptor) {
+        Log.info("USB accessory attached — starting session over the cable")
+        acceptConnection(AccessoryLink(descriptor))
+    }
+
+    private fun readLoop(current: Link) {
         // Owned entirely by this connection's read coroutine — no sharing
         // across reconnects, so no locking needed around its mutable state.
         val frameDecoder = Framing.FrameDecoder()
-        val input = client.getInputStream()
+        val input = current.input
         val buf = ByteArray(READ_BUFFER_SIZE)
         try {
-            while (running.get() && socket === client) {
+            while (running.get() && link === current) {
                 val n = input.read(buf)
                 if (n < 0) {
                     Log.info("peer closed connection")
@@ -483,26 +492,28 @@ class PhoneReceiver(context: Context) {
         } catch (e: IOException) {
             if (running.get()) Log.info("receive error: ${e.message}")
         } finally {
-            if (socket === client) {
-                socket = null
+            // Guarded: a newer session replacing this one already closed
+            // `current` via closeConnection() — don't race that close.
+            if (link === current) {
+                link = null
                 outputStream = null
                 _connected.value = false
                 _status.value = appContext.getString(R.string.status_listening, lastBoundPort)
-            }
-            try {
-                client.close()
-            } catch (_: IOException) {
+                try {
+                    current.close()
+                } catch (_: IOException) {
+                }
             }
         }
     }
 
     private fun closeConnection() {
-        val client = socket ?: return
-        socket = null
+        val current = link ?: return
+        link = null
         outputStream = null
         _connected.value = false
         try {
-            client.close()
+            current.close()
         } catch (_: IOException) {
         }
     }
