@@ -102,6 +102,7 @@ class PhoneReceiver(context: Context) {
         private const val KEY_INSTALL_ID = "installID"
         private const val KEY_SERVICE_NAME = "serviceName"
         private const val KEY_SHOW_NOTIFICATION = "showNotification"
+        private const val KEY_SHOW_PERF_HUD = "showPerfHud"
         private const val DEFAULT_SERVICE_NAME = "OpenDisplay Android"
         private const val WATCHDOG_TIMEOUT_MS = 5_000L
         private const val PING_INTERVAL_MS = 2_000L
@@ -198,6 +199,12 @@ class PhoneReceiver(context: Context) {
      * action — see #22) — user-editable in Settings (#26). Defaults on. */
     private val _showNotification = MutableStateFlow(loadShowNotification())
     val showNotification: StateFlow<Boolean> = _showNotification.asStateFlow()
+
+    /** Whether [io.github.josepacelli.opendisplay.ui.ReceiverScreen]'s perf
+     * overlay (fps/latency/RTT) should render — user-editable in Settings
+     * (#36). Defaults on, matching the overlay's prior always-on behavior. */
+    private val _showPerfHud = MutableStateFlow(loadShowPerfHud())
+    val showPerfHud: StateFlow<Boolean> = _showPerfHud.asStateFlow()
 
     /** Clock sync (NTP-style): offset = macClock - ourClock, from the ping/pong
      * sample with the lowest RTT. Mirrors PhoneReceiver.swift exactly. */
@@ -345,6 +352,16 @@ class PhoneReceiver(context: Context) {
         appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_SHOW_NOTIFICATION, show)
+            .apply()
+    }
+
+    /** Turn the perf overlay on/off and persist the choice. */
+    fun setShowPerfHud(show: Boolean) {
+        if (show == _showPerfHud.value) return
+        _showPerfHud.value = show
+        appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_SHOW_PERF_HUD, show)
             .apply()
     }
 
@@ -775,6 +792,11 @@ class PhoneReceiver(context: Context) {
     private fun loadShowNotification(): Boolean {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean(KEY_SHOW_NOTIFICATION, true)
+    }
+
+    private fun loadShowPerfHud(): Boolean {
+        val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_SHOW_PERF_HUD, true)
     }
 
     private fun nowMs(): Double = System.currentTimeMillis().toDouble()

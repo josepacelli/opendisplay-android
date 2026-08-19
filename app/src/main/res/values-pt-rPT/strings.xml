@@ -21,6 +21,8 @@
     <string name="settings_status_connection_connected">Ligado</string>
     <string name="settings_section_notification">Notificação</string>
     <string name="settings_notification_show">Mostrar notificação</string>
+    <string name="settings_section_perf_hud">Sobreposição de desempenho</string>
+    <string name="settings_perf_hud_show">Mostrar sobreposição de desempenho</string>
     <string name="settings_section_name">Nome</string>
     <string name="settings_name_label">Nome anunciado na rede (aparece no menu de ligação do Mac):</string>
     <string name="settings_section_network">Rede</string>
