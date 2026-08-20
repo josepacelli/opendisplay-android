@@ -76,6 +76,12 @@ fun VideoSurface(
                             onSizeChanged = { w, h -> onDimsChanged(VideoDims(w, h)) },
                             onError = { currentReceiver.requestKeyframe() },
                         )
+                        // A brand-new decoder has nothing to render until it sees a keyframe —
+                        // without asking, it just sits black until the Mac's own periodic one,
+                        // up to 60s away (see VideoDecoder's onError doc). Every surface
+                        // recreation (e.g. backgrounding the app and returning) hit exactly
+                        // this with no error involved, so ask immediately instead of waiting.
+                        currentReceiver.requestKeyframe()
                     }
 
                     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
