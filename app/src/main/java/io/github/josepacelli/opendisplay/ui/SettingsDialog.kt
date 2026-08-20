@@ -36,6 +36,9 @@ import io.github.josepacelli.opendisplay.net.PhoneReceiver
  * renderer / Local Network permission items — this app only ever listens
  * on plain TCP, so there's nothing OS-specific to toggle. Shown only while
  * disconnected; once video is flowing this app has no chrome at all.
+ *
+ * @param receiver the session whose settings are shown/edited.
+ * @param onDismiss called when the dialog should close (Cancel, Save, or scrim tap).
  */
 @Composable
 fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
@@ -170,6 +173,10 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     )
 }
 
+/** A titled group of rows inside [SettingsDialog], with an optional trailing divider.
+ * @param title section heading.
+ * @param showDivider whether to draw a divider below the section.
+ * @param content the section's rows. */
 @Composable
 private fun SettingsSection(title: String, showDivider: Boolean = true, content: @Composable () -> Unit) {
     Column(modifier = Modifier.padding(top = 12.dp)) {
@@ -183,6 +190,9 @@ private fun SettingsSection(title: String, showDivider: Boolean = true, content:
     }
 }
 
+/** A label/value pair on one row, right-aligned value.
+ * @param label the row's left-aligned label.
+ * @param value the row's right-aligned value. */
 @Composable
 private fun LabeledRow(label: String, value: String) {
     Row(

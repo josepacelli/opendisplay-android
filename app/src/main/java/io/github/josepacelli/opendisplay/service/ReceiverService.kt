@@ -54,6 +54,8 @@ class ReceiverService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     private var screenReceiverRegistered = false
+
+    /** Suspends/resumes the receiver in step with the device's screen state. */
     private val screenReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
@@ -62,12 +64,6 @@ class ReceiverService : Service() {
                     receiver.enterSleep()
                 }
                 Intent.ACTION_SCREEN_ON -> {
-                    // Not ACTION_USER_PRESENT: Android only sends that when a
-                    // *secure* keyguard is actually dismissed, which some
-                    // devices (no secure lock, some OEM power-saving paths —
-                    // reproduced on a Samsung One UI tablet) never fire on a
-                    // plain screen-on, leaving the receiver stuck "Stopped"
-                    // forever (issue #20). SCREEN_ON always fires.
                     Log.info("screen on — waking")
                     receiver.wake()
                     updateNotification()
@@ -76,28 +72,34 @@ class ReceiverService : Service() {
         }
     }
 
+    /** Creates the single [PhoneReceiver] for the process and enters the foreground. */
     override fun onCreate() {
         super.onCreate()
         receiver = PhoneReceiver(applicationContext)
         startForeground(NOTIFICATION_ID, buildNotification())
         registerScreenReceiver()
-        // Status/connection change -> the notification is the only UI visible
-        // while the app isn't in the foreground, so it needs to stay live too.
         serviceScope.launch {
             combine(receiver.status, receiver.connected, receiver.showNotification) { _, _, _ -> Unit }
                 .collect { updateNotification() }
         }
     }
 
+    /** Starts (or restarts) listening, or handles the notification's Disconnect action.
+     * @param intent carries [ACTION_DISCONNECT] when launched from the notification action.
+     * @param flags standard `Service.onStartCommand` flags, unused.
+     * @param startId standard `Service.onStartCommand` start id, unused.
+     * @return [Service.START_STICKY] so Android restarts this service if it's killed. */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_DISCONNECT) {
             receiver.disconnect()
         } else {
-            receiver.start() // idempotent — safe if already running
+            receiver.start()
         }
         return START_STICKY
     }
 
+    /** @param intent the binding intent, unused — every caller gets the same [PhoneReceiver].
+     * @return a [LocalBinder] exposing this service's [PhoneReceiver]. */
     override fun onBind(intent: Intent?): IBinder = binder
 
     /** User swiped the app away from recents — a deliberate close, not a
@@ -110,6 +112,7 @@ class ReceiverService : Service() {
         super.onTaskRemoved(rootIntent)
     }
 
+    /** Tells the Mac we're closing and tears down the receiver and its coroutine scope. */
     override fun onDestroy() {
         unregisterScreenReceiverIfNeeded()
         receiver.shutDown()
@@ -117,34 +120,30 @@ class ReceiverService : Service() {
         super.onDestroy()
     }
 
+    /** Registers [screenReceiver] for `SCREEN_OFF`/`SCREEN_ON`, once. */
     private fun registerScreenReceiver() {
         if (screenReceiverRegistered) return
         val filter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
             addAction(Intent.ACTION_SCREEN_ON)
         }
-        // NOT_EXPORTED: these are protected system broadcasts, no other app
-        // needs to (or should be able to) send us a fake SCREEN_OFF/USER_PRESENT.
         ContextCompat.registerReceiver(this, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         screenReceiverRegistered = true
     }
 
+    /** Unregisters [screenReceiver], if currently registered — safe to call more than once. */
     private fun unregisterScreenReceiverIfNeeded() {
         if (!screenReceiverRegistered) return
         try {
             unregisterReceiver(screenReceiver)
         } catch (_: IllegalArgumentException) {
-            // already unregistered
         }
         screenReceiverRegistered = false
     }
 
+    /** Refreshes (or cancels, per [PhoneReceiver.showNotification]) the status notification. */
     private fun updateNotification() {
         val manager = getSystemService(NotificationManager::class.java) ?: return
-        // startForeground() always needs *a* notification to satisfy the OS
-        // contract (see onCreate) — turning the setting off just cancels it
-        // right back out from the shade; the foreground service itself is
-        // unaffected either way.
         if (receiver.showNotification.value) {
             manager.notify(NOTIFICATION_ID, buildNotification())
         } else {
@@ -152,6 +151,8 @@ class ReceiverService : Service() {
         }
     }
 
+    /** @return the foreground-service notification: status text, tap-to-open, and a
+     * Disconnect action while connected. */
     private fun buildNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = getSystemService(NotificationManager::class.java)
@@ -169,8 +170,6 @@ class ReceiverService : Service() {
             openIntent,
             PendingIntent.FLAG_IMMUTABLE,
         )
-        // TODO(fase 9): dedicated status icon instead of this system
-        // placeholder — needs a real launcher-style small icon.
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.notification_title, versionName() ?: "?"))
             .setContentText(receiver.status.value)
@@ -193,6 +192,7 @@ class ReceiverService : Service() {
         return builder.build()
     }
 
+    /** @return this build's version name, or `null` if it can't be read. */
     @Suppress("DEPRECATION")
     private fun versionName(): String? =
         runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull()

@@ -36,6 +36,11 @@ data class VideoDims(val width: Int, val height: Int)
  * width/height first guessed from this device's own announced panel size,
  * then refined via [onVideoDimsChanged]) so it, and the cursor overlay next
  * to it, both fill that same letterboxed/pillarboxed rect.
+ *
+ * @param receiver source of decoded video frames and touch/scroll sink.
+ * @param videoDims current known decoded frame size, or `null` before the first one arrives.
+ * @param onVideoDimsChanged called when the decoder reports a real (possibly new) output size.
+ * @param modifier applied to the underlying `SurfaceView`.
  */
 @Composable
 fun VideoSurface(
@@ -49,9 +54,6 @@ fun VideoSurface(
     val currentDims by rememberUpdatedState(videoDims)
     val onDimsChanged by rememberUpdatedState(onVideoDimsChanged)
 
-    // Feeds every decoded frame to whichever decoder is currently attached —
-    // `decoder` is read live through the closure each emission, so this one
-    // collector survives surface create/destroy cycles.
     LaunchedEffect(receiver) {
         receiver.videoFrames.collect { frame -> decoder?.submit(frame) }
     }
@@ -76,11 +78,6 @@ fun VideoSurface(
                             onSizeChanged = { w, h -> onDimsChanged(VideoDims(w, h)) },
                             onError = { currentReceiver.requestKeyframe() },
                         )
-                        // A brand-new decoder has nothing to render until it sees a keyframe —
-                        // without asking, it just sits black until the Mac's own periodic one,
-                        // up to 60s away (see VideoDecoder's onError doc). Every surface
-                        // recreation (e.g. backgrounding the app and returning) hit exactly
-                        // this with no error involved, so ask immediately instead of waiting.
                         currentReceiver.requestKeyframe()
                     }
 
@@ -108,6 +105,9 @@ fun VideoSurface(
  * ever sending `began` for what turns out to be a two-finger scroll, which
  * would otherwise leave the Mac's mouse button stuck down (see
  * `Mac/InputInjector.swift`: `began` maps straight to `mouseDown`).
+ *
+ * @param getVideoDims current decoded video size, needed to convert scroll deltas to video pixels.
+ * @param receiver where resulting `touch`/`scroll` messages are sent.
  */
 private suspend fun PointerInputScope.handleTouchAndScroll(
     getVideoDims: () -> VideoDims?,
@@ -143,11 +143,9 @@ private suspend fun PointerInputScope.handleTouchAndScroll(
                             receiver.sendTouch("moved", mx, my)
                             lastCentroid = pressed[0].position
                         }
-                        // else: still inside the slop — stay UNDECIDED and keep waiting.
                     }
 
                     else -> {
-                        // Lifted before crossing slop or gaining a second pointer: a tap.
                         val (nx, ny) = normalized(startPos.x, startPos.y)
                         receiver.sendTouch("began", nx, ny)
                         receiver.sendTouch("ended", nx, ny)
@@ -186,8 +184,13 @@ private suspend fun PointerInputScope.handleTouchAndScroll(
     }
 }
 
+/** Which wire message a gesture in progress will become, once enough pointers/movement
+ * make that clear — see [handleTouchAndScroll]. */
 private enum class GestureMode { UNDECIDED, TOUCH, SCROLL }
 
+/** Average position of every active pointer, for multi-finger scroll.
+ * @param changes the currently active pointers.
+ * @return their centroid, in local coordinates. */
 private fun centroidOf(changes: List<PointerInputChange>): Offset {
     var x = 0f
     var y = 0f

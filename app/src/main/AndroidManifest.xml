@@ -8,8 +8,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <!-- Without this, the foreground service notification is silently hidden
-         on API 33+ — TODO(fase 9): request it at runtime instead of only
-         declaring it, with a rationale UI. -->
+         on API 33+. Requested at runtime too (MainActivity.requestNotificationPermissionIfNeeded) —
+         TODO(fase 9): show a rationale UI before that request instead of asking cold. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application

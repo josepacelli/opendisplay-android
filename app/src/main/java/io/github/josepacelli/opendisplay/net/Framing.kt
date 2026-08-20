@@ -19,7 +19,9 @@ object Framing {
      * this is comfortably above the largest keyframe this app should ever see. */
     const val MAX_FRAME_SIZE = 16 * 1024 * 1024
 
-    /** Wraps [payload] with its 4-byte big-endian length prefix. */
+    /** Wraps [payload] with its 4-byte big-endian length prefix.
+     * @param payload the message body to frame.
+     * @return a new array: `[4-byte length][payload]`. */
     fun encode(payload: ByteArray): ByteArray {
         val out = ByteArray(HEADER_SIZE + payload.size)
         writeInt32BE(out, 0, payload.size)
@@ -27,6 +29,10 @@ object Framing {
         return out
     }
 
+    /** Reads a 4-byte big-endian integer.
+     * @param buffer the array to read from.
+     * @param offset index of the first (most significant) byte.
+     * @return the decoded integer. */
     fun readInt32BE(buffer: ByteArray, offset: Int): Int {
         return ((buffer[offset].toInt() and 0xFF) shl 24) or
             ((buffer[offset + 1].toInt() and 0xFF) shl 16) or
@@ -34,6 +40,10 @@ object Framing {
             (buffer[offset + 3].toInt() and 0xFF)
     }
 
+    /** Writes a 4-byte big-endian integer.
+     * @param buffer the array to write into.
+     * @param offset index of the first (most significant) byte to write.
+     * @param value the integer to encode. */
     fun writeInt32BE(buffer: ByteArray, offset: Int, value: Int) {
         buffer[offset] = (value ushr 24).toByte()
         buffer[offset + 1] = (value ushr 16).toByte()
@@ -54,7 +64,12 @@ object Framing {
         private var size = 0
 
         /** Feeds [length] bytes from [data] (defaults to the whole array) and
-         * returns every complete frame payload now available, in order. */
+         * returns every complete frame payload now available, in order.
+         * @param data source bytes just read off the wire.
+         * @param length how many bytes of [data] are valid, from index 0.
+         * @return every complete frame payload decoded from the accumulated buffer so far.
+         * @throws IllegalArgumentException if a frame's declared length is negative or exceeds [MAX_FRAME_SIZE].
+         */
         fun feed(data: ByteArray, length: Int = data.size): List<ByteArray> {
             ensureCapacity(size + length)
             System.arraycopy(data, 0, buffer, size, length)
@@ -77,6 +92,8 @@ object Framing {
             return frames
         }
 
+        /** Grows [buffer] (doubling) until it can hold at least [needed] bytes.
+         * @param needed minimum required buffer size, in bytes. */
         private fun ensureCapacity(needed: Int) {
             if (needed <= buffer.size) return
             var newSize = buffer.size * 2

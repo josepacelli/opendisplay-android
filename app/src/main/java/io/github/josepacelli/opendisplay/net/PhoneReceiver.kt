@@ -43,6 +43,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 /** `x`/`y` normalized 0-1 in video space, origin top-left. */
 data class CursorPosition(val x: Double, val y: Double, val visible: Boolean)
 
+/** A decoded cursor sprite, ready for [io.github.josepacelli.opendisplay.ui.CursorOverlay]:
+ * raw PNG bytes plus size/hotspot normalized against the Mac's own display. */
 data class CursorImage(
     val png: ByteArray,
     val normalizedWidth: Double,
@@ -62,6 +64,8 @@ data class VideoFrame(
     val sendMs: Long?,
 )
 
+/** Something the Mac peer told us that the UI needs to surface — version mismatch,
+ * or a different device taking over the session. */
 sealed class PeerSignal {
     /** The connected Mac's protocol is below what we require — issue #132-style gate. */
     data class UpdateMac(val message: String) : PeerSignal()
@@ -116,7 +120,9 @@ class PhoneReceiver(context: Context) {
         /** The `store` field on `updateRequired` comes from an unauthenticated peer (the Mac
          * side of this socket has no auth — see SECURITY.md/SCR-001) — validated here, at the
          * wire boundary, so no future UI code has to remember to sanitize it before turning it
-         * into a clickable link/intent. */
+         * into a clickable link/intent.
+         * @param raw the peer-supplied `store` value, or `null`/blank.
+         * @return [raw] unchanged if it's an `https` URL on [ALLOWED_STORE_HOSTS], else `null`. */
         internal fun sanitizedStoreUrl(raw: String?): String? {
             if (raw.isNullOrBlank()) return null
             val uri = try {
@@ -236,12 +242,12 @@ class PhoneReceiver(context: Context) {
      * first `hello` (sent the moment a Mac connects) carries real dimensions
      * instead of 0x0 — MainActivity does this during setup, before starting
      * the service/receiver.
+     *
+     * @param port TCP port for both the loopback and WiFi listeners.
      */
     fun start(port: Int = DEFAULT_PORT) {
         if (!running.compareAndSet(false, true)) return
         loopbackAcceptJob = scope.launch {
-            // IPv4 explicitly, not InetAddress.getLoopbackAddress() (returns ::1 on this
-            // hardware) — the Mac's `adb forward` override dials 127.0.0.1 specifically.
             listenLoop(port, { InetAddress.getByName("127.0.0.1") }) { loopbackServerSocket = it }
         }
         wifiAcceptJob = scope.launch {
@@ -256,6 +262,7 @@ class PhoneReceiver(context: Context) {
         registerConnectivityWatcher()
     }
 
+    /** Tears down both listeners, the active connection, and mDNS advertisement. */
     fun stop() {
         if (!running.compareAndSet(true, false)) return
         loopbackAcceptJob?.cancel()
@@ -276,11 +283,12 @@ class PhoneReceiver(context: Context) {
         _status.value = appContext.getString(R.string.status_stopped)
     }
 
+    /** Closes [server] if non-null, swallowing an already-closed socket.
+     * @param server the socket to close, or `null` to no-op. */
     private fun closeServerSocket(server: ServerSocket?) {
         try {
             server?.close()
         } catch (_: IOException) {
-            // already gone
         }
     }
 
@@ -325,7 +333,8 @@ class PhoneReceiver(context: Context) {
         }
     }
 
-    /** Screen back on — re-arm listening after [enterSleep]. */
+    /** Screen back on — re-arm listening after [enterSleep].
+     * @param port TCP port to listen on, same default as [start]. */
     fun wake(port: Int = DEFAULT_PORT) {
         start(port)
     }
@@ -355,7 +364,12 @@ class PhoneReceiver(context: Context) {
     /** Real panel size in pixels + density, from the Activity/Compose layer.
      * Re-sends `hello` if we're already connected and the size actually
      * changed (rotation) — mirrors `setOrientation` on iOS, which rebuilds
-     * the Mac's virtual display to match. */
+     * the Mac's virtual display to match.
+     *
+     * @param widthPx panel width in pixels.
+     * @param heightPx panel height in pixels.
+     * @param density this device's display density (pixels per dp).
+     */
     fun setPanelSize(widthPx: Int, heightPx: Int, density: Double) {
         val changed = widthPx != devicePixelsWide || heightPx != devicePixelsHigh
         devicePixelsWide = widthPx
@@ -370,7 +384,8 @@ class PhoneReceiver(context: Context) {
     /** Update the mDNS-advertised name and persist it. If already advertising,
      * re-publishes immediately (NSD has no in-place rename — unregister then
      * register again) so the Mac's WiFi picker picks up the new name without
-     * needing a reconnect. Blank input falls back to the default name. */
+     * needing a reconnect. Blank input falls back to the default name.
+     * @param name desired mDNS service name; blank resolves to [DEFAULT_SERVICE_NAME]. */
     fun setServiceName(name: String) {
         val resolved = name.trim().ifEmpty { DEFAULT_SERVICE_NAME }
         if (resolved == _serviceName.value) return
@@ -386,7 +401,8 @@ class PhoneReceiver(context: Context) {
         }
     }
 
-    /** Turn the status notification on/off and persist the choice. */
+    /** Turn the status notification on/off and persist the choice.
+     * @param show whether [io.github.josepacelli.opendisplay.service.ReceiverService] should show it. */
     fun setShowNotification(show: Boolean) {
         if (show == _showNotification.value) return
         _showNotification.value = show
@@ -396,7 +412,8 @@ class PhoneReceiver(context: Context) {
             .apply()
     }
 
-    /** Turn the perf overlay on/off and persist the choice. */
+    /** Turn the perf overlay on/off and persist the choice.
+     * @param show whether [io.github.josepacelli.opendisplay.ui.ReceiverScreen] should render it. */
     fun setShowPerfHud(show: Boolean) {
         if (show == _showPerfHud.value) return
         _showPerfHud.value = show
@@ -408,12 +425,15 @@ class PhoneReceiver(context: Context) {
 
     /** Best-effort local IPv4 address for manually typing into the Mac app's
      * host/port override when mDNS discovery doesn't work (some routers and
-     * corporate networks block multicast). `null` if nothing usable is found. */
+     * corporate networks block multicast).
+     * @return `"ip:port"`, or `null` if nothing usable is found. */
     fun localAddressHint(): String? = NetworkInfo.localIPv4Address(appContext)?.let { "$it:${lastBoundPort}" }
 
-    /** [phase]: "began" | "moved" | "ended" | "cancelled". [x]/[y] normalized
-     * 0-1 against the displayed video rect (letterboxing already removed by
-     * the caller). */
+    /** Sends a `touch` control message.
+     * @param phase one of `"began"`, `"moved"`, `"ended"`, `"cancelled"`.
+     * @param x normalized 0-1 X against the displayed video rect (letterboxing already removed by the caller).
+     * @param y normalized 0-1 Y against the displayed video rect.
+     */
     fun sendTouch(phase: String, x: Double, y: Double) {
         val message = JSONObject()
             .put("type", WireMessage.TOUCH)
@@ -424,7 +444,10 @@ class PhoneReceiver(context: Context) {
         sendControl(message)
     }
 
-    /** [dx]/[dy] in video pixels, natural-scrolling sign. */
+    /** Sends a `scroll` control message.
+     * @param dx horizontal delta in video pixels, natural-scrolling sign.
+     * @param dy vertical delta in video pixels, natural-scrolling sign.
+     */
     fun sendScroll(dx: Double, dy: Double) {
         sendControl(
             JSONObject()
@@ -439,13 +462,17 @@ class PhoneReceiver(context: Context) {
         sendControl(JSONObject().put("type", WireMessage.KEYFRAME_REQUEST))
     }
 
-    // region Listener + connection lifecycle
-
     /** Shared by the loopback and WiFi listeners — [resolveBindAddress] is re-evaluated on every
      * retry so e.g. the WiFi listener starts working as soon as WiFi comes up, even if it wasn't
      * available yet when [start] was called. [onNoAddress] fires on every retry with no address
      * to bind — used by the WiFi listener to keep the status text honest while only the loopback
-     * one is up (e.g. cellular-only, see SECURITY.md/SCR-006). */
+     * one is up (e.g. cellular-only, see SECURITY.md/SCR-006).
+     *
+     * @param port TCP port to bind.
+     * @param resolveBindAddress returns the address to bind to, or `null` if none is available right now.
+     * @param onNoAddress called on every retry where [resolveBindAddress] returned `null`.
+     * @param storeSocket receives the bound [ServerSocket] so the caller can track/close it later.
+     */
     private fun listenLoop(
         port: Int,
         resolveBindAddress: () -> InetAddress?,
@@ -480,6 +507,9 @@ class PhoneReceiver(context: Context) {
         }
     }
 
+    /** [advertise] should only ever run once per [start]/[stop] cycle, regardless of
+     * how many times [listenLoop] retries.
+     * @param port the bound port to advertise. */
     private fun advertiseOnce(port: Int) {
         if (advertised) return
         advertised = true
@@ -487,10 +517,11 @@ class PhoneReceiver(context: Context) {
     }
 
     /** Takes over the session with [newLink] — TCP accept or USB attach.
-     * Everything past this point is transport-blind. */
+     * Everything past this point is transport-blind.
+     * @param newLink the live connection to adopt as the current session. */
     private fun acceptConnection(newLink: Link) {
         val previousLabel = link?.label
-        closeConnection() // replace any existing connection, like the Mac replacing its dial
+        closeConnection()
         if (previousLabel != null && previousLabel != newLink.label) {
             Log.warn("peer changed mid-session: $previousLabel -> ${newLink.label}")
             _peerSignal.value = PeerSignal.PeerReplaced(previousLabel, newLink.label)
@@ -508,15 +539,17 @@ class PhoneReceiver(context: Context) {
     }
 
     /** Starts a session from a `USB_ACCESSORY_ATTACHED` intent. No accept
-     * loop for USB — the cable itself is the event. */
+     * loop for USB — the cable itself is the event.
+     * @param descriptor open file descriptor for the attached USB accessory. */
     fun attachAccessory(descriptor: ParcelFileDescriptor) {
         Log.info("USB accessory attached — starting session over the cable")
         acceptConnection(AccessoryLink(descriptor))
     }
 
+    /** Drains [current] until it closes, is superseded, or [running] flips off,
+     * deframing and dispatching every wire message along the way.
+     * @param current the connection to read from. */
     private fun readLoop(current: Link) {
-        // Owned entirely by this connection's read coroutine — no sharing
-        // across reconnects, so no locking needed around its mutable state.
         val frameDecoder = Framing.FrameDecoder()
         val input = current.input
         val buf = ByteArray(READ_BUFFER_SIZE)
@@ -539,8 +572,6 @@ class PhoneReceiver(context: Context) {
         } catch (e: IOException) {
             if (running.get()) Log.info("receive error: ${e.message}")
         } finally {
-            // Guarded: a newer session replacing this one already closed
-            // `current` via closeConnection() — don't race that close.
             if (link === current) {
                 link = null
                 outputStream = null
@@ -554,6 +585,7 @@ class PhoneReceiver(context: Context) {
         }
     }
 
+    /** Drops the active [link], if any — idempotent. */
     private fun closeConnection() {
         val current = link ?: return
         link = null
@@ -565,6 +597,9 @@ class PhoneReceiver(context: Context) {
         }
     }
 
+    /** Routes one deframed wire payload to the control-message handler or the
+     * video pipeline, based on [AnnexB.isControlJson].
+     * @param frame one complete deframed wire payload. */
     private fun dispatchFrame(frame: ByteArray) {
         if (AnnexB.isControlJson(frame)) {
             handleControlJson(frame)
@@ -581,7 +616,8 @@ class PhoneReceiver(context: Context) {
 
     /** One-second sliding window: fps + true end-to-end latency (Mac capture
      * to here), using the clock offset from [handlePong]. Simple counters,
-     * not a generic metrics system — there is only ever one peer. */
+     * not a generic metrics system — there is only ever one peer.
+     * @param captureMs the frame's Mac-side capture timestamp, or `null` if the frame carried none. */
     private fun recordPerfSample(captureMs: Long?) {
         framesThisWindow++
         val offset = clockOffsetMs
@@ -604,16 +640,18 @@ class PhoneReceiver(context: Context) {
         perfWindowStartMs = System.currentTimeMillis()
     }
 
+    /** Nearest-rank percentile lookup.
+     * @param sorted values in ascending order.
+     * @param fraction target percentile as a fraction, e.g. `0.5` for the median.
+     * @return the value at that percentile, or `0.0` if [sorted] is empty. */
     private fun percentile(sorted: List<Double>, fraction: Double): Double {
         if (sorted.isEmpty()) return 0.0
         val index = (sorted.size * fraction).toInt().coerceAtMost(sorted.size - 1)
         return sorted[index]
     }
 
-    // endregion
-
-    // region Control messages
-
+    /** Announces this device's identity and panel size — the first message
+     * on any new connection, and again whenever the panel size changes. */
     private fun sendHello() {
         val message = JSONObject()
             .put("type", WireMessage.HELLO)
@@ -627,6 +665,8 @@ class PhoneReceiver(context: Context) {
         Log.info("hello sent ($devicePixelsWide x $devicePixelsHigh @${deviceScale}x)")
     }
 
+    /** Parses one JSON control payload and dispatches it by its `type` field.
+     * @param payload raw UTF-8 JSON bytes of one control message. */
     private fun handleControlJson(payload: ByteArray) {
         val obj = try {
             JSONObject(String(payload, Charsets.UTF_8))
@@ -635,13 +675,7 @@ class PhoneReceiver(context: Context) {
             return
         }
         when (val type = obj.optString("type")) {
-            WireMessage.PING -> {
-                // The Mac's OWN liveness ping (separate from ours) — carries its
-                // send-side health (encDrops/netDrops/pending/capFps) for its own
-                // HUD equivalent. Confirmed live against the real Mac app: it
-                // pings every ~2s regardless of whether we ping it. Nothing to
-                // reply with — only *our* ping expects a pong back.
-            }
+            WireMessage.PING -> {}
 
             WireMessage.WELCOME -> {
                 val macVersion = obj.optInt("pv", WireProtocol.ASSUMED_WHEN_ABSENT)
@@ -677,6 +711,8 @@ class PhoneReceiver(context: Context) {
         }
     }
 
+    /** Turns one `pong` reply into an RTT/clock-offset sample — see [offsetSamples].
+     * @param obj the parsed `pong` message, expected to carry `t` (our send time) and `mt` (Mac's clock). */
     private fun handlePong(obj: JSONObject) {
         if (!obj.has("t") || !obj.has("mt")) return
         val t1 = obj.optDouble("t", Double.NaN)
@@ -692,6 +728,8 @@ class PhoneReceiver(context: Context) {
         clockOffsetMs = offsetSamples.minByOrNull { it.rtt }?.offset
     }
 
+    /** Decodes a `cursorImg` control message into a [CursorImage] for the overlay.
+     * @param obj the parsed `cursorImg` message (`png` base64, `nw`/`nh`/`ax`/`ay`). */
     private fun handleCursorImage(obj: JSONObject) {
         val b64 = obj.optString("png").takeIf { it.isNotEmpty() } ?: return
         val png = try {
@@ -700,11 +738,6 @@ class PhoneReceiver(context: Context) {
             Log.warn("bad cursorImg base64", e)
             return
         }
-        // Clamped, not just defaulted: these size a Compose Layout measure call
-        // in CursorOverlay, and an untrusted peer sending something wild like
-        // "nw": 1e9 would push that past what Constraints.fixed() can
-        // represent — a same-LAN crash, no auth needed (SECURITY.md/SCR-007).
-        // 4.0 is generous headroom over anything the real Mac app sends.
         _cursorImage.tryEmit(
             CursorImage(
                 png = png,
@@ -716,16 +749,17 @@ class PhoneReceiver(context: Context) {
         )
     }
 
+    /** Frames and writes [json] to the peer on [Dispatchers.IO], asynchronously.
+     * @param json the control message to send. */
     private fun sendControl(json: JSONObject) {
-        // Dispatched, not written inline: callers include UI-thread touch
-        // handlers that must never block on a stalled socket.
         scope.launch(Dispatchers.IO) { sendControlBlocking(json) }
     }
 
     /** Same wire write as [sendControl], but synchronous — for the rare
      * caller (enterSleep/shutDown) that must guarantee the write happens
      * before it proceeds to tear the connection down right after. Must be
-     * called from a background thread/coroutine, never the main thread. */
+     * called from a background thread/coroutine, never the main thread.
+     * @param json the control message to send. */
     private fun sendControlBlocking(json: JSONObject) {
         val out = outputStream ?: return
         val framed = Framing.encode(json.toString().toByteArray(Charsets.UTF_8))
@@ -739,10 +773,8 @@ class PhoneReceiver(context: Context) {
         }
     }
 
-    // endregion
-
-    // region Liveness
-
+    /** Sends our own `ping` every [PING_INTERVAL_MS] while connected, so [handlePong]
+     * has a steady stream of RTT/clock-offset samples. */
     private suspend fun pingLoop() {
         while (running.get()) {
             delay(PING_INTERVAL_MS)
@@ -752,6 +784,8 @@ class PhoneReceiver(context: Context) {
         }
     }
 
+    /** Drops the connection if nothing arrived from the peer in [WATCHDOG_TIMEOUT_MS] —
+     * catches a dead link the OS hasn't noticed yet. */
     private suspend fun watchdogLoop() {
         while (running.get()) {
             delay(2000)
@@ -762,10 +796,8 @@ class PhoneReceiver(context: Context) {
         }
     }
 
-    // endregion
-
-    // region NSD (mDNS) discovery
-
+    /** Registers this device's mDNS service so the Mac's WiFi picker can find it.
+     * @param boundPort the port the listener is actually bound to. */
     private fun advertise(boundPort: Int) {
         lastBoundPort = boundPort
         val manager = appContext.getSystemService(Context.NSD_SERVICE) as? NsdManager
@@ -807,6 +839,8 @@ class PhoneReceiver(context: Context) {
         acquireMulticastLock()
     }
 
+    /** mDNS is multicast — without this lock some devices silently drop
+     * incoming multicast packets while the WiFi radio is asleep. */
     private fun acquireMulticastLock() {
         val wifi = appContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager ?: return
         try {
@@ -819,6 +853,7 @@ class PhoneReceiver(context: Context) {
         }
     }
 
+    /** Withdraws the mDNS service registration and releases the multicast lock. */
     private fun unadvertise() {
         registrationListener?.let { listener ->
             try {
@@ -832,8 +867,8 @@ class PhoneReceiver(context: Context) {
         multicastLock = null
     }
 
-    // endregion
-
+    /** Persistent per-install UUID, generated once and reused across app restarts.
+     * @return the stored install ID, creating and persisting one first if none exists yet. */
     private fun loadOrCreateInstallId(): String {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.getString(KEY_INSTALL_ID, null)?.let { return it }
@@ -842,20 +877,24 @@ class PhoneReceiver(context: Context) {
         return fresh
     }
 
+    /** @return the persisted mDNS service name, or [Build.MODEL]/[DEFAULT_SERVICE_NAME] on first run. */
     private fun loadServiceName(): String {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getString(KEY_SERVICE_NAME, null) ?: Build.MODEL ?: DEFAULT_SERVICE_NAME
     }
 
+    /** @return the persisted status-notification preference, defaulting to `true`. */
     private fun loadShowNotification(): Boolean {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean(KEY_SHOW_NOTIFICATION, true)
     }
 
+    /** @return the persisted perf-overlay preference, defaulting to `true`. */
     private fun loadShowPerfHud(): Boolean {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean(KEY_SHOW_PERF_HUD, true)
     }
 
+    /** @return the current wall-clock time in milliseconds, as a [Double] (wire messages use floats). */
     private fun nowMs(): Double = System.currentTimeMillis().toDouble()
 }

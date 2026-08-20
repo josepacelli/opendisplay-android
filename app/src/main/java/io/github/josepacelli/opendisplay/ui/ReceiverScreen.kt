@@ -49,6 +49,8 @@ import io.github.josepacelli.opendisplay.net.PhoneReceiver
  * draws every app edge-to-edge by default — without this padding, our
  * touch-capturing surface silently ate the whole screen, including the
  * system bars, so there was no way back to Android itself once connected.
+ *
+ * @param receiver the session this screen renders and forwards input to.
  */
 @Composable
 fun ReceiverScreen(receiver: PhoneReceiver) {
@@ -59,12 +61,6 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
     var showSettings by remember { mutableStateOf(false) }
 
-    // The dialog only makes sense while disconnected (see SettingsDialog's
-    // doc comment) — if the Mac connects while it happens to be open, the
-    // now-actively-rendering VideoSurface behind it swallows further mouse
-    // input meant for the dialog, leaving it stuck open. Closing it the
-    // moment we connect sidesteps that instead of relying on it staying
-    // dismissible on top of live video.
     LaunchedEffect(connected) {
         if (connected) showSettings = false
     }
@@ -94,8 +90,6 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
         }
 
         if (!connected) {
-            // Scrim over the video box — otherwise the last decoded frame
-            // stays visible behind the status text after a disconnect.
             Box(modifier = Modifier.fillMaxSize().background(Color.Black))
             IdleContent(status = status, onSettingsClick = { showSettings = true })
         }
@@ -118,6 +112,9 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
  * No-Mac-connected state — mirrors the upstream iOS client's `IdleView`:
  * logo, title, a colored status dot, a short instructions card and a
  * proper Settings button, instead of a bare status line.
+ *
+ * @param status human-readable listener status to show next to the dot.
+ * @param onSettingsClick called when the Settings button is tapped.
  */
 @Composable
 private fun IdleContent(status: String, onSettingsClick: () -> Unit) {
@@ -125,9 +122,6 @@ private fun IdleContent(status: String, onSettingsClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.widthIn(max = 420.dp).padding(24.dp),
     ) {
-        // The app icon is an adaptive icon (mipmap XML with separate
-        // background/foreground layers) — painterResource can't load that
-        // directly, so recreate the round launcher look from its layers.
         Box(
             modifier = Modifier.size(96.dp).clip(CircleShape).background(Color.White),
             contentAlignment = Alignment.Center,
@@ -146,9 +140,6 @@ private fun IdleContent(status: String, onSettingsClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(6.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // This content only renders while disconnected — the dot mirrors
-            // the iOS IdleView's semantics (green = connected), so it's
-            // orange here by construction, not a value read from `status`.
             Box(modifier = Modifier.size(8.dp).background(Color(0xFFFFA000), CircleShape))
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = status, color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyMedium)
@@ -171,6 +162,8 @@ private fun IdleContent(status: String, onSettingsClick: () -> Unit) {
     }
 }
 
+/** One bulleted line inside [IdleContent]'s instructions card.
+ * @param text the instruction text to show. */
 @Composable
 private fun InstructionRow(text: String) {
     Row(verticalAlignment = Alignment.Top) {
@@ -182,7 +175,9 @@ private fun InstructionRow(text: String) {
 
 /** Small readout, parity with the iOS receiver's perf overlay — fps /
  * end-to-end latency / control-channel round trip. Optional, toggled in
- * Settings (#36). */
+ * Settings (#36).
+ * @param receiver source of the live [io.github.josepacelli.opendisplay.net.PerfStats].
+ * @param modifier applied to the readout's background/padding. */
 @Composable
 private fun PerfHud(receiver: PhoneReceiver, modifier: Modifier = Modifier) {
     val perf by receiver.perf.collectAsState()
@@ -196,6 +191,10 @@ private fun PerfHud(receiver: PhoneReceiver, modifier: Modifier = Modifier) {
     )
 }
 
+/** Red banner for whatever [PeerSignal] the Mac last sent — update warnings or a
+ * peer-replaced notice.
+ * @param signal the signal to render.
+ * @param modifier applied to the banner surface. */
 @Composable
 private fun PeerSignalBanner(signal: PeerSignal, modifier: Modifier = Modifier) {
     val message = when (signal) {

@@ -51,7 +51,10 @@ class MainActivity : ComponentActivity() {
     /** Accessory received before the service finished binding; opened once bound. */
     private var pendingAccessory: UsbAccessory? = null
 
+    /** Binds this Activity to [ReceiverService], surfacing its [PhoneReceiver] as [boundReceiver]. */
     private val connection = object : ServiceConnection {
+        /** @param name the connected component, unused.
+         * @param service the [ReceiverService.LocalBinder] from the service. */
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val receiver = (service as? ReceiverService.LocalBinder)?.receiver ?: return
             reportPanelSize(receiver)
@@ -59,35 +62,38 @@ class MainActivity : ComponentActivity() {
             openPendingAccessory(receiver)
         }
 
+        /** @param name the disconnected component, unused. */
         override fun onServiceDisconnected(name: ComponentName?) {
             boundReceiver = null
         }
     }
 
-    // No-op result handler: if denied, the foreground service still runs fine —
-    // only its persistent notification (status/version/disconnect, see #22)
-    // silently won't show, same as before this permission request existed.
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
-    /** The cable arrived while the app was already open (see `singleTop`). */
+    /** The cable arrived while the app was already open (see `singleTop`).
+     * @param intent the new intent, possibly carrying a USB accessory extra. */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         takeAccessory(intent)
     }
 
+    /** Stashes [intent]'s accessory extra, if any, and opens it right away if the
+     * service is already bound — otherwise [onServiceConnected] picks it up later.
+     * @param intent the launch or new intent to check for a USB accessory extra. */
     private fun takeAccessory(intent: Intent?) {
         val accessory = intent?.usbAccessory() ?: return
         pendingAccessory = accessory
         boundReceiver?.let { openPendingAccessory(it) }
     }
 
+    /** Opens [pendingAccessory] (if still set) and hands its file descriptor to [receiver].
+     * @param receiver the bound session to attach the accessory to. */
     private fun openPendingAccessory(receiver: PhoneReceiver) {
         val accessory = pendingAccessory ?: return
         pendingAccessory = null
         val manager = getSystemService(UsbManager::class.java)
-        // Null means the cable left before we got here — a normal race, not an error.
         val descriptor = manager?.openAccessory(accessory)
         if (descriptor == null) {
             Log.warn("USB accessory vanished before it could be opened")
@@ -96,6 +102,8 @@ class MainActivity : ComponentActivity() {
         receiver.attachAccessory(descriptor)
     }
 
+    /** [UsbManager.EXTRA_ACCESSORY], via the type-safe overload on API 33+.
+     * @return the attached [UsbAccessory], or `null` if this intent doesn't carry one. */
     private fun Intent.usbAccessory(): UsbAccessory? =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getParcelableExtra(UsbManager.EXTRA_ACCESSORY, UsbAccessory::class.java)
@@ -104,12 +112,13 @@ class MainActivity : ComponentActivity() {
             getParcelableExtra(UsbManager.EXTRA_ACCESSORY)
         }
 
+    /** Starts/binds [ReceiverService] and hosts the Compose UI.
+     * @param savedInstanceState unused — this activity keeps no saved state of its own. */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         requestNotificationPermissionIfNeeded()
 
-        // Launch intent may carry the accessory; claimed once the service binds.
         takeAccessory(intent)
 
         val serviceIntent = Intent(this, ReceiverService::class.java)
@@ -130,14 +139,6 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 } else {
-                    // Mirrors iOS's `isIdleTimerDisabled = true`: this app IS the
-                    // screen while a Mac is actually mirroring, so the system's
-                    // inactivity timeout must not fire mid-session (issue #10).
-                    // Only while connected, though — idle/waiting should time out
-                    // normally like any other app (issue #28). Doesn't block a
-                    // manual power-button lock either way — screen lock/unlock
-                    // still goes through PhoneReceiver.enterSleep()/wake() via
-                    // ReceiverService's SCREEN_OFF/SCREEN_ON receiver.
                     LaunchedEffect(receiver) {
                         receiver.connected.collect { connected ->
                             if (connected) {
@@ -153,12 +154,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /** Rotation/multi-window changes handled in-place (`android:configChanges` in the
+     * manifest) — re-reports the panel size instead of recreating the Activity.
+     * @param newConfig the new device configuration. */
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         Log.info("configuration changed — re-reporting panel size")
         boundReceiver?.let { reportPanelSize(it) }
     }
 
+    /** Unbinds from [ReceiverService], if bound — the service itself keeps running. */
     override fun onDestroy() {
         if (bound) {
             unbindService(connection)
@@ -184,6 +189,8 @@ class MainActivity : ComponentActivity() {
      * bounds, which is what matters for multi-window/split-screen on a
      * tablet; the old `DisplayMetrics` path reports the *display*, which is
      * wrong there. Falls back to `DisplayMetrics` below API 30 (minSdk 26).
+     *
+     * @param receiver the session to report this Activity's current panel size to.
      */
     private fun reportPanelSize(receiver: PhoneReceiver) {
         val density = resources.displayMetrics.density.toDouble()

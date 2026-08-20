@@ -17,10 +17,12 @@ object AnnexB {
     private const val OPEN_BRACE = '{'.code.toByte()
 
     /**
-     * True when [payload] is a JSON control message rather than a video frame.
      * Video frames also start with `{` (the telemetry prefix) but always
      * contain NUL bytes (the `00 00 00 01` start codes) — a pure JSON payload
      * never does, even one carrying base64 PNG data.
+     *
+     * @param payload one deframed wire payload.
+     * @return `true` if [payload] is a JSON control message rather than a video frame.
      */
     fun isControlJson(payload: ByteArray): Boolean {
         if (payload.isEmpty() || payload.size >= JSON_SNIFF_MAX_SIZE) return false
@@ -28,7 +30,9 @@ object AnnexB {
         return payload.none { it == 0.toByte() }
     }
 
-    /** One NALU's type nibble (low 5 bits of the header byte). */
+    /** One NALU's type nibble (low 5 bits of the header byte).
+     * @param nalu a single NAL unit, header byte first.
+     * @return the NAL unit type (e.g. `7` = SPS, `8` = PPS, `6` = SEI). */
     fun naluType(nalu: ByteArray): Int = nalu[0].toInt() and 0x1F
 
     data class ParsedFrame(
@@ -51,6 +55,9 @@ object AnnexB {
      * classifies them. Stateless: comparing against the previously-seen
      * SPS/PPS to decide whether the decoder needs rebuilding is the caller's
      * job (it requires session state this parser deliberately doesn't hold).
+     *
+     * @param payload one deframed, non-JSON wire payload (a video frame).
+     * @return the frame split into its telemetry prefix, SPS/PPS (if present), and slice NALUs.
      */
     fun parse(payload: ByteArray): ParsedFrame {
         val nalus = mutableListOf<ByteArray>()
@@ -100,6 +107,9 @@ object AnnexB {
      * Extracts `cap`/`snd` from a telemetry prefix without pulling in a JSON
      * parser — the prefix's shape is fixed (`{"cap":<ms>,"snd":<ms>}`), so a
      * couple of regexes keep this module dependency-free and unit-testable.
+     *
+     * @param prefix the frame's telemetry prefix bytes, or `null` if it had none.
+     * @return the extracted `cap`/`snd` timestamps, each `null` if absent or unparsable.
      */
     fun parseTelemetry(prefix: ByteArray?): Telemetry {
         if (prefix == null) return Telemetry(null, null)
