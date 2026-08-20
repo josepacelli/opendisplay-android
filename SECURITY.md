@@ -17,6 +17,10 @@ finding ID below (if any) it relates to.
 - The trust boundary is **the local network**: anyone who can reach the phone/tablet's IP on the
   same WiFi (or a routed subnet) can connect to port 9000. There is no authentication of the peer
   — this mirrors the upstream iOS client's behavior exactly, not a gap introduced by this port.
+- There's also an unauthenticated USB path (`AccessoryLink`, same wire protocol, no peer auth
+  either) — but it needs a physical cable, so the trust boundary there is physical access, not the
+  network. Same finding set applies to both transports; PhoneReceiver doesn't know which one it's
+  talking over.
 - Given that boundary, findings below are classified by what an unauthenticated device on the same
   network can actually do, not by internet-facing severity norms.
 
@@ -65,6 +69,27 @@ accordingly. Still fixed as defense-in-depth (`nw`/`nh` now clamped to `0.0..4.0
 mirroring the SCR-002 bounds-check pattern) — relying on an external library's undocumented
 handling of out-of-range input isn't a real guarantee, even though this specific crash theory
 didn't pan out.
+
+## Security review — 2026-08-20
+
+Follow-up pass covering everything added since the review above (USB accessory transport,
+WiFi-only listener hardening). SCR-002 through SCR-007 verified still intact, no regressions.
+
+| ID | Title | Severity | CWE | Status |
+|---|---|---|---|---|
+| SCR-008 | SCR-006's mitigation didn't check interface transport — listener could still bind to a cellular interface | Medium | CWE-284 | Fixed — see [#39](https://github.com/josepacelli/opendisplay-android/issues/39) |
+
+SCR-008: SCR-006's original mitigation (2026-08-04) picked the first "up, non-loopback" network
+interface with no regard for its transport. On a device with WiFi off and mobile data on, that's
+the carrier's `rmnetX` interface — so the unauthenticated video/control socket ended up bound to
+LTE instead of just failing to bind, reopening exactly the exposure SCR-006 was meant to close.
+**Verified on real hardware** (WiFi off, LTE on): bound to the carrier-assigned address before the
+fix, stayed loopback-only after it. Fixed by gating the bind behind `ConnectivityManager` — only
+binds when the active network is WiFi or Ethernet. A companion fix (WiFi-listener now closes
+itself within ~1s of WiFi disappearing mid-session, instead of lingering on a dead address) closes
+a related reliability gap but isn't itself a new exposure — the socket never re-appeared on
+cellular even before that fix, it just reported a stale "Listening" status. USB (`AccessoryLink`,
+loopback via `adb forward`) doesn't go through this check at all and was unaffected either way.
 
 ## What this app deliberately does not have
 
