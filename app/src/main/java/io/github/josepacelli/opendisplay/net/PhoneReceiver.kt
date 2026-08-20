@@ -4,6 +4,9 @@
 package io.github.josepacelli.opendisplay.net
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
@@ -140,6 +143,13 @@ class PhoneReceiver(context: Context) {
     private var wifiServerSocket: ServerSocket? = null
     private var advertised = false
 
+    /** Forces the WiFi listener to drop and retry as soon as WiFi goes away mid-session —
+     * otherwise it stays blocked in `accept()` on a socket bound to an address that no longer
+     * exists, silently unreachable, until something else happens to close it. */
+    private val connectivityManager =
+        appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+    private var connectivityCallback: ConnectivityManager.NetworkCallback? = null
+
     /** The live connection. Identity check for "still the active session". */
     @Volatile private var link: Link? = null
 
@@ -243,6 +253,7 @@ class PhoneReceiver(context: Context) {
         }
         pingJob = scope.launch { pingLoop() }
         watchdogJob = scope.launch { watchdogLoop() }
+        registerConnectivityWatcher()
     }
 
     fun stop() {
@@ -252,6 +263,8 @@ class PhoneReceiver(context: Context) {
         readJob?.cancel()
         pingJob?.cancel()
         watchdogJob?.cancel()
+        connectivityCallback?.let { connectivityManager?.unregisterNetworkCallback(it) }
+        connectivityCallback = null
         closeConnection()
         closeServerSocket(loopbackServerSocket)
         closeServerSocket(wifiServerSocket)
@@ -269,6 +282,28 @@ class PhoneReceiver(context: Context) {
         } catch (_: IOException) {
             // already gone
         }
+    }
+
+    /** Watches the device's default network so the WiFi listener notices losing WiFi
+     * immediately, instead of only on its next incoming connection attempt. */
+    private fun registerConnectivityWatcher() {
+        val manager = connectivityManager ?: return
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onLost(network: Network) = recheckWifiListener()
+
+            override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) =
+                recheckWifiListener()
+        }
+        manager.registerDefaultNetworkCallback(callback)
+        connectivityCallback = callback
+    }
+
+    /** Closes the WiFi `ServerSocket` if it's bound but WiFi/Ethernet isn't there anymore —
+     * unblocks its `accept()` so [listenLoop] retries and picks up the current reality
+     * (another address, or [R.string.status_no_wifi] if there's nothing to bind to). */
+    private fun recheckWifiListener() {
+        if (NetworkInfo.localIPv4InetAddress(appContext) != null) return
+        closeServerSocket(wifiServerSocket)
     }
 
     /** The device locked — nobody can see the stream. Tells the Mac (so it
