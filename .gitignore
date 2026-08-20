@@ -56,3 +56,6 @@ local.properties
 
 # Notas de build/release (conta gh a usar etc.) — só local (pedido do usuário).
 /BUILD.md
+
+# Registro de findings de segurança — só local, não versionado (pedido do usuário).
+/SECURITY.md
