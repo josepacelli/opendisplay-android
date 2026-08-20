@@ -235,7 +235,11 @@ class PhoneReceiver(context: Context) {
             listenLoop(port, { InetAddress.getByName("127.0.0.1") }) { loopbackServerSocket = it }
         }
         wifiAcceptJob = scope.launch {
-            listenLoop(port, { NetworkInfo.localIPv4InetAddress(appContext) }) { wifiServerSocket = it }
+            listenLoop(
+                port,
+                { NetworkInfo.localIPv4InetAddress(appContext) },
+                onNoAddress = { _status.value = appContext.getString(R.string.status_no_wifi) },
+            ) { wifiServerSocket = it }
         }
         pingJob = scope.launch { pingLoop() }
         watchdogJob = scope.launch { watchdogLoop() }
@@ -404,11 +408,19 @@ class PhoneReceiver(context: Context) {
 
     /** Shared by the loopback and WiFi listeners — [resolveBindAddress] is re-evaluated on every
      * retry so e.g. the WiFi listener starts working as soon as WiFi comes up, even if it wasn't
-     * available yet when [start] was called. */
-    private fun listenLoop(port: Int, resolveBindAddress: () -> InetAddress?, storeSocket: (ServerSocket) -> Unit) {
+     * available yet when [start] was called. [onNoAddress] fires on every retry with no address
+     * to bind — used by the WiFi listener to keep the status text honest while only the loopback
+     * one is up (e.g. cellular-only, see SECURITY.md/SCR-006). */
+    private fun listenLoop(
+        port: Int,
+        resolveBindAddress: () -> InetAddress?,
+        onNoAddress: () -> Unit = {},
+        storeSocket: (ServerSocket) -> Unit,
+    ) {
         while (running.get()) {
             val bindAddress = resolveBindAddress()
             if (bindAddress == null) {
+                onNoAddress()
                 Thread.sleep(1000)
                 continue
             }
