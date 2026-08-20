@@ -235,7 +235,7 @@ class PhoneReceiver(context: Context) {
             listenLoop(port, { InetAddress.getByName("127.0.0.1") }) { loopbackServerSocket = it }
         }
         wifiAcceptJob = scope.launch {
-            listenLoop(port, { NetworkInfo.localIPv4InetAddress() }) { wifiServerSocket = it }
+            listenLoop(port, { NetworkInfo.localIPv4InetAddress(appContext) }) { wifiServerSocket = it }
         }
         pingJob = scope.launch { pingLoop() }
         watchdogJob = scope.launch { watchdogLoop() }
@@ -370,7 +370,7 @@ class PhoneReceiver(context: Context) {
     /** Best-effort local IPv4 address for manually typing into the Mac app's
      * host/port override when mDNS discovery doesn't work (some routers and
      * corporate networks block multicast). `null` if nothing usable is found. */
-    fun localAddressHint(): String? = NetworkInfo.localIPv4Address()?.let { "$it:${lastBoundPort}" }
+    fun localAddressHint(): String? = NetworkInfo.localIPv4Address(appContext)?.let { "$it:${lastBoundPort}" }
 
     /** [phase]: "began" | "moved" | "ended" | "cancelled". [x]/[y] normalized
      * 0-1 against the displayed video rect (letterboxing already removed by
