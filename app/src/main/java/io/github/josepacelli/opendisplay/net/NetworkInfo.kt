@@ -18,6 +18,8 @@ import java.net.NetworkInterface
  */
 object NetworkInfo {
 
+    /** @param context used to read connectivity state.
+     * @return this device's local IPv4 address as text, or `null` if none is usable. */
     fun localIPv4Address(context: Context): String? = localIPv4InetAddress(context)?.hostAddress
 
     /** Same lookup as [localIPv4Address], as an [Inet4Address] ready to bind a
@@ -25,7 +27,11 @@ object NetworkInfo {
      * WiFi-reachable interface instead of every interface (see SECURITY.md/SCR-006).
      * `null` when the active network isn't WiFi/Ethernet — e.g. mobile data only,
      * WiFi off — so the unauthenticated listener never binds onto the cellular
-     * network (see SECURITY.md/SCR-006, issue #39). */
+     * network (see SECURITY.md/SCR-006, issue #39).
+     *
+     * @param context used to read connectivity state.
+     * @return the first non-loopback IPv4 address found, or `null` if the active network isn't
+     * WiFi/Ethernet or no such address exists. */
     fun localIPv4InetAddress(context: Context): Inet4Address? {
         if (!isActiveNetworkLocal(context)) return null
         return try {
@@ -40,7 +46,9 @@ object NetworkInfo {
     }
 
     /** WiFi or Ethernet, i.e. a LAN — never cellular, which is a WAN uplink with
-     * no business hosting an unauthenticated listener. */
+     * no business hosting an unauthenticated listener.
+     * @param context used to read connectivity state.
+     * @return `true` if the active network is WiFi or Ethernet. */
     private fun isActiveNetworkLocal(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return false

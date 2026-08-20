@@ -36,6 +36,9 @@ import kotlinx.coroutines.flow.collectLatest
  * `fillMaxSize` siblings inside the same aspect-ratio box in
  * `ReceiverScreen` — a plain dot until a `cursorImg` sprite arrives, then the
  * real sprite, anchored at its reported hotspot.
+ *
+ * @param receiver source of cursor position/sprite updates.
+ * @param modifier applied to the drawing surface.
  */
 @Composable
 fun CursorOverlay(receiver: PhoneReceiver, modifier: Modifier = Modifier) {
@@ -70,6 +73,9 @@ fun CursorOverlay(receiver: PhoneReceiver, modifier: Modifier = Modifier) {
  * leaves real headroom while still rejecting a decompression-bomb-style claim. */
 private const val MAX_SPRITE_DIMENSION_PX = 1024
 
+/** Bounds-checks and decodes [image]'s PNG bytes into a bitmap ready to draw.
+ * @param image the peer-supplied cursor sprite to decode.
+ * @return the decoded sprite, or `null` if it's oversized or not a valid PNG. */
 private fun decodeSprite(image: CursorImage): DecodedSprite? {
     val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     BitmapFactory.decodeByteArray(image.png, 0, image.png.size, bounds)
@@ -101,6 +107,10 @@ private data class DecodedSprite(
  * size depends on the parent's own measured size (`normalizedWidth`/`Height`
  * are normalized against the Mac's display, per the wire protocol), which
  * isn't known until measurement — a plain offset modifier can't express that.
+ *
+ * @param pos normalized cursor position within the parent box.
+ * @param sprite the decoded sprite to draw.
+ * @param modifier applied to the layout.
  */
 @Composable
 private fun CursorSprite(pos: CursorPosition, sprite: DecodedSprite, modifier: Modifier) {

@@ -27,17 +27,21 @@ import java.nio.ByteBuffer
  *
  * Not thread-safe — feed it from a single thread/coroutine (the same one
  * draining [io.github.josepacelli.opendisplay.net.PhoneReceiver.videoFrames]).
+ *
+ * @param surface where decoded frames are rendered.
+ * @param expectedWidth seed width in pixels, used until the real size arrives.
+ * @param expectedHeight seed height in pixels, used until the real size arrives.
+ * @param onSizeChanged called once the codec reports its real output size.
+ * @param onError called (at most once a second) when the codec needs a fresh keyframe
+ * (error or desync) — mirrors the iOS receiver's `requestKeyframeIfNeeded`. Without this,
+ * a decoder error would otherwise leave the picture frozen until the Mac's own periodic
+ * keyframe, up to 60s away (see `Mac/MacSender.swift`).
  */
 class VideoDecoder(
     private val surface: Surface,
     private var expectedWidth: Int,
     private var expectedHeight: Int,
     private val onSizeChanged: (width: Int, height: Int) -> Unit = { _, _ -> },
-    /** Called (at most once a second) when the codec errors out, so the
-     * caller can ask the Mac for a fresh keyframe — mirrors the iOS
-     * receiver's `requestKeyframeIfNeeded`. Without this, a decoder error
-     * would otherwise leave the picture frozen until the Mac's own periodic
-     * keyframe, up to 60s away (see `Mac/MacSender.swift`). */
     private val onError: () -> Unit = {},
 ) {
     private var codec: MediaCodec? = null
@@ -48,12 +52,17 @@ class VideoDecoder(
 
     /** Update the seed size (e.g. after a rotation) before the next SPS/PPS
      * change triggers a reconfigure. Does not itself force a reconfigure —
-     * the wire protocol always follows a rotation with new SPS/PPS anyway. */
+     * the wire protocol always follows a rotation with new SPS/PPS anyway.
+     * @param width new seed width in pixels.
+     * @param height new seed height in pixels.
+     */
     fun updateExpectedSize(width: Int, height: Int) {
         expectedWidth = width
         expectedHeight = height
     }
 
+    /** Feeds one wire [VideoFrame] to the decoder, reconfiguring first if it carries new SPS/PPS.
+     * @param frame the frame to decode. */
     fun submit(frame: VideoFrame) {
         var headersChanged = false
         frame.sps?.let {
@@ -70,10 +79,11 @@ class VideoDecoder(
         }
         if (headersChanged) reconfigure()
         if (frame.vclNalus.isEmpty()) return
-        val mediaCodec = codec ?: return // no SPS/PPS yet — nothing to feed until the first keyframe
+        val mediaCodec = codec ?: return
         queueAccessUnit(mediaCodec, frame.vclNalus)
     }
 
+    /** Tears down any existing codec and builds a fresh one from [currentSps]/[currentPps]. */
     private fun reconfigure() {
         val sps = currentSps ?: return
         val pps = currentPps ?: return
@@ -85,7 +95,7 @@ class VideoDecoder(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 format.setInteger(MediaFormat.KEY_LOW_LATENCY, 1)
             }
-            format.setInteger(MediaFormat.KEY_PRIORITY, 0) // realtime
+            format.setInteger(MediaFormat.KEY_PRIORITY, 0)
 
             val mediaCodec = MediaCodec.createDecoderByType(MediaFormat.MIMETYPE_VIDEO_AVC)
             mediaCodec.configure(format, surface, null, 0)
@@ -98,15 +108,11 @@ class VideoDecoder(
         }
     }
 
+    /** Writes one access unit's NALUs into an input buffer and submits it.
+     * @param mediaCodec the running codec to submit into.
+     * @param nalus every NALU belonging to this access unit, in wire order. */
     private fun queueAccessUnit(mediaCodec: MediaCodec, nalus: List<ByteArray>) {
         try {
-            // Non-blocking dequeue: low latency means "latest frame wins" —
-            // if the codec is momentarily busy, drop rather than wait,
-            // mirroring the Mac encoder's own pendingEncodes backpressure.
-            // But dropping a NAL isn't free on H.264: P-frames reference the
-            // previous decoded frame, so a dropped access unit corrupts every
-            // frame after it until a fresh IDR arrives — request one instead
-            // of waiting for the Mac's own periodic keyframe (up to 60s away).
             val index = mediaCodec.dequeueInputBuffer(0)
             if (index < 0) {
                 signalDesync()
@@ -153,11 +159,14 @@ class VideoDecoder(
         }
     }
 
+    /** Renders every output buffer the codec currently has ready, and reports a
+     * real output size once the codec settles on one.
+     * @param mediaCodec the running codec to drain. */
     private fun drainOutput(mediaCodec: MediaCodec) {
         while (true) {
             val outIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, 0)
             when {
-                outIndex >= 0 -> mediaCodec.releaseOutputBuffer(outIndex, true) // render ASAP
+                outIndex >= 0 -> mediaCodec.releaseOutputBuffer(outIndex, true)
                 outIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
                     val format = mediaCodec.outputFormat
                     val width = format.getInteger(MediaFormat.KEY_WIDTH)
@@ -165,11 +174,12 @@ class VideoDecoder(
                     Log.info("decoder output format changed: ${width}x$height")
                     onSizeChanged(width, height)
                 }
-                else -> return // INFO_TRY_AGAIN_LATER or the deprecated buffers-changed code
+                else -> return
             }
         }
     }
 
+    /** Stops and releases the codec, if one exists — safe to call more than once. */
     fun release() {
         codec?.let {
             try {
