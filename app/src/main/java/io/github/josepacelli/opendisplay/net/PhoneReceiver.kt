@@ -4,6 +4,9 @@
 package io.github.josepacelli.opendisplay.net
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
@@ -140,6 +143,13 @@ class PhoneReceiver(context: Context) {
     private var wifiServerSocket: ServerSocket? = null
     private var advertised = false
 
+    /** Forces the WiFi listener to drop and retry as soon as WiFi goes away mid-session —
+     * otherwise it stays blocked in `accept()` on a socket bound to an address that no longer
+     * exists, silently unreachable, until something else happens to close it. */
+    private val connectivityManager =
+        appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+    private var connectivityCallback: ConnectivityManager.NetworkCallback? = null
+
     /** The live connection. Identity check for "still the active session". */
     @Volatile private var link: Link? = null
 
@@ -235,10 +245,15 @@ class PhoneReceiver(context: Context) {
             listenLoop(port, { InetAddress.getByName("127.0.0.1") }) { loopbackServerSocket = it }
         }
         wifiAcceptJob = scope.launch {
-            listenLoop(port, { NetworkInfo.localIPv4InetAddress() }) { wifiServerSocket = it }
+            listenLoop(
+                port,
+                { NetworkInfo.localIPv4InetAddress(appContext) },
+                onNoAddress = { _status.value = appContext.getString(R.string.status_no_wifi) },
+            ) { wifiServerSocket = it }
         }
         pingJob = scope.launch { pingLoop() }
         watchdogJob = scope.launch { watchdogLoop() }
+        registerConnectivityWatcher()
     }
 
     fun stop() {
@@ -248,6 +263,8 @@ class PhoneReceiver(context: Context) {
         readJob?.cancel()
         pingJob?.cancel()
         watchdogJob?.cancel()
+        connectivityCallback?.let { connectivityManager?.unregisterNetworkCallback(it) }
+        connectivityCallback = null
         closeConnection()
         closeServerSocket(loopbackServerSocket)
         closeServerSocket(wifiServerSocket)
@@ -265,6 +282,28 @@ class PhoneReceiver(context: Context) {
         } catch (_: IOException) {
             // already gone
         }
+    }
+
+    /** Watches the device's default network so the WiFi listener notices losing WiFi
+     * immediately, instead of only on its next incoming connection attempt. */
+    private fun registerConnectivityWatcher() {
+        val manager = connectivityManager ?: return
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onLost(network: Network) = recheckWifiListener()
+
+            override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) =
+                recheckWifiListener()
+        }
+        manager.registerDefaultNetworkCallback(callback)
+        connectivityCallback = callback
+    }
+
+    /** Closes the WiFi `ServerSocket` if it's bound but WiFi/Ethernet isn't there anymore —
+     * unblocks its `accept()` so [listenLoop] retries and picks up the current reality
+     * (another address, or [R.string.status_no_wifi] if there's nothing to bind to). */
+    private fun recheckWifiListener() {
+        if (NetworkInfo.localIPv4InetAddress(appContext) != null) return
+        closeServerSocket(wifiServerSocket)
     }
 
     /** The device locked — nobody can see the stream. Tells the Mac (so it
@@ -370,7 +409,7 @@ class PhoneReceiver(context: Context) {
     /** Best-effort local IPv4 address for manually typing into the Mac app's
      * host/port override when mDNS discovery doesn't work (some routers and
      * corporate networks block multicast). `null` if nothing usable is found. */
-    fun localAddressHint(): String? = NetworkInfo.localIPv4Address()?.let { "$it:${lastBoundPort}" }
+    fun localAddressHint(): String? = NetworkInfo.localIPv4Address(appContext)?.let { "$it:${lastBoundPort}" }
 
     /** [phase]: "began" | "moved" | "ended" | "cancelled". [x]/[y] normalized
      * 0-1 against the displayed video rect (letterboxing already removed by
@@ -404,11 +443,19 @@ class PhoneReceiver(context: Context) {
 
     /** Shared by the loopback and WiFi listeners — [resolveBindAddress] is re-evaluated on every
      * retry so e.g. the WiFi listener starts working as soon as WiFi comes up, even if it wasn't
-     * available yet when [start] was called. */
-    private fun listenLoop(port: Int, resolveBindAddress: () -> InetAddress?, storeSocket: (ServerSocket) -> Unit) {
+     * available yet when [start] was called. [onNoAddress] fires on every retry with no address
+     * to bind — used by the WiFi listener to keep the status text honest while only the loopback
+     * one is up (e.g. cellular-only, see SECURITY.md/SCR-006). */
+    private fun listenLoop(
+        port: Int,
+        resolveBindAddress: () -> InetAddress?,
+        onNoAddress: () -> Unit = {},
+        storeSocket: (ServerSocket) -> Unit,
+    ) {
         while (running.get()) {
             val bindAddress = resolveBindAddress()
             if (bindAddress == null) {
+                onNoAddress()
                 Thread.sleep(1000)
                 continue
             }

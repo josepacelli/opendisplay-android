@@ -5,6 +5,7 @@
     <string name="status_starting">Starting…</string>
     <string name="status_stopped">Stopped</string>
     <string name="status_listening">Listening on :%1$d</string>
+    <string name="status_no_wifi">No WiFi network. Turn on WiFi or connect over USB.</string>
 
     <string name="notification_title">OpenDisplay for Android · v%1$s</string>
     <string name="notification_action_disconnect">Disconnect</string>
