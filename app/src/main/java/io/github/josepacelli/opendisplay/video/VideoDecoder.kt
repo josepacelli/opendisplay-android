@@ -16,11 +16,15 @@ import java.nio.ByteBuffer
  * already gets a dedicated compositor path, so there is no equivalent
  * trade-off to make here — see CLAUDE.md.
  *
- * Deliberate simplification: rather than hand-parsing SPS Exp-Golomb bits for
- * the real coded width/height, [expectedWidth]/[expectedHeight] (this
- * device's own panel size — the Mac captures a virtual display sized to
- * exactly that) seed `MediaFormat`, and the real size arrives moments later
- * via `INFO_OUTPUT_FORMAT_CHANGED` (see [onSizeChanged]). MediaCodec expects
+ * The real coded size comes from parsing the SPS itself ([H264Sps]) — some
+ * decoders (Qualcomm's C2 AVC decoder, at least) echo `MediaFormat`'s seed
+ * size back through `INFO_OUTPUT_FORMAT_CHANGED` instead of the actual
+ * bitstream dimensions once cropped, which silently breaks the aspect ratio
+ * in Mirror mode (issue #44; Extend mode happened to seed with the right
+ * size anyway, so it never showed there). `INFO_OUTPUT_FORMAT_CHANGED` is
+ * kept only as a fallback for the rare SPS this parser can't handle.
+ * [expectedWidth]/[expectedHeight] (this device's own panel size) still seed
+ * `MediaFormat` before the first SPS arrives. MediaCodec expects
  * Annex-B access units in its input buffers on Android (unlike VideoToolbox's
  * AVCC), so wire NALUs are fed through unchanged, just prefixed with start
  * codes.
@@ -31,7 +35,8 @@ import java.nio.ByteBuffer
  * @param surface where decoded frames are rendered.
  * @param expectedWidth seed width in pixels, used until the real size arrives.
  * @param expectedHeight seed height in pixels, used until the real size arrives.
- * @param onSizeChanged called once the codec reports its real output size.
+ * @param onSizeChanged called with the real coded size, once known (from the SPS, or the
+ * decoder's own output format when the SPS couldn't be parsed).
  * @param onError called (at most once a second) when the codec needs a fresh keyframe
  * (error or desync) — mirrors the iOS receiver's `requestKeyframeIfNeeded`. Without this,
  * a decoder error would otherwise leave the picture frozen until the Mac's own periodic
@@ -47,6 +52,7 @@ class VideoDecoder(
     private var codec: MediaCodec? = null
     private var currentSps: ByteArray? = null
     private var currentPps: ByteArray? = null
+    private var spsDimensionsKnown = false
     private var lastErrorSignalAt = 0L
     private val bufferInfo = MediaCodec.BufferInfo()
 
@@ -88,8 +94,15 @@ class VideoDecoder(
         val sps = currentSps ?: return
         val pps = currentPps ?: return
         release()
+        val spsDims = H264Sps.parseDimensions(sps)
+        spsDimensionsKnown = spsDims != null
+        if (spsDims != null) {
+            onSizeChanged(spsDims.width, spsDims.height)
+        }
+        val seedWidth = spsDims?.width ?: expectedWidth
+        val seedHeight = spsDims?.height ?: expectedHeight
         try {
-            val format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, expectedWidth, expectedHeight)
+            val format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, seedWidth, seedHeight)
             format.setByteBuffer("csd-0", ByteBuffer.wrap(START_CODE + sps))
             format.setByteBuffer("csd-1", ByteBuffer.wrap(START_CODE + pps))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -101,7 +114,7 @@ class VideoDecoder(
             mediaCodec.configure(format, surface, null, 0)
             mediaCodec.start()
             codec = mediaCodec
-            Log.info("MediaCodec configured, seed ${expectedWidth}x$expectedHeight")
+            Log.info("MediaCodec configured, seed ${seedWidth}x$seedHeight (sps-derived: $spsDimensionsKnown)")
         } catch (e: Exception) {
             Log.error("MediaCodec configure failed", e)
             signalError()
@@ -172,7 +185,7 @@ class VideoDecoder(
                     val width = format.getInteger(MediaFormat.KEY_WIDTH)
                     val height = format.getInteger(MediaFormat.KEY_HEIGHT)
                     Log.info("decoder output format changed: ${width}x$height")
-                    onSizeChanged(width, height)
+                    if (!spsDimensionsKnown) onSizeChanged(width, height)
                 }
                 else -> return
             }
