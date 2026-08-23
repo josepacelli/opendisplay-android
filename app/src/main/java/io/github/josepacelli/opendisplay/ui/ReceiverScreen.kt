@@ -49,6 +49,9 @@ import io.github.josepacelli.opendisplay.net.PhoneReceiver
  * draws every app edge-to-edge by default — without this padding, our
  * touch-capturing surface silently ate the whole screen, including the
  * system bars, so there was no way back to Android itself once connected.
+ * Skipped only in immersive fullscreen (#45) — there the bars themselves are
+ * hidden by [io.github.josepacelli.opendisplay.MainActivity], so the video can
+ * safely use that space too.
  *
  * @param receiver the session this screen renders and forwards input to.
  */
@@ -58,6 +61,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val connected by receiver.connected.collectAsState()
     val peerSignal by receiver.peerSignal.collectAsState()
     val showPerfHud by receiver.showPerfHud.collectAsState()
+    val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
     var showSettings by remember { mutableStateOf(false) }
 
@@ -72,11 +76,12 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
             if (w > 0 && h > 0) w.toFloat() / h.toFloat() else 16f / 9f
         }
 
+    val immersive = connected && immersiveFullscreen
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .safeDrawingPadding(),
+            .then(if (immersive) Modifier else Modifier.safeDrawingPadding()),
         contentAlignment = Alignment.Center,
     ) {
         Box(modifier = Modifier.aspectRatio(aspect)) {

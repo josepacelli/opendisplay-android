@@ -18,6 +18,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +39,7 @@ import io.github.josepacelli.opendisplay.service.ReceiverService
 import io.github.josepacelli.opendisplay.ui.ReceiverScreen
 import io.github.josepacelli.opendisplay.ui.theme.OpenDisplayTheme
 import io.github.josepacelli.opendisplay.util.Log
+import kotlinx.coroutines.flow.combine
 
 /**
  * Thin UI host: the actual [PhoneReceiver] session lives in [ReceiverService]
@@ -140,13 +144,15 @@ class MainActivity : ComponentActivity() {
                     }
                 } else {
                     LaunchedEffect(receiver) {
-                        receiver.connected.collect { connected ->
-                            if (connected) {
-                                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                            } else {
-                                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                        combine(receiver.connected, receiver.immersiveFullscreen, ::Pair)
+                            .collect { (connected, immersiveFullscreen) ->
+                                if (connected) {
+                                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                                } else {
+                                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                                }
+                                applyImmersiveFullscreen(connected && immersiveFullscreen)
                             }
-                        }
                     }
                     ReceiverScreen(receiver = receiver)
                 }
@@ -181,6 +187,19 @@ class MainActivity : ComponentActivity() {
         val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
             PackageManager.PERMISSION_GRANTED
         if (!granted) notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    /** Hides (or restores) the status/navigation bars for immersive fullscreen (#45) —
+     * transiently reachable with a swipe from the edge while hidden.
+     * @param hidden whether the system bars should be hidden right now. */
+    private fun applyImmersiveFullscreen(hidden: Boolean) {
+        val controller = WindowCompat.getInsetsController(window, window.decorView)
+        if (hidden) {
+            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+        } else {
+            controller.show(WindowInsetsCompat.Type.systemBars())
+        }
     }
 
     /**

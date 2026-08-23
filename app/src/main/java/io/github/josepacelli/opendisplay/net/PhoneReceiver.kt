@@ -111,6 +111,7 @@ class PhoneReceiver(context: Context) {
         private const val KEY_SERVICE_NAME = "serviceName"
         private const val KEY_SHOW_NOTIFICATION = "showNotification"
         private const val KEY_SHOW_PERF_HUD = "showPerfHud"
+        private const val KEY_IMMERSIVE_FULLSCREEN = "immersiveFullscreen"
         private const val DEFAULT_SERVICE_NAME = "OpenDisplay Android"
         private const val WATCHDOG_TIMEOUT_MS = 5_000L
         private const val PING_INTERVAL_MS = 2_000L
@@ -223,6 +224,12 @@ class PhoneReceiver(context: Context) {
      * (#36). Defaults on, matching the overlay's prior always-on behavior. */
     private val _showPerfHud = MutableStateFlow(loadShowPerfHud())
     val showPerfHud: StateFlow<Boolean> = _showPerfHud.asStateFlow()
+
+    /** Whether [io.github.josepacelli.opendisplay.ui.ReceiverScreen] should hide the
+     * status/navigation bars and let the video draw through their insets while connected —
+     * user-editable in Settings (#45). Defaults off. */
+    private val _immersiveFullscreen = MutableStateFlow(loadImmersiveFullscreen())
+    val immersiveFullscreen: StateFlow<Boolean> = _immersiveFullscreen.asStateFlow()
 
     /** Clock sync (NTP-style): offset = macClock - ourClock, from the ping/pong
      * sample with the lowest RTT. Mirrors PhoneReceiver.swift exactly. */
@@ -420,6 +427,17 @@ class PhoneReceiver(context: Context) {
         appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_SHOW_PERF_HUD, show)
+            .apply()
+    }
+
+    /** Turn immersive fullscreen on/off and persist the choice.
+     * @param enabled whether to hide system bars while connected. */
+    fun setImmersiveFullscreen(enabled: Boolean) {
+        if (enabled == _immersiveFullscreen.value) return
+        _immersiveFullscreen.value = enabled
+        appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_IMMERSIVE_FULLSCREEN, enabled)
             .apply()
     }
 
@@ -893,6 +911,12 @@ class PhoneReceiver(context: Context) {
     private fun loadShowPerfHud(): Boolean {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean(KEY_SHOW_PERF_HUD, true)
+    }
+
+    /** @return the persisted immersive-fullscreen preference, defaulting to `false`. */
+    private fun loadImmersiveFullscreen(): Boolean {
+        val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_IMMERSIVE_FULLSCREEN, false)
     }
 
     /** @return the current wall-clock time in milliseconds, as a [Double] (wire messages use floats). */

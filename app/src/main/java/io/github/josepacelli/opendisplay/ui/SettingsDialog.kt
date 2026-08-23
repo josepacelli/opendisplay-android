@@ -46,6 +46,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     val connected by receiver.connected.collectAsState()
     val showNotification by receiver.showNotification.collectAsState()
     val showPerfHud by receiver.showPerfHud.collectAsState()
+    val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
     var draftName by remember { mutableStateOf(currentName) }
     val addressHint = remember { receiver.localAddressHint() }
     val context = LocalContext.current
@@ -101,6 +102,24 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                             modifier = Modifier.weight(1f).padding(end = 8.dp),
                         )
                         Switch(checked = showPerfHud, onCheckedChange = { receiver.setShowPerfHud(it) })
+                    }
+                }
+
+                SettingsSection(stringResource(R.string.settings_section_immersive)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.settings_immersive_show),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f).padding(end = 8.dp),
+                        )
+                        Switch(
+                            checked = immersiveFullscreen,
+                            onCheckedChange = { receiver.setImmersiveFullscreen(it) },
+                        )
                     }
                 }
 
