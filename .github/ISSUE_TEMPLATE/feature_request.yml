@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest an idea or improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What can't you do today, or what's annoying about the current behavior?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+
+  - type: textarea
+    id: proof
+    attributes:
+      label: Supporting material
+      description: Screenshot, mockup, or reference (e.g. how the iOS/iPadOS client does it) if relevant.
+    validations:
+      required: false

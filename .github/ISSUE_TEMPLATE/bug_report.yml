@@ -1,0 +1,41 @@
+name: Bug report
+description: Something isn't working as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: proof
+    attributes:
+      label: Proof
+      description: Screenshot, `adb logcat` output, or command + output showing the bug. Mask any IP/personal data before pasting.
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+      placeholder: e.g. Pixel 7, Android 15
+    validations:
+      required: true
+
+  - type: input
+    id: area
+    attributes:
+      label: Suspect area of the code
+      placeholder: e.g. net/PhoneReceiver.kt, video/VideoDecoder.kt
+    validations:
+      required: false
