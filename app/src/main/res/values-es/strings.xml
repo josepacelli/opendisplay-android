@@ -26,6 +26,7 @@
     <string name="settings_perf_hud_show">Mostrar superposición de rendimiento</string>
     <string name="settings_section_immersive">Pantalla completa inmersiva</string>
     <string name="settings_immersive_show">Ocultar barras de estado y navegación mientras esté conectado</string>
+    <string name="settings_section_details">Detalles</string>
     <string name="settings_section_name">Nombre</string>
     <string name="settings_name_label">Nombre anunciado en la red (aparece en el menú de conexión del Mac):</string>
     <string name="settings_section_network">Red</string>
