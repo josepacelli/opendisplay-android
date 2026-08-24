@@ -38,6 +38,8 @@ manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
 - Overlaid remote cursor (dot or decoded sprite, mirroring the Mac's cursor).
 - Foreground service: the connection survives the app going to background and resumes correctly
   after unlocking the screen.
+- Auto-enters Picture-in-Picture when you leave the app while connected — same as Netflix/Prime
+  Video — so the video keeps playing in a floating window while you use something else.
 - Editable mDNS name; the settings screen also shows this device's own address for troubleshooting.
 - Optional performance HUD (fps, end-to-end latency, RTT).
 - Adaptive UI (Jetpack Compose) for phone and tablet.
