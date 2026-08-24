@@ -127,3 +127,14 @@ Organized by file, in source order.
   way.
 - **`buildNotification`**, the status icon: TODO (fase 9) — dedicated status icon instead of the
   current system placeholder; needs a real launcher-style small icon.
+
+## app/build.gradle.kts
+
+- **`composeCompiler`**, `includeComposeMappingFile.set(false)`: this Compose compiler feature
+  (new in Kotlin 2.3) resolves its mapping-generator artifact against AGP 9.2's built-in Kotlin
+  version (2.2.10) instead of the `kotlin.plugin.compose` version this project actually applies
+  (2.3.20) — and `compose-group-mapping:2.2.10` was never published, so `assembleRelease` fails
+  outright with `isMinifyEnabled = true` unless this is off. Verified by real attempt: confirmed
+  via Maven metadata that the feature only started publishing from 2.3.0. Deobfuscated Compose
+  stack traces aren't worth losing release builds over until AGP's built-in Kotlin support
+  catches up.
