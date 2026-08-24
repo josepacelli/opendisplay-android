@@ -92,6 +92,9 @@ data class PerfStats(
     val rttMs: Double = 0.0,
 )
 
+/** Screen corner the perf HUD renders in — user-editable in Settings (#63). */
+enum class PerfHudPosition { TOP_START, TOP_END, BOTTOM_START, BOTTOM_END }
+
 /**
  * The Android side of the OpenDisplay socket: listens on TCP :9000, advertises
  * itself over mDNS so the existing Mac app's WiFi picker finds it, speaks the
@@ -114,6 +117,7 @@ class PhoneReceiver(context: Context) {
         private const val KEY_SERVICE_NAME = "serviceName"
         private const val KEY_SHOW_NOTIFICATION = "showNotification"
         private const val KEY_SHOW_PERF_HUD = "showPerfHud"
+        private const val KEY_PERF_HUD_POSITION = "perfHudPosition"
         private const val KEY_IMMERSIVE_FULLSCREEN = "immersiveFullscreen"
         private const val KEY_PIP_ENABLED = "pipEnabled"
         private const val DEFAULT_SERVICE_NAME = "OpenDisplay Android"
@@ -239,6 +243,12 @@ class PhoneReceiver(context: Context) {
      * (#36). Defaults on, matching the overlay's prior always-on behavior. */
     private val _showPerfHud = MutableStateFlow(loadShowPerfHud())
     val showPerfHud: StateFlow<Boolean> = _showPerfHud.asStateFlow()
+
+    /** Screen corner [io.github.josepacelli.opendisplay.ui.ReceiverScreen] renders the perf
+     * overlay in — user-editable in Settings (#63). Defaults to top-left, matching the
+     * overlay's prior fixed position. */
+    private val _perfHudPosition = MutableStateFlow(loadPerfHudPosition())
+    val perfHudPosition: StateFlow<PerfHudPosition> = _perfHudPosition.asStateFlow()
 
     /** Whether [io.github.josepacelli.opendisplay.ui.ReceiverScreen] should hide the
      * status/navigation bars and let the video draw through their insets while connected —
@@ -448,6 +458,17 @@ class PhoneReceiver(context: Context) {
         appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_SHOW_PERF_HUD, show)
+            .apply()
+    }
+
+    /** Move the perf overlay to a different corner and persist the choice.
+     * @param position the corner [io.github.josepacelli.opendisplay.ui.ReceiverScreen] should render it in. */
+    fun setPerfHudPosition(position: PerfHudPosition) {
+        if (position == _perfHudPosition.value) return
+        _perfHudPosition.value = position
+        appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putString(KEY_PERF_HUD_POSITION, position.name)
             .apply()
     }
 
@@ -970,6 +991,15 @@ class PhoneReceiver(context: Context) {
     private fun loadShowPerfHud(): Boolean {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean(KEY_SHOW_PERF_HUD, true)
+    }
+
+    /** @return the persisted perf-overlay corner, defaulting to top-left. Falls back to the
+     * default on a bad/unrecognized stored value instead of crashing — cheap insurance for a
+     * self-controlled value, in case a future rename ever leaves a stale one behind. */
+    private fun loadPerfHudPosition(): PerfHudPosition {
+        val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val stored = prefs.getString(KEY_PERF_HUD_POSITION, null) ?: return PerfHudPosition.TOP_START
+        return runCatching { PerfHudPosition.valueOf(stored) }.getOrDefault(PerfHudPosition.TOP_START)
     }
 
     /** @return the persisted immersive-fullscreen preference, defaulting to `false`. */

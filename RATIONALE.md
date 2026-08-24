@@ -131,6 +131,12 @@ Organized by file, in source order.
   Mac app sends.
 - **`sendControl`**, why it dispatches instead of writing inline: callers include UI-thread touch
   handlers that must never block on a stalled socket.
+- **`loadPerfHudPosition`**, the `runCatching` around `PerfHudPosition.valueOf`: this value only
+  ever comes from what this app itself wrote via `setPerfHudPosition` (#63), so a bad stored value
+  isn't expected — but `enum.valueOf` throws on a miss, and the one plausible way to get one (a
+  future rename of an enum constant, leaving an old install's prefs pointing at a name that no
+  longer exists) shouldn't crash the app over a cosmetic setting. Falls back to the same
+  `TOP_START` default a fresh install gets.
 
 ## net/Link.kt
 

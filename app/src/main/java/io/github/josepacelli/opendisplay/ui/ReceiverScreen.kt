@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PeerSignal
+import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 
 /**
@@ -63,6 +64,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val peerSignal by receiver.peerSignal.collectAsState()
     val connectionUnstable by receiver.connectionUnstable.collectAsState()
     val showPerfHud by receiver.showPerfHud.collectAsState()
+    val perfHudPosition by receiver.perfHudPosition.collectAsState()
     val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
     var showSettings by remember { mutableStateOf(false) }
@@ -111,7 +113,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
         }
 
         if (connected && showPerfHud) {
-            PerfHud(receiver, modifier = Modifier.align(Alignment.TopStart).padding(8.dp))
+            PerfHud(receiver, modifier = Modifier.align(perfHudPosition.toAlignment()).padding(8.dp))
         }
 
         if (connectionUnstable) {
@@ -196,6 +198,14 @@ private fun InstructionRow(text: String) {
         Spacer(modifier = Modifier.width(12.dp))
         Text(text = text, color = Color.White.copy(alpha = 0.9f), style = MaterialTheme.typography.bodySmall)
     }
+}
+
+/** @return the screen corner this position corresponds to. */
+private fun PerfHudPosition.toAlignment(): Alignment = when (this) {
+    PerfHudPosition.TOP_START -> Alignment.TopStart
+    PerfHudPosition.TOP_END -> Alignment.TopEnd
+    PerfHudPosition.BOTTOM_START -> Alignment.BottomStart
+    PerfHudPosition.BOTTOM_END -> Alignment.BottomEnd
 }
 
 /** Small readout, parity with the iOS receiver's perf overlay — fps /

@@ -103,4 +103,18 @@ class DataTypesTest {
         assertEquals("192.168.1.2", a.component1())
         assertEquals("192.168.1.3", a.component2())
     }
+
+    @Test
+    fun `PerfHudPosition has the four screen corners`() {
+        assertEquals(
+            listOf(
+                PerfHudPosition.TOP_START,
+                PerfHudPosition.TOP_END,
+                PerfHudPosition.BOTTOM_START,
+                PerfHudPosition.BOTTOM_END,
+            ),
+            PerfHudPosition.entries,
+        )
+        assertEquals(PerfHudPosition.TOP_START, PerfHudPosition.valueOf("TOP_START"))
+    }
 }

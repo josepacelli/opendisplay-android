@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -32,6 +33,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.josepacelli.opendisplay.R
+import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 
 private val WIDE_LAYOUT_MIN_WIDTH = 600.dp
@@ -59,6 +61,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     val connected by receiver.connected.collectAsState()
     val showNotification by receiver.showNotification.collectAsState()
     val showPerfHud by receiver.showPerfHud.collectAsState()
+    val perfHudPosition by receiver.perfHudPosition.collectAsState()
     val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
     val pipEnabled by receiver.pipEnabled.collectAsState()
     var draftName by remember { mutableStateOf(currentName) }
@@ -76,6 +79,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                     .verticalScroll(rememberScrollState()),
             ) {
                 if (wide) {
+                    NameSection(draftName, onNameChange = { draftName = it }, modifier = Modifier.fillMaxWidth())
                     Row(
                         modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
                         horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -93,27 +97,24 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                             stretchDivider = true,
                         )
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
-                        horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    ) {
-                        PerfHudSection(
-                            showPerfHud,
-                            receiver::setShowPerfHud,
-                            modifier = Modifier.weight(1f).fillMaxHeight(),
-                            stretchDivider = true,
-                        )
-                        PipSection(
-                            pipEnabled,
-                            receiver::setPipEnabled,
-                            modifier = Modifier.weight(1f).fillMaxHeight(),
-                            stretchDivider = true,
-                        )
-                    }
-                    NameSection(draftName, onNameChange = { draftName = it })
+                    PerfHudSection(
+                        showPerfHud,
+                        receiver::setShowPerfHud,
+                        perfHudPosition,
+                        receiver::setPerfHudPosition,
+                        wide = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    PipSection(pipEnabled, receiver::setPipEnabled, modifier = Modifier.fillMaxWidth())
                 } else {
                     NotificationSection(showNotification, receiver::setShowNotification)
-                    PerfHudSection(showPerfHud, receiver::setShowPerfHud)
+                    PerfHudSection(
+                        showPerfHud,
+                        receiver::setShowPerfHud,
+                        perfHudPosition,
+                        receiver::setPerfHudPosition,
+                        wide = false,
+                    )
                     ImmersiveSection(immersiveFullscreen, receiver::setImmersiveFullscreen)
                     PipSection(pipEnabled, receiver::setPipEnabled)
                     NameSection(draftName, onNameChange = { draftName = it })
@@ -180,18 +181,69 @@ private fun NotificationSection(
 
 /** @param showPerfHud current toggle state.
  * @param onToggle called with the new state when the switch is flipped.
+ * @param position current corner the perf overlay renders in.
+ * @param onPositionChange called with the new corner when a different one is picked.
+ * @param wide whether the dialog has room to lay the four corner options out in one row
+ * instead of two — see [PerfHudPositionPicker].
  * @param modifier applied to the section.
  * @param stretchDivider see [NotificationSection]. */
 @Composable
 private fun PerfHudSection(
     showPerfHud: Boolean,
     onToggle: (Boolean) -> Unit,
+    position: PerfHudPosition,
+    onPositionChange: (PerfHudPosition) -> Unit,
+    wide: Boolean,
     modifier: Modifier = Modifier,
     stretchDivider: Boolean = false,
 ) {
     SettingsSection(stringResource(R.string.settings_section_perf_hud), modifier, stretchDivider = stretchDivider) {
         ToggleRow(stringResource(R.string.settings_perf_hud_show), showPerfHud, onToggle)
+        Spacer(modifier = Modifier.height(8.dp))
+        PerfHudPositionPicker(position, onPositionChange, wide)
     }
+}
+
+/** Four-corner picker for [PerfHudSection] — one row of four [FilterChip]s when there's
+ * room ([wide]), two rows of two otherwise, laid out the same way the corners appear on
+ * screen (top row above bottom row).
+ * @param selected the corner currently in effect.
+ * @param onSelect called with the newly picked corner.
+ * @param wide lay all four chips out in a single row instead of two. */
+@Composable
+private fun PerfHudPositionPicker(selected: PerfHudPosition, onSelect: (PerfHudPosition) -> Unit, wide: Boolean) {
+    val options = listOf(
+        PerfHudPosition.TOP_START to stringResource(R.string.settings_perf_hud_position_top_start),
+        PerfHudPosition.TOP_END to stringResource(R.string.settings_perf_hud_position_top_end),
+        PerfHudPosition.BOTTOM_START to stringResource(R.string.settings_perf_hud_position_bottom_start),
+        PerfHudPosition.BOTTOM_END to stringResource(R.string.settings_perf_hud_position_bottom_end),
+    )
+    val rows = if (wide) listOf(options) else options.chunked(2)
+    Column(modifier = Modifier.fillMaxWidth()) {
+        rows.forEachIndexed { index, row ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                modifier = (if (index == 0) Modifier else Modifier.padding(top = 6.dp)).fillMaxWidth(),
+            ) {
+                for ((position, label) in row) {
+                    PositionChip(label, selected == position) { onSelect(position) }
+                }
+            }
+        }
+    }
+}
+
+/** One selectable corner option inside [PerfHudPositionPicker].
+ * @param label the corner's display name.
+ * @param selected whether this is the currently active corner.
+ * @param onClick called when tapped. */
+@Composable
+private fun PositionChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = { Text(label, style = MaterialTheme.typography.labelSmall) },
+    )
 }
 
 /** @param immersiveFullscreen current toggle state.

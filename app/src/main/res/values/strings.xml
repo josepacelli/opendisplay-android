@@ -24,6 +24,10 @@
     <string name="settings_notification_show">Show notification</string>
     <string name="settings_section_perf_hud">Performance overlay</string>
     <string name="settings_perf_hud_show">Show performance overlay</string>
+    <string name="settings_perf_hud_position_top_start">Top left</string>
+    <string name="settings_perf_hud_position_top_end">Top right</string>
+    <string name="settings_perf_hud_position_bottom_start">Bottom left</string>
+    <string name="settings_perf_hud_position_bottom_end">Bottom right</string>
     <string name="settings_section_immersive">Fullscreen</string>
     <string name="settings_immersive_show">Hide status and navigation bars while connected</string>
     <string name="settings_section_pip">Picture-in-Picture</string>
