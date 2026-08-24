@@ -1,6 +1,7 @@
 package io.github.josepacelli.opendisplay
 
 import android.Manifest
+import android.app.PictureInPictureParams
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import android.hardware.usb.UsbManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Rational
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -51,6 +53,10 @@ class MainActivity : ComponentActivity() {
 
     private var boundReceiver by mutableStateOf<PhoneReceiver?>(null)
     private var bound = false
+
+    /** Tracks the Mac connection so [onUserLeaveHint] knows whether leaving the
+     * app should auto-enter picture-in-picture (#51). */
+    private var sessionConnected = false
 
     /** Accessory received before the service finished binding; opened once bound. */
     private var pendingAccessory: UsbAccessory? = null
@@ -146,6 +152,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(receiver) {
                         combine(receiver.connected, receiver.immersiveFullscreen, ::Pair)
                             .collect { (connected, immersiveFullscreen) ->
+                                sessionConnected = connected
                                 if (connected) {
                                     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                                 } else {
@@ -167,6 +174,27 @@ class MainActivity : ComponentActivity() {
         super.onConfigurationChanged(newConfig)
         Log.info("configuration changed — re-reporting panel size")
         boundReceiver?.let { reportPanelSize(it) }
+    }
+
+    /** Auto-enters picture-in-picture when the user leaves to another app or the
+     * home screen while a Mac is connected — same behavior as a video app like
+     * Netflix (#51). Touch/scroll forwarding naturally stops in PiP: the system
+     * owns that window, so it's view-only until the user taps back in. */
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        if (!sessionConnected) return
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) return
+        enterPictureInPictureMode(pictureInPictureParams())
+    }
+
+    /** Sized to the current session's aspect ratio, via [pipAspectRatio]. */
+    private fun pictureInPictureParams(): PictureInPictureParams {
+        val receiver = boundReceiver
+        val (numerator, denominator) = pipAspectRatio(
+            receiver?.devicePixelsWide ?: 0,
+            receiver?.devicePixelsHigh ?: 0,
+        )
+        return PictureInPictureParams.Builder().setAspectRatio(Rational(numerator, denominator)).build()
     }
 
     /** Unbinds from [ReceiverService], if bound — the service itself keeps running. */

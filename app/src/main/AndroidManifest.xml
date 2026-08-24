@@ -26,6 +26,7 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:screenOrientation="unspecified"
             android:launchMode="singleTop"
+            android:supportsPictureInPicture="true"
             android:theme="@style/Theme.OpenDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
