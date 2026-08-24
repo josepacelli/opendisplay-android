@@ -1,17 +1,20 @@
 # OpenDisplay Android
 
-**[Website & download →](https://josepacelli.github.io/opendisplay-android)**
+**Turn your spare Android tablet into a second monitor for your Mac** — free, open source, no
+subscription.
 
-Unofficial Android client for [OpenDisplay](https://github.com/peetzweg/opendisplay): turns an
-Android tablet or phone into a **real external monitor** for a Mac, speaking the same network
-protocol as the official app — with no changes required on the Mac side.
+Unofficial Android client for [OpenDisplay](https://github.com/peetzweg/opendisplay), filling the
+role of Sidecar/Duet Display: a real extended display (not just mirroring), low-latency H.264,
+over WiFi or USB, with touch and scroll input — speaking the same network protocol as the
+official app, with no changes required on the Mac side.
+
+[Website & download](https://josepacelli.github.io/opendisplay-android) ·
+[How it works](#how-it-works) · [Build](#build) · [Usage](#usage) ·
+[License](#license)
 
 The original OpenDisplay project only ships an iOS/iPadOS client. This repository is the Android
 version: the wire protocol, framing and Annex-B handling are ported from the upstream Swift
 client, while the Android UI and `MediaCodec` pipeline are written fresh in Kotlin.
-
-It's not an e-ink reader. It's a low-latency H.264 video receiver + touch injector, filling the
-role of Sidecar/Duet Display in a free, open-source way.
 
 ## How it works
 
