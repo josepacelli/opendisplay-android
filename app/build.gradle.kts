@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("jacoco")
 }
 
 // keystore.properties is gitignored (see CLAUDE.md) — a checkout without it
@@ -82,4 +83,52 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+val coverageExcludes = listOf(
+    "**/R.class", "**/R\$*.class", "**/BuildConfig.*", "**/Manifest*.*",
+    "**/ui/**",
+    "**/MainActivity*.*",
+    "**/service/**",
+    "**/net/PhoneReceiver*.*",
+    "**/net/Link*.*",
+    "**/net/AccessoryLink*.*",
+    "**/net/SocketLink*.*",
+    "**/net/NetworkInfo*.*",
+    "**/video/VideoDecoder*.*",
+    "**/util/Log*.*",
+)
+
+val coverageClassDirs = fileTree("${layout.buildDirectory.get()}/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes") {
+    exclude(coverageExcludes)
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+    classDirectories.setFrom(coverageClassDirs)
+    sourceDirectories.setFrom(files("src/main/java"))
+    executionData.setFrom(fileTree(layout.buildDirectory.get()) { include("jacoco/testDebugUnitTest.exec") })
+}
+
+tasks.register<JacocoCoverageVerification>("jacocoCoverageVerification") {
+    dependsOn("testDebugUnitTest")
+    classDirectories.setFrom(coverageClassDirs)
+    sourceDirectories.setFrom(files("src/main/java"))
+    executionData.setFrom(fileTree(layout.buildDirectory.get()) { include("jacoco/testDebugUnitTest.exec") })
+    violationRules {
+        rule {
+            limit {
+                counter = "LINE"
+                minimum = "0.95".toBigDecimal()
+            }
+        }
+    }
 }
