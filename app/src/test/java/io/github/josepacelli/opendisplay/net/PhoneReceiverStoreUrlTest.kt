@@ -17,7 +17,7 @@ class PhoneReceiverStoreUrlTest {
     @Test
     fun `rejects a non-https scheme`() {
         assertNull(PhoneReceiver.sanitizedStoreUrl("http://github.com/x"))
-        assertNull(PhoneReceiver.sanitizedStoreUrl("javascript:alert(1)"))
+        assertNull(PhoneReceiver.sanitizedStoreUrl("javascript:alert(1)"))de
     }
 
     @Test
