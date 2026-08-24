@@ -25,7 +25,13 @@
 
 <header class="site">
   <div class="wrap">
-    <div class="brand">OpenDisplay <span style="color:var(--text-dim);font-weight:400;">Android</span></div>
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="4" width="15" height="11" rx="1.5"></rect>
+        <rect x="10" y="12" width="12" height="8" rx="1.5" fill="var(--bg)"></rect>
+      </svg>
+      OpenDisplay <span class="brand-sub">Android</span>
+    </div>
     <nav>
       <a href="#features">Features</a>
       <a href="#how-it-works">How it works</a>
@@ -33,13 +39,11 @@
       <a href="#install">Install</a>
       <a href="#compare">Compare</a>
       <a href="#faq">FAQ</a>
-      <a href="#contribute">Contribute</a>
-      <a href="https://github.com/josepacelli/opendisplay-android">GitHub</a>
-      <a class="gh-stars" href="https://github.com/josepacelli/opendisplay-android/stargazers" id="gh-stars">
+      <a class="gh-stars" href="https://github.com/josepacelli/opendisplay-android" id="gh-stars">
         <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
         </svg>
-        Stars <span id="gh-stars-count">···</span>
+        GitHub <span id="gh-stars-count">···</span>
       </a>
     </nav>
   </div>
@@ -47,23 +51,33 @@
 
 <div class="wrap">
 
-  <section class="hero" style="border-top:none;">
-    <span class="status-badge">early alpha · tested on real hardware</span>
-    <h1>Use your Android tablet or phone as a second monitor for your Mac.</h1>
+  <section class="hero">
+    <span class="status-badge"><span class="dot"></span>Early alpha · tested on real hardware</span>
+    <h1>Use your Android tablet or phone as a <em>real</em> second monitor for your Mac.</h1>
     <p class="lead">
       An unofficial, open-source Android client for
       <a href="https://opendisplay.app/">OpenDisplay</a> — the original project only ships an
       iOS/iPadOS client. This one speaks the same network protocol, with no changes required on
-      the Mac app. No account, no subscription, no dongle.
+      the Mac app.
     </p>
-    <div class="specs">Android 8.0+ (API 26) · macOS (via the original OpenDisplay app) · GPL-3.0</div>
+    <div class="specs">
+      <span>Android 8.0+ (API 26)</span>
+      <span>macOS via the original OpenDisplay app</span>
+      <span>GPL-3.0</span>
+    </div>
     <div class="cta-row">
-      <a class="btn primary" href="https://github.com/josepacelli/opendisplay-android/releases/latest">Download APK (v0.0.31)</a>
-      <a class="btn ghost" href="https://github.com/josepacelli/opendisplay-android">View on GitHub</a>
+      <a class="btn primary" href="#install">
+        Get started
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m0 0l-6-6m6 6l6-6"></path></svg>
+      </a>
+      <a class="btn ghost" href="https://github.com/josepacelli/opendisplay-android">
+        View on GitHub
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"></path></svg>
+      </a>
     </div>
     <div class="kofi-badge-wrap">
       <div class="kofi-badge">
-        <span class="kofi-badge-icon">☕</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v6a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9h2a2 2 0 010 4h-2"></path><path d="M8 2v2M11 2v2M14 2v2"></path></svg>
         <span>Free, and built by one person.</span>
         <a href="#support"><strong>Support on Ko-fi ↓</strong></a>
       </div>
@@ -71,21 +85,28 @@
   </section>
 
   <section id="how-it-works">
-    <h2>How it works</h2>
+    <p class="eyebrow">How it works</p>
+    <h2>The Mac stays untouched. The Android device does the listening.</h2>
     <p class="section-sub">
-      The Mac side stays the original OpenDisplay app, unmodified. The Android device listens and
-      the Mac connects — that's what lets it work over WiFi with zero manual setup, via mDNS
-      discovery.
+      The Android device listens and the Mac connects — that's what lets it work over WiFi with
+      zero manual setup, via mDNS discovery, without a single change to the original OpenDisplay
+      Mac app.
     </p>
-    <div class="diagram">MAC (server, original OpenDisplay app)              ANDROID (this project)
+    <div class="diagram">
+      <div class="diagram-bar"><span></span><span></span><span></span></div>
+      <div class="diagram-body"><span class="lbl">MAC (server, original OpenDisplay app)</span>              <span class="lbl">ANDROID (this project)</span>
 CGVirtualDisplay
-  → ScreenCaptureKit → VideoToolbox H.264
-  → TCP </div>
+  <span class="arrow">→</span> ScreenCaptureKit <span class="arrow">→</span> VideoToolbox <span class="hl">H.264</span>
+  <span class="arrow">→</span> TCP [4-byte length][Annex-B frame] <span class="arrow">══════→</span> listens on <span class="hl">:9000</span>
+                                                        <span class="arrow">→</span> MediaCodec <span class="arrow">→</span> SurfaceView
+  <span class="arrow">←</span> control JSON (hello, touch, scroll, ping) <span class="arrow">════</span></div>
+    </div>
   </section>
 
   <section id="screenshots">
-    <h2>Screenshots</h2>
-    <p class="section-sub">Real hardware, real WiFi connection — no staged mockups.</p>
+    <p class="eyebrow">Screenshots</p>
+    <h2>Real hardware, real WiFi connection.</h2>
+    <p class="section-sub">No staged mockups — every shot below is a live session between an Android tablet and a Mac.</p>
     <div class="gallery">
       <figure>
         <img src="screenshots/tablet-mirroring-site.jpeg" alt="Android tablet on a desk, mirroring this landing page from the Mac over WiFi" loading="lazy">
@@ -111,55 +132,88 @@ CGVirtualDisplay
   </section>
 
   <section id="install">
-    <h2>Installation</h2>
-    <p class="section-sub">OpenDisplay is <strong>two apps that work together</strong> — install both to get going.</p>
+    <p class="eyebrow">Installation</p>
+    <h2>Two apps that work together.</h2>
+    <p class="section-sub">Install both to get going — the Mac side is the original OpenDisplay project, unmodified.</p>
     <div class="steps">
       <div class="step">
         <span class="tag">STEP 1 · ON YOUR MAC</span>
         <h3>The sender</h3>
-        <p>Captures a virtual display and streams it. It's the original OpenDisplay
-        program, unmodified.</p>
-        <a class="btn primary" href="https://github.com/peetzweg/opendisplay/releases/latest">Download for Mac</a>
-        <p class="section-sub" style="margin-top:14px;">
-          Prefer to build it yourself?
-          <a href="https://github.com/peetzweg/opendisplay">Build from source ↗</a>
-        </p>
+        <p>Captures a virtual display and streams it. It's the original OpenDisplay program, unmodified.</p>
+        <a class="btn primary" href="https://github.com/peetzweg/opendisplay/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path></svg>
+          Download for Mac
+        </a>
+        <p class="step-note">Prefer to build it yourself? <a href="https://github.com/peetzweg/opendisplay">Build from source ↗</a></p>
       </div>
       <div class="step">
         <span class="tag">STEP 2 · ON YOUR ANDROID</span>
         <h3>The receiver</h3>
         <p>Displays the stream and sends touch/scroll back.</p>
-        <a class="btn primary" href="https://github.com/josepacelli/opendisplay-android/releases/latest">Download APK (v0.0.31)</a>
-        <p class="section-sub" style="margin-top:14px;">
-          Not on Google Play yet — sideload the APK, or
-          <a href="https://github.com/josepacelli/opendisplay-android#build">build it from source ↗</a>.
-          Looking for an older version?
-          <a href="https://github.com/josepacelli/opendisplay-android/releases">Browse all releases ↗</a>
+        <a class="btn primary" href="https://github.com/josepacelli/opendisplay-android/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path></svg>
+          Download APK (v0.0.31)
+        </a>
+        <p class="step-note">
+          Not on Google Play yet — sideload the APK, or <a href="https://github.com/josepacelli/opendisplay-android#build">build it from source ↗</a>.
+          <a href="https://github.com/josepacelli/opendisplay-android/releases">Browse older releases ↗</a>
         </p>
       </div>
     </div>
   </section>
 
   <section id="features">
-    <h2>Features</h2>
-    <p class="section-sub">What already works today, validated against the real Mac app.</p>
+    <p class="eyebrow">Features</p>
+    <h2>What already works today.</h2>
+    <p class="section-sub">Validated against the real Mac app, not a spec sheet.</p>
     <div class="features">
-      <div class="feature"><span class="num">001</span><div><h4>Hardware H.264 video</h4><p><code>MediaCodec</code> decoding straight to a Surface, no CPU conversion.</p></div></div>
-      <div class="feature"><span class="num">002</span><div><h4>Automatic discovery</h4><p>mDNS (<code>_opensidecar._tcp</code>) — the Mac finds the Android device on its own on the same network.</p></div></div>
-      <div class="feature"><span class="num">003</span><div><h4>Touch and scroll</h4><p>One finger becomes a click/drag, two fingers become scroll.</p></div></div>
-      <div class="feature"><span class="num">004</span><div><h4>Remote cursor</h4><p>A dot or decoded sprite, mirroring the Mac's cursor.</p></div></div>
-      <div class="feature"><span class="num">005</span><div><h4>Foreground service</h4><p>Survives the app going to background and resumes correctly after unlocking the screen.</p></div></div>
-      <div class="feature"><span class="num">006</span><div><h4>Error recovery</h4><p>Decoder errors trigger an automatic keyframe request, without dropping the connection.</p></div></div>
-      <div class="feature"><span class="num">007</span><div><h4>Manual fallback</h4><p>Editable mDNS name and IP:port connection for when automatic discovery fails.</p></div></div>
-      <div class="feature"><span class="num">008</span><div><h4>USB accessory (AOA)</h4><p>Plug the cable, tap the system's prompt, done — no <code>adb</code>, no developer options, no <code>usbmuxd</code>.</p></div></div>
-      <div class="feature"><span class="num">009</span><div><h4>Picture-in-Picture</h4><p>Leave the app while connected and the video keeps playing in a floating window — same as Netflix/Prime Video.</p></div></div>
-      <div class="feature"><span class="num">010</span><div><h4>No account, no telemetry</h4><p>Same philosophy as the original project: no central server.</p></div></div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8M12 17v4"></path><path d="M10 8l6 4-6 4V8z"></path></svg></div>
+        <div><h4>Hardware H.264 video</h4><p><code>MediaCodec</code> decoding straight to a Surface, no CPU conversion.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9a15 15 0 0119 0"></path><path d="M6 13a9.5 9.5 0 0112 0"></path><path d="M9.5 17a4.5 4.5 0 015 0"></path><circle cx="12" cy="20" r="0.9" fill="currentColor" stroke="none"></circle></svg></div>
+        <div><h4>Automatic discovery</h4><p>mDNS (<code>_opensidecar._tcp</code>) — the Mac finds the Android device on its own on the same network.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 114 0v6"></path><path d="M13 6.5a2 2 0 114 0V12"></path><path d="M17 9.5a2 2 0 114 0V15a7 7 0 01-7 7h-1a7 7 0 01-6-3.4L4.5 14a1.7 1.7 0 012.6-2.1L9 14"></path></svg></div>
+        <div><h4>Touch and scroll</h4><p>One finger becomes a click/drag, two fingers become scroll.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg></div>
+        <div><h4>Remote cursor</h4><p>A dot or decoded sprite, mirroring the Mac's cursor position live.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
+        <div><h4>Foreground service</h4><p>Survives the app going to background and resumes correctly after unlocking the screen.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114.9-4"></path><path d="M20 12a8 8 0 01-14.9 4"></path><path d="M18 4v4h-4M6 20v-4h4"></path></svg></div>
+        <div><h4>Error recovery</h4><p>Decoder errors trigger an automatic keyframe request, without dropping the connection.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M4 12h16M4 18h7"></path><circle cx="17" cy="6" r="2"></circle><circle cx="9" cy="18" r="2"></circle></svg></div>
+        <div><h4>Manual fallback</h4><p>Editable mDNS name and IP:port connection for when automatic discovery fails.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6"></path><rect x="6" y="8" width="12" height="7" rx="2"></rect><path d="M12 15v3a4 4 0 01-4 4H6"></path></svg></div>
+        <div><h4>USB accessory (AOA)</h4><p>Plug the cable, tap the system's prompt, done — no <code>adb</code>, no developer options.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"></rect><rect x="12" y="11" width="7" height="5" rx="1" fill="currentColor" stroke="none"></rect></svg></div>
+        <div><h4>Picture-in-Picture</h4><p>Leave the app while connected and the video keeps playing in a floating window.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.1A11 11 0 0112 5c5 0 9 4 10 7-0.5 1.4-1.4 2.9-2.6 4.1M6.6 6.6C4.5 8 3 10 2 12c1 3 5 7 10 7 1.3 0 2.6-.2 3.7-.7"></path><path d="M9.9 9.9a3 3 0 004.2 4.2"></path></svg></div>
+        <div><h4>No account, no telemetry</h4><p>Same philosophy as the original project: no central server, nothing phoned home.</p></div>
+      </div>
     </div>
   </section>
 
   <section id="compare">
-    <h2>Compare</h2>
-    <p class="section-sub">Against the best-known alternatives for using an Android tablet as an external monitor.</p>
+    <p class="eyebrow">Compare</p>
+    <h2>Against the best-known alternatives.</h2>
+    <p class="section-sub">For using an Android tablet as an external monitor.</p>
     <div class="table-scroll">
       <table class="compare">
         <thead>
@@ -177,95 +231,114 @@ CGVirtualDisplay
   </section>
 
   <section id="faq">
-    <h2>FAQ</h2>
+    <p class="eyebrow">FAQ</p>
+    <h2>Common questions.</h2>
 
     <details class="faq">
-      <summary>Is this the same app as OpenDisplay for iOS?</summary>
+      <summary>Is this the same app as OpenDisplay for iOS?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
       <p>No. It's an independent client, written from scratch in Kotlin, that implements the same
       network protocol to interoperate with the original Mac app. The official project only
       ships an iOS/iPadOS client.</p>
     </details>
 
     <details class="faq">
-      <summary>Is it on Google Play?</summary>
-      <p>Not yet. The current version is a debug APK distributed via GitHub Releases — install it
-      with <code>adb install</code> or by copying the APK to the device (enable "unknown
-      sources").</p>
+      <summary>Is it on Google Play?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Not yet. The current version is distributed via GitHub Releases — install it with
+      <code>adb install</code> or by copying the APK to the device (enable "unknown sources").</p>
     </details>
 
     <details class="faq">
-      <summary>Does it need WiFi?</summary>
+      <summary>Does it need WiFi?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
       <p>It works over WiFi with automatic mDNS discovery. You can also connect over USB as a
       native accessory (AOA) — plug the cable and tap the system's prompt, no <code>adb</code>
-      required. See the repository for details, including a fallback for Mac apps without AOA
-      support yet.</p>
+      required. See the repository for a fallback covering Mac apps without AOA support yet.</p>
     </details>
 
     <details class="faq">
-      <summary>Does it work on any Android tablet or phone?</summary>
+      <summary>Does it work on any Android tablet or phone?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
       <p>Requires Android 8.0 (API 26) or higher. Tested on real hardware (Samsung Galaxy Tab
       S9 FE+ and Galaxy Note10+/Tab S7+, Android 12 through 16), but not yet across a wide range
       of devices — touch/scroll/cursor are implemented but with limited field validation so far.
-      Note: v0.0.7 and earlier crash on launch on Android 12–13 (API 30-33); use v0.0.8 or
-      newer. Thanks to <a href="https://github.com/gaeaearth">@gaeaearth</a> for reporting it and
-      <a href="https://github.com/edoardomich">@edoardomich</a> for the fix.</p>
+      Note: v0.0.7 and earlier crash on launch on Android 12–13 (API 30-33); use v0.0.8 or newer
+      (fixed in <a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>).</p>
     </details>
 
     <details class="faq">
-      <summary>Does it change anything on the Mac app?</summary>
-      <p>No. The Mac side stays the original OpenDisplay app, with no modification whatsoever —
-      any protocol mismatch is this project's responsibility, not upstream's.</p>
+      <summary>Does it change anything on the Mac app?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>No modification whatsoever — any protocol mismatch is this project's responsibility, not upstream's.</p>
     </details>
 
     <details class="faq">
-      <summary>What's the license?</summary>
+      <summary>What's the license?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
       <p>GPL-3.0, same as the original project. Open source, free to use including commercially;
       distributed modified versions must remain open source under the same license.</p>
     </details>
   </section>
 
   <section id="contribute">
-    <h2>Contribute</h2>
+    <p class="eyebrow">Contribute</p>
+    <h2>Issues and pull requests welcome.</h2>
     <p class="section-sub">
-      Issues, bug reports and pull requests are welcome on the
+      Bug reports and PRs go on the
       <a href="https://github.com/josepacelli/opendisplay-android">GitHub repository</a>, which
-      also has the architecture, protocol and build details.
+      also has the architecture, protocol and build details. Careful bug reports are what
+      actually make a one-person side project better — thanks to everyone below.
     </p>
-    <p class="section-sub">
-      Special thanks to <a href="https://github.com/gaeaearth">@gaeaearth</a>, this project's most
-      active early tester — reported the launch crash on Android 12/13, the screen-timeout and
-      reconnect issues (and the idle-screen fix that followed), and the misleading
-      manual-connection hint. Careful bug reports like these are what actually make a
-      one-person side project better. And to
-      <a href="https://github.com/edoardomich">@edoardomich</a>, who fixed that Android 12/13
-      launch crash (<a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>).
-      And to <a href="https://github.com/jpbhdrey">@jpbhdrey</a>, who built the USB accessory
-      (AOA) transport (<a href="https://github.com/josepacelli/opendisplay-android/pull/33">#33</a>)
-      — plug the cable, tap the system's prompt, done, no developer options or <code>adb</code>
-      dance required. And to <a href="https://github.com/dyss1992">@dyss1992</a>, who reported the
-      Mirror mode aspect ratio bug on some Qualcomm decoders with a controlled before/after
-      comparison that made the root cause obvious
-      (<a href="https://github.com/josepacelli/opendisplay-android/issues/44">#44</a>), and
-      suggested the immersive fullscreen mode
-      (<a href="https://github.com/josepacelli/opendisplay-android/issues/45">#45</a>).
-    </p>
+    <div class="credits">
+      <div class="credit">
+        <img src="https://github.com/gaeaearth.png" alt="" loading="lazy">
+        <p><strong>@gaeaearth</strong> — this project's most active early tester: the Android
+        12/13 launch crash (<a href="https://github.com/josepacelli/opendisplay-android/issues/4">#4</a>),
+        the screen-timeout/reconnect issues (<a href="https://github.com/josepacelli/opendisplay-android/issues/10">#10</a>,
+        also the idle-screen fix in <a href="https://github.com/josepacelli/opendisplay-android/issues/28">#28</a>),
+        and the misleading manual-connection hint (<a href="https://github.com/josepacelli/opendisplay-android/issues/18">#18</a>).</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/edoardomich.png" alt="" loading="lazy">
+        <p><strong>@edoardomich</strong> — fixed the Android 12/13 launch crash
+        (<a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>).</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/jpbhdrey.png" alt="" loading="lazy">
+        <p><strong>@jpbhdrey</strong> — built the USB accessory (AOA) transport
+        (<a href="https://github.com/josepacelli/opendisplay-android/pull/33">#33</a>): plug the
+        cable, tap the system's prompt, done, no developer options or <code>adb</code> dance required.</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/dyss1992.png" alt="" loading="lazy">
+        <p><strong>@dyss1992</strong> — reported the Mirror mode aspect ratio bug on some
+        Qualcomm decoders with a controlled before/after comparison that made the root cause
+        obvious (<a href="https://github.com/josepacelli/opendisplay-android/issues/44">#44</a>),
+        and suggested the immersive fullscreen mode
+        (<a href="https://github.com/josepacelli/opendisplay-android/issues/45">#45</a>).</p>
+      </div>
+    </div>
   </section>
 
   <section id="support">
     <div class="support-eyebrow">Support the project</div>
-    <div class="support-logo"><span class="kofi-badge-icon">☕</span> <strong>Ko-fi</strong></div>
+    <div class="support-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v6a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9h2a2 2 0 010 4h-2"></path><path d="M8 2v2M11 2v2M14 2v2"></path></svg>
+      <strong>Ko-fi</strong>
+    </div>
     <h2 class="support-title">If OpenDisplay Android saved you a monitor, consider buying me a coffee.</h2>
     <div class="support-copy">
       <p>
-        OpenDisplay Android is a one-person side project, built and maintained by me,
-        <a href="https://github.com/josepacelli">Jose Pacelli</a>. It's not a company. It's just me,
-        in my spare time.
-      </p>
-      <p>
-        It's free and open source — an unofficial, separately maintained Android client that
-        speaks the same protocol as the original <a href="https://opendisplay.app/">OpenDisplay</a>
-        Mac/iOS project. No account, no subscription, no dongle, put together evenings and
-        weekends.
+        This is a one-person side project, built and maintained by me,
+        <a href="https://github.com/josepacelli">Jose Pacelli</a>, evenings and weekends — not a
+        company.
       </p>
       <p>
         Supporting me on Ko-fi keeps this project maintained and free for everyone, including
@@ -294,7 +367,7 @@ CGVirtualDisplay
       <a href="privacy.html">Privacy Policy</a>
       <a href="https://opendisplay.app/">Original project (Mac/iOS)</a>
     </div>
-    <div>Not affiliated with the maintainer of the original OpenDisplay project. Speaks the same protocol, maintained separately.</div>
+    <div class="disclaimer">Not affiliated with the maintainer of the original OpenDisplay project. Speaks the same protocol, maintained separately.</div>
   </div>
 </footer>
 
