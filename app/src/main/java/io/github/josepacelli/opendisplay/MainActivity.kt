@@ -58,6 +58,10 @@ class MainActivity : ComponentActivity() {
      * app should auto-enter picture-in-picture (#51). */
     private var sessionConnected = false
 
+    /** User's Settings choice for auto Picture-in-Picture (#53); [onUserLeaveHint]
+     * checks this before entering PiP. */
+    private var pipEnabled = true
+
     /** Accessory received before the service finished binding; opened once bound. */
     private var pendingAccessory: UsbAccessory? = null
 
@@ -161,6 +165,9 @@ class MainActivity : ComponentActivity() {
                                 applyImmersiveFullscreen(connected && immersiveFullscreen)
                             }
                     }
+                    LaunchedEffect(receiver) {
+                        receiver.pipEnabled.collect { pipEnabled = it }
+                    }
                     ReceiverScreen(receiver = receiver)
                 }
             }
@@ -182,7 +189,7 @@ class MainActivity : ComponentActivity() {
      * owns that window, so it's view-only until the user taps back in. */
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (!sessionConnected) return
+        if (!sessionConnected || !pipEnabled) return
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) return
         enterPictureInPictureMode(pictureInPictureParams())
     }

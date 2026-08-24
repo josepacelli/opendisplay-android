@@ -112,6 +112,7 @@ class PhoneReceiver(context: Context) {
         private const val KEY_SHOW_NOTIFICATION = "showNotification"
         private const val KEY_SHOW_PERF_HUD = "showPerfHud"
         private const val KEY_IMMERSIVE_FULLSCREEN = "immersiveFullscreen"
+        private const val KEY_PIP_ENABLED = "pipEnabled"
         private const val DEFAULT_SERVICE_NAME = "OpenDisplay Android"
         private const val WATCHDOG_TIMEOUT_MS = 5_000L
         private const val PING_INTERVAL_MS = 2_000L
@@ -230,6 +231,12 @@ class PhoneReceiver(context: Context) {
      * user-editable in Settings (#45). Defaults off. */
     private val _immersiveFullscreen = MutableStateFlow(loadImmersiveFullscreen())
     val immersiveFullscreen: StateFlow<Boolean> = _immersiveFullscreen.asStateFlow()
+
+    /** Whether [io.github.josepacelli.opendisplay.MainActivity] should auto-enter
+     * Picture-in-Picture when the user leaves the app while connected (#51) —
+     * user-editable in Settings (#53). Defaults on. */
+    private val _pipEnabled = MutableStateFlow(loadPipEnabled())
+    val pipEnabled: StateFlow<Boolean> = _pipEnabled.asStateFlow()
 
     /** Clock sync (NTP-style): offset = macClock - ourClock, from the ping/pong
      * sample with the lowest RTT. Mirrors PhoneReceiver.swift exactly. */
@@ -438,6 +445,17 @@ class PhoneReceiver(context: Context) {
         appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_IMMERSIVE_FULLSCREEN, enabled)
+            .apply()
+    }
+
+    /** Turn auto Picture-in-Picture on/off and persist the choice.
+     * @param enabled whether to auto-enter PiP when leaving the app while connected. */
+    fun setPipEnabled(enabled: Boolean) {
+        if (enabled == _pipEnabled.value) return
+        _pipEnabled.value = enabled
+        appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_PIP_ENABLED, enabled)
             .apply()
     }
 
@@ -917,6 +935,12 @@ class PhoneReceiver(context: Context) {
     private fun loadImmersiveFullscreen(): Boolean {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean(KEY_IMMERSIVE_FULLSCREEN, false)
+    }
+
+    /** @return the persisted auto-PiP preference, defaulting to `true`. */
+    private fun loadPipEnabled(): Boolean {
+        val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_PIP_ENABLED, true)
     }
 
     /** @return the current wall-clock time in milliseconds, as a [Double] (wire messages use floats). */
