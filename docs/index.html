@@ -94,12 +94,24 @@
     </p>
     <div class="diagram">
       <div class="diagram-bar"><span></span><span></span><span></span></div>
-      <div class="diagram-body"><span class="lbl">MAC (server, original OpenDisplay app)</span>              <span class="lbl">ANDROID (this project)</span>
-CGVirtualDisplay
-  <span class="arrow">→</span> ScreenCaptureKit <span class="arrow">→</span> VideoToolbox <span class="hl">H.264</span>
-  <span class="arrow">→</span> TCP [4-byte length][Annex-B frame] <span class="arrow">══════→</span> listens on <span class="hl">:9000</span>
-                                                        <span class="arrow">→</span> MediaCodec <span class="arrow">→</span> SurfaceView
-  <span class="arrow">←</span> control JSON (hello, touch, scroll, ping) <span class="arrow">════</span></div>
+      <div class="diagram-grid">
+        <div class="diagram-col">
+          <p class="diagram-heading">MAC <span>(server, original OpenDisplay app)</span></p>
+          <ol>
+            <li>CGVirtualDisplay</li>
+            <li><span class="arrow">→</span> ScreenCaptureKit <span class="arrow">→</span> VideoToolbox <span class="hl">H.264</span></li>
+            <li><span class="arrow">→</span> TCP <span class="dim">[4-byte length][Annex-B frame]</span> <span class="arrow">═══→</span></li>
+            <li><span class="arrow">←</span> control JSON <span class="dim">(hello, touch, scroll, ping)</span> <span class="arrow">═══</span></li>
+          </ol>
+        </div>
+        <div class="diagram-col">
+          <p class="diagram-heading">ANDROID <span>(this project)</span></p>
+          <ol>
+            <li>listens on <span class="hl">:9000</span></li>
+            <li><span class="arrow">→</span> MediaCodec <span class="arrow">→</span> SurfaceView</li>
+          </ol>
+        </div>
+      </div>
     </div>
   </section>
 
