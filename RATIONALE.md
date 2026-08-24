@@ -67,6 +67,11 @@ Organized by file, in source order.
 - **`drainOutput`**, `releaseOutputBuffer(outIndex, true)`: render ASAP.
 - **`drainOutput`**, the fallback `else -> return`: covers `INFO_TRY_AGAIN_LATER` or the
   deprecated buffers-changed code.
+- **`drainOutput`**, `if (!spsDimensionsKnown) onSizeChanged(...)`: only trust
+  `INFO_OUTPUT_FORMAT_CHANGED` when the SPS itself couldn't be parsed. Some decoders (Qualcomm's
+  C2 AVC decoder, at least — see issue #44) echo `MediaFormat`'s configured seed size back through
+  this callback instead of the real coded size, which would otherwise silently overwrite a
+  correct SPS-derived aspect ratio with a wrong one on every frame.
 
 ## net/PhoneReceiver.kt
 
