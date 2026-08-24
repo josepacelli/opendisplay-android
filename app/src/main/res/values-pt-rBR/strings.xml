@@ -24,6 +24,10 @@
     <string name="settings_notification_show">Mostrar notificação</string>
     <string name="settings_section_perf_hud">Overlay de desempenho</string>
     <string name="settings_perf_hud_show">Mostrar overlay de desempenho</string>
+    <string name="settings_perf_hud_position_top_start">Superior esquerdo</string>
+    <string name="settings_perf_hud_position_top_end">Superior direito</string>
+    <string name="settings_perf_hud_position_bottom_start">Inferior esquerdo</string>
+    <string name="settings_perf_hud_position_bottom_end">Inferior direito</string>
     <string name="settings_section_immersive">Tela cheia</string>
     <string name="settings_immersive_show">Ocultar barras de status e navegação enquanto conectado</string>
     <string name="settings_section_pip">Picture-in-Picture</string>
