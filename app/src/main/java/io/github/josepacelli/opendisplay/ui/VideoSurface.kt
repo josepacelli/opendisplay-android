@@ -26,6 +26,11 @@ import kotlin.math.abs
 
 private const val TOUCH_SLOP_PX = 24f
 
+/** Desyncs a single decoder instance must hit before the "unstable connection" banner shows —
+ * an isolated blip recovers on its own via the keyframe request alone and isn't worth alarming
+ * the user over; only sustained trouble is. */
+private const val UNSTABLE_BANNER_THRESHOLD = 3
+
 /** Decoded frame size, once MediaCodec reports its real output format. */
 data class VideoDims(val width: Int, val height: Int)
 
@@ -76,7 +81,12 @@ fun VideoSurface(
                             expectedWidth = currentReceiver.devicePixelsWide.takeIf { it > 0 } ?: 1280,
                             expectedHeight = currentReceiver.devicePixelsHigh.takeIf { it > 0 } ?: 720,
                             onSizeChanged = { w, h -> onDimsChanged(VideoDims(w, h)) },
-                            onError = { currentReceiver.requestKeyframe() },
+                            onError = { desyncCount ->
+                                currentReceiver.requestKeyframe()
+                                if (desyncCount > UNSTABLE_BANNER_THRESHOLD) {
+                                    currentReceiver.notifyConnectionUnstable()
+                                }
+                            },
                         )
                         currentReceiver.requestKeyframe()
                     }

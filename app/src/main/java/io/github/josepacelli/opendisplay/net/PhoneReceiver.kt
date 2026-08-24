@@ -120,6 +120,9 @@ class PhoneReceiver(context: Context) {
         private const val WATCHDOG_TIMEOUT_MS = 5_000L
         private const val PING_INTERVAL_MS = 2_000L
         private const val READ_BUFFER_SIZE = 64 * 1024
+        private const val UNSTABLE_CLEAR_DELAY_MS = 3_000L
+        private const val RTT_UNSTABLE_MS = 250.0
+        private const val E2E_P95_UNSTABLE_MS = 500.0
         private val ALLOWED_STORE_HOSTS = setOf("github.com", "play.google.com")
 
         /** The `store` field on `updateRequired` comes from an unauthenticated peer (the Mac
@@ -198,6 +201,13 @@ class PhoneReceiver(context: Context) {
 
     private val _peerSignal = MutableStateFlow<PeerSignal?>(null)
     val peerSignal: StateFlow<PeerSignal?> = _peerSignal.asStateFlow()
+
+    /** True while the video pipeline has recently had to resync (dropped/corrupt frame,
+     * see [io.github.josepacelli.opendisplay.video.VideoDecoder]) — drives the "unstable
+     * connection" banner. Clears itself [UNSTABLE_CLEAR_DELAY_MS] after the last resync. */
+    private val _connectionUnstable = MutableStateFlow(false)
+    val connectionUnstable: StateFlow<Boolean> = _connectionUnstable.asStateFlow()
+    private var unstableClearJob: Job? = null
 
     private val _perf = MutableStateFlow(PerfStats())
     val perf: StateFlow<PerfStats> = _perf.asStateFlow()
@@ -502,6 +512,18 @@ class PhoneReceiver(context: Context) {
         sendControl(JSONObject().put("type", WireMessage.KEYFRAME_REQUEST))
     }
 
+    /** Flags the connection as unstable for the UI banner — call whenever the video
+     * pipeline had to resync. Re-arms the auto-clear timer on every call, so the banner
+     * stays up as long as resyncs keep happening and only clears once they stop. */
+    fun notifyConnectionUnstable() {
+        _connectionUnstable.value = true
+        unstableClearJob?.cancel()
+        unstableClearJob = scope.launch {
+            delay(UNSTABLE_CLEAR_DELAY_MS)
+            _connectionUnstable.value = false
+        }
+    }
+
     /** Shared by the loopback and WiFi listeners — [resolveBindAddress] is re-evaluated on every
      * retry so e.g. the WiFi listener starts working as soon as WiFi comes up, even if it wasn't
      * available yet when [start] was called. [onNoAddress] fires on every retry with no address
@@ -616,6 +638,8 @@ class PhoneReceiver(context: Context) {
                 link = null
                 outputStream = null
                 _connected.value = false
+                unstableClearJob?.cancel()
+                _connectionUnstable.value = false
                 _status.value = appContext.getString(R.string.status_listening, lastBoundPort)
                 try {
                     current.close()
@@ -631,6 +655,8 @@ class PhoneReceiver(context: Context) {
         link = null
         outputStream = null
         _connected.value = false
+        unstableClearJob?.cancel()
+        _connectionUnstable.value = false
         try {
             current.close()
         } catch (_: IOException) {
@@ -663,7 +689,9 @@ class PhoneReceiver(context: Context) {
 
     /** One-second sliding window: fps + true end-to-end latency (Mac capture
      * to here), using the clock offset from [handlePong]. Simple counters,
-     * not a generic metrics system — there is only ever one peer.
+     * not a generic metrics system — there is only ever one peer. Also feeds
+     * [notifyConnectionUnstable] — high RTT or e2e latency is a WiFi problem
+     * the user notices as lag before it ever corrupts a frame (see RATIONALE.md).
      * @param captureMs the frame's Mac-side capture timestamp, or `null` if the frame carried none. */
     private fun recordPerfSample(captureMs: Long?) {
         framesThisWindow++
@@ -676,12 +704,14 @@ class PhoneReceiver(context: Context) {
         if (elapsedMs < 1000) return
 
         val sorted = e2eWindow.sorted()
+        val e2eP95 = percentile(sorted, 0.95)
         _perf.value = PerfStats(
             fps = (framesThisWindow * 1000 / elapsedMs).toInt(),
             e2eP50Ms = percentile(sorted, 0.5),
-            e2eP95Ms = percentile(sorted, 0.95),
+            e2eP95Ms = e2eP95,
             rttMs = lastRttMs,
         )
+        if (lastRttMs > RTT_UNSTABLE_MS || e2eP95 > E2E_P95_UNSTABLE_MS) notifyConnectionUnstable()
         framesThisWindow = 0
         e2eWindow.clear()
         perfWindowStartMs = System.currentTimeMillis()
