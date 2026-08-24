@@ -187,22 +187,14 @@ class MainActivity : ComponentActivity() {
         enterPictureInPictureMode(pictureInPictureParams())
     }
 
-    /** Sized to the current session's aspect ratio, clamped to what Android's
-     * PiP window accepts (between 1:2.39 and 2.39:1). */
+    /** Sized to the current session's aspect ratio, via [pipAspectRatio]. */
     private fun pictureInPictureParams(): PictureInPictureParams {
         val receiver = boundReceiver
-        val w = receiver?.devicePixelsWide ?: 0
-        val h = receiver?.devicePixelsHigh ?: 0
-        val aspect = if (w > 0 && h > 0) Rational(w, h) else Rational(16, 9)
-        return PictureInPictureParams.Builder().setAspectRatio(clampToPipRange(aspect)).build()
-    }
-
-    /** @param aspect the ratio to clamp. @return [aspect] unchanged if already
-     * within PiP's accepted range, otherwise the nearest edge of that range. */
-    private fun clampToPipRange(aspect: Rational): Rational = when {
-        aspect.toFloat() > 2.39f -> Rational(239, 100)
-        aspect.toFloat() < 1f / 2.39f -> Rational(100, 239)
-        else -> aspect
+        val (numerator, denominator) = pipAspectRatio(
+            receiver?.devicePixelsWide ?: 0,
+            receiver?.devicePixelsHigh ?: 0,
+        )
+        return PictureInPictureParams.Builder().setAspectRatio(Rational(numerator, denominator)).build()
     }
 
     /** Unbinds from [ReceiverService], if bound — the service itself keeps running. */
