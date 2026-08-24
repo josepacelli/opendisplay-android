@@ -33,6 +33,9 @@ Organized by file, in source order.
   up to 60s away (see `VideoDecoder`'s `onError` doc in [VideoDecoder.kt](app/src/main/java/io/github/josepacelli/opendisplay/video/VideoDecoder.kt)).
   Every surface recreation (e.g. backgrounding the app and returning) hit exactly this with no
   error involved, so ask immediately instead of waiting.
+- **`surfaceCreated`**, why only `onError` (not this same `requestKeyframe()` call) also flips
+  `notifyConnectionUnstable()`: a fresh surface is routine (backgrounding/PiP/rotation), not a sign
+  of a flaky connection — the banner is for the case that's actually diagnostic of bad WiFi (#61).
 - **`handleTouchAndScroll`**, `UNDECIDED` state, single pointer under slop: still inside the slop
   — stay `UNDECIDED` and keep waiting.
 - **`handleTouchAndScroll`**, `UNDECIDED` state, pointer lifted: lifted before crossing slop or
@@ -53,6 +56,9 @@ Organized by file, in source order.
 - **`IdleContent`**, the status-dot `Row`: this content only renders while disconnected, so the
   dot mirrors the iOS `IdleView`'s semantics (green = connected) by being orange here by
   construction, not a value read from `status`.
+- **`ReceiverScreen`**, `ConnectionUnstableBanner`'s `Alignment.BottomCenter`: the top of the
+  screen already hosts `PeerSignalBanner` and `PerfHud` — bottom keeps this transient pill from
+  fighting either for space when a resync happens to land alongside one of them.
 
 ## video/VideoDecoder.kt
 
@@ -78,6 +84,18 @@ Organized by file, in source order.
   stream catches up) can silently evict frames before they ever reach this decoder. Same failure
   mode as a dropped NAL — broken reference chain, garbled picture — so it gets the same fix: notice
   the gap in the monotonic `seq` and ask for a keyframe instead of waiting up to 60s.
+- **`submit`**, `justReconfigured` suppressing the gap check for one frame: `reconfigure()` runs
+  synchronously (MediaCodec `configure`/`start`), and frames keep arriving from the Mac the whole
+  time it's blocking — confirmed live (#61), the very next frame after a fresh IDR routinely has a
+  seq gap from that alone, no WiFi trouble involved. Reporting that one as a resync would show the
+  "unstable connection" banner on every normal reconnect, so only gaps *after* the first
+  post-reconfigure frame count as real signal.
+- **`signalDesync`**, `desyncCount` resetting after `DESYNC_EPISODE_GAP_MS`: the "unstable
+  connection" banner (#61) only means something if it tracks a *current* run of trouble — a
+  lifetime total would eventually cross the banner's threshold from isolated blips scattered
+  across an hour-long session, none of which reflect the connection's state right now. Resetting
+  after 5s of quiet makes the count mean "how bad is it in this episode", which is what the banner
+  is supposed to answer.
 
 ## net/PhoneReceiver.kt
 
@@ -91,6 +109,16 @@ Organized by file, in source order.
   no sharing across reconnects, so no locking is needed around its mutable state.
 - **`readLoop`**, the `finally` guard (`if (link === current)`): a newer session replacing this
   one already closed `current` via `closeConnection()` — this avoids racing that close.
+- **`recordPerfSample`**, the `RTT_UNSTABLE_MS`/`E2E_P95_UNSTABLE_MS` check: a second, independent
+  trigger for the "unstable connection" banner (#61) alongside `VideoDecoder`'s desync count —
+  reported live against a real degraded connection where the picture visibly lagged ("demorava
+  para atualizar") without ever corrupting a frame, so the desync-count path alone never fired.
+  RTT/e2e latency catch a WiFi problem before it gets bad enough to actually drop a frame. `fps`
+  deliberately isn't part of this check: there's no universal "normal" fps to compare against —
+  it's whatever rate the Mac chooses to encode at — so a flat floor would either be a guess or need
+  a per-session baseline, both more complexity than this warranted. 250ms RTT / 500ms e2e p95 are
+  well past what a healthy LAN WiFi connection should ever show, on the same order of magnitude as
+  the existing `WATCHDOG_TIMEOUT_MS`/keyframe-request bounds elsewhere in this file.
 - **`handleControlJson`**, the `WireMessage.PING` branch: this is the Mac's OWN liveness ping
   (separate from ours) — it carries its send-side health (`encDrops`/`netDrops`/`pending`/`capFps`)
   for its own HUD equivalent. Confirmed live against the real Mac app: it pings every ~2s

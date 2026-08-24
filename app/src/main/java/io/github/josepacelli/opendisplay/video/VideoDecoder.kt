@@ -37,19 +37,19 @@ import java.nio.ByteBuffer
  * @param expectedHeight seed height in pixels, used until the real size arrives.
  * @param onSizeChanged called with the real coded size, once known (from the SPS, or the
  * decoder's own output format when the SPS couldn't be parsed).
- * @param onError called (at most once a second) when the codec needs a fresh keyframe
- * (decoder error, or a gap in [VideoFrame.seq] — frames the receiver's buffer dropped
- * under a burst, e.g. after a WiFi stall) — mirrors the iOS receiver's
- * `requestKeyframeIfNeeded`. Without this, a broken reference chain would otherwise leave
- * the picture garbled/frozen until the Mac's own periodic keyframe, up to 60s away (see
- * `Mac/MacSender.swift`).
+ * @param onError called (at most once a second) with the running desync count for this
+ * decoder instance when the codec needs a fresh keyframe (decoder error, or a gap in
+ * [VideoFrame.seq] — frames the receiver's buffer dropped under a burst, e.g. after a WiFi
+ * stall) — mirrors the iOS receiver's `requestKeyframeIfNeeded`. Without this, a broken
+ * reference chain would otherwise leave the picture garbled/frozen until the Mac's own
+ * periodic keyframe, up to 60s away (see `Mac/MacSender.swift`).
  */
 class VideoDecoder(
     private val surface: Surface,
     private var expectedWidth: Int,
     private var expectedHeight: Int,
     private val onSizeChanged: (width: Int, height: Int) -> Unit = { _, _ -> },
-    private val onError: () -> Unit = {},
+    private val onError: (desyncCount: Int) -> Unit = {},
 ) {
     private var codec: MediaCodec? = null
     private var currentSps: ByteArray? = null
@@ -57,6 +57,8 @@ class VideoDecoder(
     private var spsDimensionsKnown = false
     private var lastErrorSignalAt = 0L
     private var lastSeq: Long? = null
+    private var justReconfigured = false
+    private var desyncCount = 0
     private val bufferInfo = MediaCodec.BufferInfo()
 
     /** Update the seed size (e.g. after a rotation) before the next SPS/PPS
@@ -88,10 +90,11 @@ class VideoDecoder(
         }
         if (headersChanged) reconfigure()
         val expectedSeq = lastSeq?.plus(1)
-        if (!headersChanged && expectedSeq != null && frame.seq != expectedSeq) {
+        if (!headersChanged && !justReconfigured && expectedSeq != null && frame.seq != expectedSeq) {
             Log.warn("video frame gap (expected seq $expectedSeq, got ${frame.seq}) — requesting keyframe")
             signalDesync()
         }
+        justReconfigured = headersChanged
         lastSeq = frame.seq
         if (frame.vclNalus.isEmpty()) return
         val mediaCodec = codec ?: return
@@ -172,13 +175,18 @@ class VideoDecoder(
      * dropped/corrupt access unit, not necessarily a broken codec — so just
      * ask the Mac for a fresh IDR. Debounced to at most once a second: a
      * stuck codec/persistent backlog would otherwise fail every single frame
-     * and spam keyframe requests. */
+     * and spam keyframe requests.
+     *
+     * [desyncCount] resets after a quiet spell ([DESYNC_EPISODE_GAP_MS]) — it counts
+     * a run of *recent* trouble, not a lifetime total, so a couple of isolated blips an
+     * hour apart never add up to looking like sustained instability. */
     private fun signalDesync() {
         val now = System.currentTimeMillis()
-        if (now - lastErrorSignalAt > 1000) {
-            lastErrorSignalAt = now
-            onError()
-        }
+        if (now - lastErrorSignalAt <= 1000) return
+        if (now - lastErrorSignalAt > DESYNC_EPISODE_GAP_MS) desyncCount = 0
+        lastErrorSignalAt = now
+        desyncCount++
+        onError(desyncCount)
     }
 
     /** Renders every output buffer the codec currently has ready, and reports a
@@ -218,5 +226,6 @@ class VideoDecoder(
 
     companion object {
         private val START_CODE = byteArrayOf(0, 0, 0, 1)
+        private const val DESYNC_EPISODE_GAP_MS = 5_000L
     }
 }

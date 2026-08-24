@@ -61,6 +61,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val status by receiver.status.collectAsState()
     val connected by receiver.connected.collectAsState()
     val peerSignal by receiver.peerSignal.collectAsState()
+    val connectionUnstable by receiver.connectionUnstable.collectAsState()
     val showPerfHud by receiver.showPerfHud.collectAsState()
     val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
@@ -111,6 +112,10 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
 
         if (connected && showPerfHud) {
             PerfHud(receiver, modifier = Modifier.align(Alignment.TopStart).padding(8.dp))
+        }
+
+        if (connectionUnstable) {
+            ConnectionUnstableBanner(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 24.dp))
         }
     }
 
@@ -233,6 +238,25 @@ private fun PeerSignalBanner(signal: PeerSignal, modifier: Modifier = Modifier) 
             color = Color.White,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+/** Transient pill shown while [PhoneReceiver.connectionUnstable] is true — the video
+ * pipeline just had to resync (#61), most often a flaky WiFi connection to the Mac.
+ * @param modifier applied to the pill surface. */
+@Composable
+private fun ConnectionUnstableBanner(modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier.padding(horizontal = 16.dp),
+        color = Color(0xFFFFA000),
+        shape = MaterialTheme.shapes.medium,
+    ) {
+        Text(
+            text = stringResource(R.string.connection_unstable_warning),
+            color = Color.Black,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
         )
     }
 }

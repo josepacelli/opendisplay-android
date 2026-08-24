@@ -42,6 +42,7 @@
     <string name="settings_cancel">Cancelar</string>
 
     <string name="peer_replaced_warning">Conexión tomada por otro dispositivo (%1$s). Si no fuiste tú, revisa quién está en la red.</string>
+    <string name="connection_unstable_warning">Conexión inestable — la imagen puede fallar hasta recuperarse.</string>
 
     <string name="settings_section_about">Acerca de</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
