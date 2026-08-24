@@ -62,6 +62,9 @@ data class VideoFrame(
     val vclNalus: List<ByteArray>,
     val captureMs: Long?,
     val sendMs: Long?,
+    /** Monotonically increasing per-connection index, assigned at dispatch — lets the
+     * decoder notice a frame the buffer dropped before it got here (see RATIONALE.md). */
+    val seq: Long = 0,
 )
 
 /** Something the Mac peer told us that the UI needs to surface — version mismatch,
@@ -182,6 +185,7 @@ class PhoneReceiver(context: Context) {
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
     val videoFrames: SharedFlow<VideoFrame> = _videoFrames.asSharedFlow()
+    private var nextVideoFrameSeq = 0L
 
     private val _cursorPosition = MutableStateFlow<CursorPosition?>(null)
     val cursorPosition: StateFlow<CursorPosition?> = _cursorPosition.asStateFlow()
@@ -645,7 +649,14 @@ class PhoneReceiver(context: Context) {
         if (parsed.vclNalus.isEmpty() && parsed.sps == null && parsed.pps == null) return
         val telemetry = AnnexB.parseTelemetry(parsed.telemetryPrefix)
         _videoFrames.tryEmit(
-            VideoFrame(parsed.sps, parsed.pps, parsed.vclNalus, telemetry.captureMs, telemetry.sendMs),
+            VideoFrame(
+                parsed.sps,
+                parsed.pps,
+                parsed.vclNalus,
+                telemetry.captureMs,
+                telemetry.sendMs,
+                seq = nextVideoFrameSeq++,
+            ),
         )
         recordPerfSample(telemetry.captureMs)
     }

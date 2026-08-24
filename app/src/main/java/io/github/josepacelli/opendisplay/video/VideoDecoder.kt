@@ -38,9 +38,11 @@ import java.nio.ByteBuffer
  * @param onSizeChanged called with the real coded size, once known (from the SPS, or the
  * decoder's own output format when the SPS couldn't be parsed).
  * @param onError called (at most once a second) when the codec needs a fresh keyframe
- * (error or desync) — mirrors the iOS receiver's `requestKeyframeIfNeeded`. Without this,
- * a decoder error would otherwise leave the picture frozen until the Mac's own periodic
- * keyframe, up to 60s away (see `Mac/MacSender.swift`).
+ * (decoder error, or a gap in [VideoFrame.seq] — frames the receiver's buffer dropped
+ * under a burst, e.g. after a WiFi stall) — mirrors the iOS receiver's
+ * `requestKeyframeIfNeeded`. Without this, a broken reference chain would otherwise leave
+ * the picture garbled/frozen until the Mac's own periodic keyframe, up to 60s away (see
+ * `Mac/MacSender.swift`).
  */
 class VideoDecoder(
     private val surface: Surface,
@@ -54,6 +56,7 @@ class VideoDecoder(
     private var currentPps: ByteArray? = null
     private var spsDimensionsKnown = false
     private var lastErrorSignalAt = 0L
+    private var lastSeq: Long? = null
     private val bufferInfo = MediaCodec.BufferInfo()
 
     /** Update the seed size (e.g. after a rotation) before the next SPS/PPS
@@ -84,6 +87,12 @@ class VideoDecoder(
             }
         }
         if (headersChanged) reconfigure()
+        val expectedSeq = lastSeq?.plus(1)
+        if (!headersChanged && expectedSeq != null && frame.seq != expectedSeq) {
+            Log.warn("video frame gap (expected seq $expectedSeq, got ${frame.seq}) — requesting keyframe")
+            signalDesync()
+        }
+        lastSeq = frame.seq
         if (frame.vclNalus.isEmpty()) return
         val mediaCodec = codec ?: return
         queueAccessUnit(mediaCodec, frame.vclNalus)

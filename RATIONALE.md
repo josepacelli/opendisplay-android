@@ -72,6 +72,12 @@ Organized by file, in source order.
   C2 AVC decoder, at least — see issue #44) echo `MediaFormat`'s configured seed size back through
   this callback instead of the real coded size, which would otherwise silently overwrite a
   correct SPS-derived aspect ratio with a wrong one on every frame.
+- **`submit`**, the `frame.seq` gap check: `queueAccessUnit`'s dequeue-side drop (above) isn't the
+  only place a frame can go missing — `PhoneReceiver.videoFrames` is a `SharedFlow` with a 4-frame
+  `DROP_OLDEST` buffer, so a burst after a WiFi stall (many frames arriving at once once the TCP
+  stream catches up) can silently evict frames before they ever reach this decoder. Same failure
+  mode as a dropped NAL — broken reference chain, garbled picture — so it gets the same fix: notice
+  the gap in the monotonic `seq` and ask for a keyframe instead of waiting up to 60s.
 
 ## net/PhoneReceiver.kt
 
