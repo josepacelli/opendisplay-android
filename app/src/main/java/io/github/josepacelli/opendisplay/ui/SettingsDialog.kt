@@ -3,8 +3,12 @@ package io.github.josepacelli.opendisplay.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -25,8 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.josepacelli.opendisplay.R
@@ -61,12 +63,6 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     var draftName by remember { mutableStateOf(currentName) }
     var detailsExpanded by remember { mutableStateOf(false) }
     val addressHint = remember { receiver.localAddressHint() }
-    val context = LocalContext.current
-    val uriHandler = LocalUriHandler.current
-    val versionName = remember {
-        @Suppress("DEPRECATION")
-        runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull()
-    }
     val wide = LocalConfiguration.current.screenWidthDp.dp >= WIDE_LAYOUT_MIN_WIDTH
 
     AlertDialog(
@@ -79,30 +75,56 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                     .verticalScroll(rememberScrollState()),
             ) {
                 if (wide) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            NotificationSection(showNotification, receiver::setShowNotification)
-                            PerfHudSection(showPerfHud, receiver::setShowPerfHud)
-                        }
-                        Column(modifier = Modifier.weight(1f)) {
-                            ImmersiveSection(immersiveFullscreen, receiver::setImmersiveFullscreen)
-                            NameSection(draftName) { draftName = it }
-                        }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    ) {
+                        NotificationSection(
+                            showNotification,
+                            receiver::setShowNotification,
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
+                            stretchDivider = true,
+                        )
+                        ImmersiveSection(
+                            immersiveFullscreen,
+                            receiver::setImmersiveFullscreen,
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
+                            stretchDivider = true,
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    ) {
+                        PerfHudSection(
+                            showPerfHud,
+                            receiver::setShowPerfHud,
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
+                            stretchDivider = true,
+                        )
+                        NameSection(
+                            draftName,
+                            onNameChange = { draftName = it },
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
+                            stretchDivider = true,
+                        )
                     }
                 } else {
                     NotificationSection(showNotification, receiver::setShowNotification)
                     PerfHudSection(showPerfHud, receiver::setShowPerfHud)
                     ImmersiveSection(immersiveFullscreen, receiver::setImmersiveFullscreen)
-                    NameSection(draftName) { draftName = it }
+                    NameSection(draftName, onNameChange = { draftName = it })
                 }
 
-                DetailsSection(expanded = detailsExpanded, onToggleExpanded = { detailsExpanded = !detailsExpanded }) {
+                DetailsSection(
+                    expanded = detailsExpanded,
+                    onToggleExpanded = { detailsExpanded = !detailsExpanded },
+                    showDivider = false,
+                ) {
                     StatusSection(connected)
                     NetworkSection(addressHint)
                     HowToConnectSection()
                 }
-
-                AboutSection(versionName) { uriHandler.openUri("https://github.com/josepacelli/opendisplay-android") }
             }
         },
         confirmButton = {
@@ -137,44 +159,79 @@ private fun StatusSection(connected: Boolean) {
 }
 
 /** @param showNotification current toggle state.
- * @param onToggle called with the new state when the switch is flipped. */
+ * @param onToggle called with the new state when the switch is flipped.
+ * @param modifier applied to the section.
+ * @param stretchDivider whether to push the trailing divider to the bottom of [modifier]'s
+ * height, so it lines up with the section next to it in the wide two-column layout. */
 @Composable
-private fun NotificationSection(showNotification: Boolean, onToggle: (Boolean) -> Unit) {
-    SettingsSection(stringResource(R.string.settings_section_notification)) {
+private fun NotificationSection(
+    showNotification: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    stretchDivider: Boolean = false,
+) {
+    SettingsSection(stringResource(R.string.settings_section_notification), modifier, stretchDivider = stretchDivider) {
         ToggleRow(stringResource(R.string.settings_notification_show), showNotification, onToggle)
     }
 }
 
 /** @param showPerfHud current toggle state.
- * @param onToggle called with the new state when the switch is flipped. */
+ * @param onToggle called with the new state when the switch is flipped.
+ * @param modifier applied to the section.
+ * @param stretchDivider see [NotificationSection]. */
 @Composable
-private fun PerfHudSection(showPerfHud: Boolean, onToggle: (Boolean) -> Unit) {
-    SettingsSection(stringResource(R.string.settings_section_perf_hud)) {
+private fun PerfHudSection(
+    showPerfHud: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    stretchDivider: Boolean = false,
+) {
+    SettingsSection(stringResource(R.string.settings_section_perf_hud), modifier, stretchDivider = stretchDivider) {
         ToggleRow(stringResource(R.string.settings_perf_hud_show), showPerfHud, onToggle)
     }
 }
 
 /** @param immersiveFullscreen current toggle state.
- * @param onToggle called with the new state when the switch is flipped. */
+ * @param onToggle called with the new state when the switch is flipped.
+ * @param modifier applied to the section.
+ * @param stretchDivider see [NotificationSection]. */
 @Composable
-private fun ImmersiveSection(immersiveFullscreen: Boolean, onToggle: (Boolean) -> Unit) {
-    SettingsSection(stringResource(R.string.settings_section_immersive)) {
+private fun ImmersiveSection(
+    immersiveFullscreen: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    stretchDivider: Boolean = false,
+) {
+    SettingsSection(stringResource(R.string.settings_section_immersive), modifier, stretchDivider = stretchDivider) {
         ToggleRow(stringResource(R.string.settings_immersive_show), immersiveFullscreen, onToggle)
     }
 }
 
 /** @param draftName the name field's current (unsaved) value.
- * @param onNameChange called on every keystroke. */
+ * @param onNameChange called on every keystroke.
+ * @param modifier applied to the section.
+ * @param stretchDivider see [NotificationSection]. */
 @Composable
-private fun NameSection(draftName: String, onNameChange: (String) -> Unit) {
-    SettingsSection(stringResource(R.string.settings_section_name)) {
-        Text(text = stringResource(R.string.settings_name_label), style = MaterialTheme.typography.bodySmall)
-        OutlinedTextField(
-            value = draftName,
-            onValueChange = onNameChange,
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-        )
+private fun NameSection(
+    draftName: String,
+    onNameChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    stretchDivider: Boolean = false,
+) {
+    SettingsSection(stringResource(R.string.settings_section_name), modifier, stretchDivider = stretchDivider) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(R.string.settings_name_label),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f).padding(end = 8.dp),
+            )
+            OutlinedTextField(
+                value = draftName,
+                onValueChange = onNameChange,
+                singleLine = true,
+                modifier = Modifier.weight(1f),
+            )
+        }
     }
 }
 
@@ -209,40 +266,35 @@ private fun HowToConnectSection() {
     }
 }
 
-/** @param versionName this build's version name, or `null` if it couldn't be read.
- * @param onGithubClick called when the GitHub link is tapped. */
-@Composable
-private fun AboutSection(versionName: String?, onGithubClick: () -> Unit) {
-    SettingsSection(stringResource(R.string.settings_section_about), showDivider = false) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = versionName?.let { stringResource(R.string.about_version, it) }
-                    ?: stringResource(R.string.about_version_unknown),
-                style = MaterialTheme.typography.labelSmall,
-            )
-            TextButton(onClick = onGithubClick) { Text(stringResource(R.string.about_github)) }
-        }
-    }
-}
-
 /** A titled group of rows inside [SettingsDialog], with an optional trailing divider.
  * @param title section heading.
+ * @param modifier applied to the section's outer column.
  * @param showDivider whether to draw a divider below the section.
+ * @param stretchDivider whether to push the divider to the bottom of [modifier]'s height
+ * (via a weighted spacer) instead of drawing it right after the content — only valid when
+ * [modifier] gives this section a bounded height, e.g. `Modifier.weight(1f).fillMaxHeight()`
+ * inside a `Row(Modifier.height(IntrinsicSize.Max))`, so a shorter section's divider still
+ * lines up with the taller section next to it.
  * @param content the section's rows. */
 @Composable
-private fun SettingsSection(title: String, showDivider: Boolean = true, content: @Composable () -> Unit) {
-    Column(modifier = Modifier.padding(top = 12.dp)) {
+private fun SettingsSection(
+    title: String,
+    modifier: Modifier = Modifier,
+    showDivider: Boolean = true,
+    stretchDivider: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    Column(modifier = modifier.padding(top = 12.dp)) {
         Text(
             text = title,
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary,
         )
         Column(modifier = Modifier.padding(top = 6.dp)) { content() }
-        if (showDivider) HorizontalDivider(modifier = Modifier.padding(top = 12.dp))
+        if (showDivider) {
+            if (stretchDivider) Spacer(modifier = Modifier.weight(1f))
+            HorizontalDivider(modifier = Modifier.padding(top = 12.dp))
+        }
     }
 }
 
@@ -284,9 +336,15 @@ private fun LabeledRow(label: String, value: String) {
  * connect) — nothing in here is editable, so it doesn't need to always be visible.
  * @param expanded whether the group's content is currently shown.
  * @param onToggleExpanded called when the header is tapped.
+ * @param showDivider whether to draw a divider below the section.
  * @param content the collapsible sections. */
 @Composable
-private fun DetailsSection(expanded: Boolean, onToggleExpanded: () -> Unit, content: @Composable () -> Unit) {
+private fun DetailsSection(
+    expanded: Boolean,
+    onToggleExpanded: () -> Unit,
+    showDivider: Boolean = true,
+    content: @Composable () -> Unit,
+) {
     Column(modifier = Modifier.padding(top = 12.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth().clickable(onClick = onToggleExpanded),
@@ -307,6 +365,6 @@ private fun DetailsSection(expanded: Boolean, onToggleExpanded: () -> Unit, cont
         if (expanded) {
             Column(modifier = Modifier.padding(top = 6.dp)) { content() }
         }
-        HorizontalDivider(modifier = Modifier.padding(top = 12.dp))
+        if (showDivider) HorizontalDivider(modifier = Modifier.padding(top = 12.dp))
     }
 }

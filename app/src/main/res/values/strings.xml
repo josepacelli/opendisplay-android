@@ -24,11 +24,11 @@
     <string name="settings_notification_show">Show notification</string>
     <string name="settings_section_perf_hud">Performance overlay</string>
     <string name="settings_perf_hud_show">Show performance overlay</string>
-    <string name="settings_section_immersive">Immersive fullscreen</string>
+    <string name="settings_section_immersive">Fullscreen</string>
     <string name="settings_immersive_show">Hide status and navigation bars while connected</string>
     <string name="settings_section_details">Details</string>
     <string name="settings_section_name">Name</string>
-    <string name="settings_name_label">Name announced on the network (shown in the Mac\'s connection menu):</string>
+    <string name="settings_name_label">Device name</string>
     <string name="settings_section_network">Network</string>
     <string name="settings_manual_hint">This device\'s address on the network, shown for troubleshooting. WiFi auto-discovery (mDNS) is the only way the Mac connects — there\'s no manual-entry option in the Mac app:</string>
     <string name="settings_address_unavailable">IP address unavailable — check your WiFi connection.</string>
@@ -45,4 +45,6 @@
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
     <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
     <string name="about_github">GitHub</string>
+    <string name="about_mac_app">Mac app</string>
+    <string name="about_close">Close</string>
 </resources>

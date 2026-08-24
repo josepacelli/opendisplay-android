@@ -2,6 +2,7 @@ package io.github.josepacelli.opendisplay.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -64,6 +65,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
     var showSettings by remember { mutableStateOf(false) }
+    var showAbout by remember { mutableStateOf(false) }
 
     LaunchedEffect(connected) {
         if (connected) showSettings = false
@@ -96,7 +98,11 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
 
         if (!connected) {
             Box(modifier = Modifier.fillMaxSize().background(Color.Black))
-            IdleContent(status = status, onSettingsClick = { showSettings = true })
+            IdleContent(
+                status = status,
+                onSettingsClick = { showSettings = true },
+                onAboutClick = { showAbout = true },
+            )
         }
 
         peerSignal?.let { signal ->
@@ -111,6 +117,9 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     if (showSettings) {
         SettingsDialog(receiver = receiver, onDismiss = { showSettings = false })
     }
+    if (showAbout) {
+        AboutDialog(onDismiss = { showAbout = false })
+    }
 }
 
 /**
@@ -120,9 +129,10 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
  *
  * @param status human-readable listener status to show next to the dot.
  * @param onSettingsClick called when the Settings button is tapped.
+ * @param onAboutClick called when the About button is tapped.
  */
 @Composable
-private fun IdleContent(status: String, onSettingsClick: () -> Unit) {
+private fun IdleContent(status: String, onSettingsClick: () -> Unit, onAboutClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.widthIn(max = 420.dp).padding(24.dp),
@@ -161,8 +171,13 @@ private fun IdleContent(status: String, onSettingsClick: () -> Unit) {
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
-        OutlinedButton(onClick = onSettingsClick) {
-            Text(stringResource(R.string.settings_title))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            OutlinedButton(onClick = onSettingsClick) {
+                Text(stringResource(R.string.settings_title))
+            }
+            OutlinedButton(onClick = onAboutClick) {
+                Text(stringResource(R.string.settings_section_about))
+            }
         }
     }
 }

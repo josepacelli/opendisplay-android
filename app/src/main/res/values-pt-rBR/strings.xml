@@ -24,11 +24,11 @@
     <string name="settings_notification_show">Mostrar notificação</string>
     <string name="settings_section_perf_hud">Overlay de desempenho</string>
     <string name="settings_perf_hud_show">Mostrar overlay de desempenho</string>
-    <string name="settings_section_immersive">Tela cheia imersiva</string>
+    <string name="settings_section_immersive">Tela cheia</string>
     <string name="settings_immersive_show">Ocultar barras de status e navegação enquanto conectado</string>
     <string name="settings_section_details">Detalhes</string>
     <string name="settings_section_name">Nome</string>
-    <string name="settings_name_label">Nome anunciado na rede (aparece no menu de conexão do Mac):</string>
+    <string name="settings_name_label">Nome do equipamento</string>
     <string name="settings_section_network">Rede</string>
     <string name="settings_manual_hint">Endereço deste aparelho na rede, mostrado só para depuração. A descoberta automática por WiFi (mDNS) é a única forma do Mac conectar — não existe opção de digitar isso manualmente no app do Mac:</string>
     <string name="settings_address_unavailable">Endereço IP indisponível — verifique a conexão WiFi.</string>
@@ -45,4 +45,6 @@
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
     <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
     <string name="about_github">GitHub</string>
+    <string name="about_mac_app">App do Mac</string>
+    <string name="about_close">Fechar</string>
 </resources>
