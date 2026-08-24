@@ -26,6 +26,7 @@
     <string name="settings_perf_hud_show">Show performance overlay</string>
     <string name="settings_section_immersive">Immersive fullscreen</string>
     <string name="settings_immersive_show">Hide status and navigation bars while connected</string>
+    <string name="settings_section_details">Details</string>
     <string name="settings_section_name">Name</string>
     <string name="settings_name_label">Name announced on the network (shown in the Mac\'s connection menu):</string>
     <string name="settings_section_network">Network</string>
