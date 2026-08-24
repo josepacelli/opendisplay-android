@@ -26,6 +26,8 @@
     <string name="settings_perf_hud_show">Mostrar superposición de rendimiento</string>
     <string name="settings_section_immersive">Pantalla completa</string>
     <string name="settings_immersive_show">Ocultar barras de estado y navegación mientras esté conectado</string>
+    <string name="settings_section_pip">Imagen en imagen</string>
+    <string name="settings_pip_show">Entrar automáticamente en imagen en imagen al salir de la app estando conectado</string>
     <string name="settings_section_details">Detalles</string>
     <string name="settings_section_name">Nombre</string>
     <string name="settings_name_label">Nombre del dispositivo</string>
