@@ -98,6 +98,11 @@ original project's author.
 - [@jpbhdrey](https://github.com/jpbhdrey) built the USB accessory (AOA) transport
   ([#33](https://github.com/josepacelli/opendisplay-android/pull/33)) — plug the cable, tap the
   system's prompt, no developer options or `adb` dance required.
+- [@dyss1992](https://github.com/dyss1992) reported the Mirror mode aspect ratio bug on some
+  Qualcomm decoders, with a controlled before/after comparison that made the root cause obvious
+  ([#44](https://github.com/josepacelli/opendisplay-android/issues/44)), and suggested the
+  immersive fullscreen mode
+  ([#45](https://github.com/josepacelli/opendisplay-android/issues/45)).
 
 ## License
 
