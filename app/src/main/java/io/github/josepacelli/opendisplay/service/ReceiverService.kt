@@ -179,7 +179,7 @@ class ReceiverService : Service() {
             val disconnectIntent = PendingIntent.getService(
                 this,
                 0,
-                Intent(this, ReceiverService::class.java).setAction(ACTION_DISCONNECT),
+                Intent(this, ReceiverService::class.java).setAction(ACTION_DISCONNECT).setPackage(packageName),
                 PendingIntent.FLAG_IMMUTABLE,
             )
             builder.addAction(
