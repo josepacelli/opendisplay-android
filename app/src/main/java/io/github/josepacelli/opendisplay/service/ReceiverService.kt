@@ -163,11 +163,10 @@ class ReceiverService : Service() {
             )
             manager.createNotificationChannel(channel)
         }
-        val openIntent = Intent(this, MainActivity::class.java)
         val contentIntent = PendingIntent.getActivity(
             this,
             0,
-            openIntent,
+            Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE,
         )
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
