@@ -9,7 +9,8 @@ over WiFi or USB, with touch and scroll input — speaking the same network prot
 official app, with no changes required on the Mac side.
 
 [Website & download](https://opendisplay.jpmo.dev.br) ·
-[How it works](#how-it-works) · [Build](#build) · [Usage](#usage) ·
+[How it works](#how-it-works) · [Screenshots](#screenshots) · [Features](#features) ·
+[Compare](#compare) · [Install](#install) · [Build](#build) · [Usage](#usage) ·
 [License](#license)
 
 The original OpenDisplay project only ships an iOS/iPadOS client. This repository is the Android
@@ -30,6 +31,13 @@ CGVirtualDisplay
 The Android device listens and the Mac connects — that's what lets it work over WiFi with zero
 manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
 
+## Screenshots
+
+<img src="docs/screenshots/tablet-mirroring-site.jpeg" alt="Android tablet on a desk, mirroring this project's website from the Mac over WiFi" width="420"> <img src="docs/screenshots/app-home.jpeg" alt="OpenDisplay Android app home screen, listening on port 9000 and waiting for the Mac to connect" width="420">
+
+No staged mockups — real hardware, real WiFi connection. More shots (settings, mid-session
+mirroring, the Mac's Displays panel) on the [website](https://opendisplay.jpmo.dev.br/#screenshots).
+
 ## Features
 
 - H.264 video reception via `MediaCodec` (hardware decoding), straight to a `Surface`.
@@ -44,6 +52,18 @@ manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
 - Optional performance HUD (fps, end-to-end latency, RTT).
 - Adaptive UI (Jetpack Compose) for phone and tablet.
 
+## Compare
+
+For using an Android tablet as an external monitor, against the best-known alternatives:
+
+| | OpenDisplay Android | Duet Display | Spacedesk |
+|---|---|---|---|
+| Price | Free | Paid | Free (core) |
+| Open source | GPL-3.0 | No | No |
+| Account required | No | Yes | No |
+| Same protocol as OpenDisplay Mac | Yes | No | No |
+| Central server | None | Yes | No |
+
 ## Requirements
 
 - Android 8.0 (API 26) or higher. **v0.0.7 and earlier crash on launch on Android 12–13
@@ -52,6 +72,16 @@ manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
   [@edoardomich](https://github.com/edoardomich) in [#5](https://github.com/josepacelli/opendisplay-android/pull/5)).
 - Same WiFi network as the Mac (or a USB connection via `adb forward` — see below).
 - The original [OpenDisplay](https://github.com/peetzweg/opendisplay) Mac app, unmodified.
+- Tested on real hardware (Samsung Galaxy Tab S9 FE+ and Galaxy Note10+/Tab S7+, Android 12
+  through 16) — not yet across a wide range of devices.
+
+## Install
+
+Download the latest APK from [GitHub Releases](https://github.com/josepacelli/opendisplay-android/releases/latest)
+and sideload it (`adb install`, or copy it to the device and enable "unknown sources").
+
+The Google Play version is in closed testing — want in as a tester? Email
+[josepacelli@gmail.com](mailto:josepacelli@gmail.com).
 
 ## Build
 
@@ -108,6 +138,12 @@ original project's author.
   ([#44](https://github.com/josepacelli/opendisplay-android/issues/44)), and suggested the
   immersive fullscreen mode
   ([#45](https://github.com/josepacelli/opendisplay-android/issues/45)).
+
+## Support
+
+One-person side project, built evenings and weekends, not a company. If it saved you from buying
+a monitor, [a tip on Ko-fi](https://ko-fi.com/Q3D5259MWT) helps keep it maintained and free for
+everyone.
 
 ## License
 
