@@ -7,13 +7,17 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
@@ -25,6 +29,13 @@ import io.github.josepacelli.opendisplay.video.VideoDecoder
 import kotlin.math.abs
 
 private const val TOUCH_SLOP_PX = 24f
+
+/** Distance change (px) a two-finger gesture needs before it's recognized as a pinch
+ * rather than a two-finger scroll — mirrors [TOUCH_SLOP_PX]'s role for one-finger drags. */
+private const val PINCH_SLOP_PX = 24f
+
+private const val MIN_ZOOM = 1f
+private const val MAX_ZOOM = 5f
 
 /** Desyncs a single decoder instance must hit before the "unstable connection" banner shows —
  * an isolated blip recovers on its own via the keyframe request alone and isn't worth alarming
@@ -58,6 +69,8 @@ fun VideoSurface(
     val currentReceiver by rememberUpdatedState(receiver)
     val currentDims by rememberUpdatedState(videoDims)
     val onDimsChanged by rememberUpdatedState(onVideoDimsChanged)
+    val zoomScale = remember { mutableFloatStateOf(1f) }
+    val zoomPan = remember { mutableStateOf(Offset.Zero) }
 
     LaunchedEffect(receiver) {
         receiver.videoFrames.collect { frame -> decoder?.submit(frame) }
@@ -66,10 +79,19 @@ fun VideoSurface(
     AndroidView(
         modifier = modifier
             .pointerInput(receiver) {
-                handleTouchAndScroll(
+                handleGestures(
                     getVideoDims = { currentDims },
                     receiver = currentReceiver,
+                    zoomScale = zoomScale,
+                    zoomPan = zoomPan,
                 )
+            }
+            .graphicsLayer {
+                scaleX = zoomScale.floatValue
+                scaleY = zoomScale.floatValue
+                transformOrigin = TransformOrigin(0f, 0f)
+                translationX = zoomPan.value.x
+                translationY = zoomPan.value.y
             },
         factory = { context ->
             SurfaceView(context).apply {
@@ -111,26 +133,48 @@ fun VideoSurface(
 /**
  * Single-finger drag -> `touch` (began/moved/ended). A second finger joining
  * before the first has moved past a small slop switches the whole gesture to
- * `scroll` (centroid delta of every active pointer) instead — this avoids
- * ever sending `began` for what turns out to be a two-finger scroll, which
- * would otherwise leave the Mac's mouse button stuck down (see
- * `Mac/InputInjector.swift`: `began` maps straight to `mouseDown`).
+ * a two-finger mode instead — this avoids ever sending `began` for what turns
+ * out to be a two-finger gesture, which would otherwise leave the Mac's mouse
+ * button stuck down (see `Mac/InputInjector.swift`: `began` maps straight to
+ * `mouseDown`). The two-finger gesture itself stays undecided between
+ * `scroll` (centroid delta of every active pointer, sent to the Mac) and a
+ * local pinch-zoom of the video (finger-spread delta, never sent to the Mac)
+ * until one of them clears its own slop — spread wins ties, since it's
+ * checked first.
+ *
+ * While zoomed, single-finger touch positions are mapped back through the
+ * current zoom/pan before being normalized, so touch injection keeps landing
+ * on the same Mac-screen point the finger is visually over.
  *
  * @param getVideoDims current decoded video size, needed to convert scroll deltas to video pixels.
  * @param receiver where resulting `touch`/`scroll` messages are sent.
+ * @param zoomScale current pinch-zoom scale (1f = fit, no zoom); mutated as pinches happen.
+ * @param zoomPan current pinch-zoom pan offset in screen px; mutated as pinches happen.
  */
-private suspend fun PointerInputScope.handleTouchAndScroll(
+private suspend fun PointerInputScope.handleGestures(
     getVideoDims: () -> VideoDims?,
     receiver: PhoneReceiver,
+    zoomScale: MutableState<Float>,
+    zoomPan: MutableState<Offset>,
 ) {
     awaitEachGesture {
         val first = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Main)
         val startPos = first.position
         var committedMode: GestureMode = GestureMode.UNDECIDED
         var lastCentroid = startPos
+        var twoFingerStartCentroid = Offset.Zero
+        var twoFingerStartDistance = 0f
+        var zoomStartScale = 1f
+        var zoomStartPan = Offset.Zero
+        var zoomStartDistance = 0f
+        var zoomStartCentroid = Offset.Zero
 
-        fun normalized(x: Float, y: Float) = (x / size.width).toDouble().coerceIn(0.0, 1.0) to
-            (y / size.height).toDouble().coerceIn(0.0, 1.0)
+        fun normalized(x: Float, y: Float): Pair<Double, Double> {
+            val contentX = (x - zoomPan.value.x) / zoomScale.value
+            val contentY = (y - zoomPan.value.y) / zoomScale.value
+            return (contentX / size.width).toDouble().coerceIn(0.0, 1.0) to
+                (contentY / size.height).toDouble().coerceIn(0.0, 1.0)
+        }
 
         while (true) {
             val event = awaitPointerEvent()
@@ -139,8 +183,9 @@ private suspend fun PointerInputScope.handleTouchAndScroll(
             when (committedMode) {
                 GestureMode.UNDECIDED -> when {
                     pressed.size >= 2 -> {
-                        committedMode = GestureMode.SCROLL
-                        lastCentroid = centroidOf(pressed)
+                        committedMode = GestureMode.TWO_FINGER_UNDECIDED
+                        twoFingerStartCentroid = centroidOf(pressed)
+                        twoFingerStartDistance = distanceOf(pressed)
                     }
 
                     pressed.size == 1 -> {
@@ -160,6 +205,26 @@ private suspend fun PointerInputScope.handleTouchAndScroll(
                         receiver.sendTouch("began", nx, ny)
                         receiver.sendTouch("ended", nx, ny)
                         return@awaitEachGesture
+                    }
+                }
+
+                GestureMode.TWO_FINGER_UNDECIDED -> {
+                    if (pressed.size < 2) return@awaitEachGesture
+                    val centroid = centroidOf(pressed)
+                    val distance = distanceOf(pressed)
+                    when {
+                        abs(distance - twoFingerStartDistance) > PINCH_SLOP_PX -> {
+                            committedMode = GestureMode.ZOOM
+                            zoomStartScale = zoomScale.value
+                            zoomStartPan = zoomPan.value
+                            zoomStartDistance = distance
+                            zoomStartCentroid = centroid
+                        }
+
+                        (centroid - twoFingerStartCentroid).getDistance() > TOUCH_SLOP_PX -> {
+                            committedMode = GestureMode.SCROLL
+                            lastCentroid = centroid
+                        }
                     }
                 }
 
@@ -189,14 +254,33 @@ private suspend fun PointerInputScope.handleTouchAndScroll(
                     }
                     lastCentroid = centroid
                 }
+
+                GestureMode.ZOOM -> {
+                    if (pressed.size < 2) return@awaitEachGesture
+                    val centroid = centroidOf(pressed)
+                    val distance = distanceOf(pressed)
+                    val newScale = (zoomStartScale * (distance / zoomStartDistance))
+                        .coerceIn(MIN_ZOOM, MAX_ZOOM)
+                    val anchorContent = (zoomStartCentroid - zoomStartPan) / zoomStartScale
+                    val newPan = centroid - anchorContent * newScale
+                    val maxPanX = 0f
+                    val minPanX = size.width - size.width * newScale
+                    val maxPanY = 0f
+                    val minPanY = size.height - size.height * newScale
+                    zoomScale.value = newScale
+                    zoomPan.value = Offset(
+                        newPan.x.coerceIn(minPanX, maxPanX),
+                        newPan.y.coerceIn(minPanY, maxPanY),
+                    )
+                }
             }
         }
     }
 }
 
-/** Which wire message a gesture in progress will become, once enough pointers/movement
- * make that clear — see [handleTouchAndScroll]. */
-private enum class GestureMode { UNDECIDED, TOUCH, SCROLL }
+/** Which wire message (or local effect, for [GestureMode.ZOOM]) a gesture in progress
+ * will become, once enough pointers/movement make that clear — see [handleGestures]. */
+private enum class GestureMode { UNDECIDED, TWO_FINGER_UNDECIDED, TOUCH, SCROLL, ZOOM }
 
 /** Average position of every active pointer, for multi-finger scroll.
  * @param changes the currently active pointers.
@@ -210,3 +294,9 @@ private fun centroidOf(changes: List<PointerInputChange>): Offset {
     }
     return Offset(x / changes.size, y / changes.size)
 }
+
+/** Spread between the first two active pointers, for pinch-zoom recognition.
+ * @param changes the currently active pointers.
+ * @return their distance apart, in local coordinates, or 0f if fewer than two are active. */
+private fun distanceOf(changes: List<PointerInputChange>): Float =
+    if (changes.size < 2) 0f else (changes[0].position - changes[1].position).getDistance()
