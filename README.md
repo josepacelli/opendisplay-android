@@ -8,7 +8,7 @@ role of Sidecar/Duet Display: a real extended display (not just mirroring), low-
 over WiFi or USB, with touch and scroll input — speaking the same network protocol as the
 official app, with no changes required on the Mac side.
 
-[Website & download](https://josepacelli.github.io/opendisplay-android) ·
+[Website & download](https://opendisplay.jpmo.dev.br) ·
 [How it works](#how-it-works) · [Build](#build) · [Usage](#usage) ·
 [License](#license)
 
