@@ -49,6 +49,8 @@ mirroring, the Mac's Displays panel) on the [website](https://opendisplay.jpmo.d
 - H.264 video reception via `MediaCodec` (hardware decoding), straight to a `Surface`.
 - Handshake, ping/pong and mDNS discovery compatible with the original Mac sender's protocol.
 - One-finger touch becomes a mouse click/drag; a two-finger gesture becomes scroll.
+- Pinch to zoom into the video, client-side — works in both Mirror and Extend mode, no wire
+  protocol change needed, touch still lands on the right spot on the Mac while zoomed.
 - Overlaid remote cursor (dot or decoded sprite, mirroring the Mac's cursor).
 - Foreground service: the connection survives the app going to background and resumes correctly
   after unlocking the screen.
