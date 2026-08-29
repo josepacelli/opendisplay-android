@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question / discuss an idea
+    url: https://github.com/josepacelli/opendisplay-android/discussions
+    about: For usage questions, connection troubleshooting, or ideas that aren't a concrete bug/feature yet.
+  - name: Website & download
+    url: https://opendisplay.jpmo.dev.br
+    about: Screenshots, install instructions, and the FAQ.

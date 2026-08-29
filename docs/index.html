@@ -4,20 +4,106 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OpenDisplay Android — open-source second monitor for your Mac</title>
-<meta name="description" content="Use your Android tablet or phone as a real second monitor for your Mac. Open-source client, same protocol as the original OpenDisplay, no account, no subscription.">
+<meta name="description" content="Turn an Android tablet or phone into a real extended second monitor for your Mac over WiFi or USB. Free, open-source alternative to Duet Display, Sidecar and Spacedesk — no account, no subscription.">
+<meta name="keywords" content="Android second monitor, Android external display, Mac second screen, Duet Display alternative, Sidecar alternative, Spacedesk alternative, Android tablet as second monitor, extended display Android, use Android as Mac display">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/">
+
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://opendisplay.jpmo.dev.br/">
+<meta property="og:site_name" content="OpenDisplay Android">
 <meta property="og:title" content="OpenDisplay Android — open-source second monitor for your Mac">
-<meta property="og:description" content="Use your Android tablet or phone as a real second monitor for your Mac. Open-source client, same protocol as the original OpenDisplay, no account, no subscription.">
+<meta property="og:description" content="Turn an Android tablet or phone into a real extended second monitor for your Mac over WiFi or USB. Free, open-source alternative to Duet Display, Sidecar and Spacedesk — no account, no subscription.">
 <meta property="og:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
 <meta property="og:image:width" content="1600">
 <meta property="og:image:height" content="900">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="OpenDisplay Android — open-source second monitor for your Mac">
-<meta name="twitter:description" content="Use your Android tablet or phone as a real second monitor for your Mac. Open-source client, same protocol as the original OpenDisplay, no account, no subscription.">
+<meta name="twitter:description" content="Turn an Android tablet or phone into a real extended second monitor for your Mac over WiFi or USB. Free, open-source alternative to Duet Display, Sidecar and Spacedesk — no account, no subscription.">
 <meta name="twitter:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenDisplay Android",
+  "operatingSystem": "Android 8.0+",
+  "applicationCategory": "UtilitiesApplication",
+  "description": "Open-source Android client that turns a tablet or phone into a real extended second monitor for a Mac over WiFi or USB, speaking the same protocol as the original OpenDisplay Mac app.",
+  "url": "https://opendisplay.jpmo.dev.br/",
+  "downloadUrl": "https://github.com/josepacelli/opendisplay-android/releases/latest",
+  "license": "https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Jose Pacelli",
+    "url": "https://github.com/josepacelli"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this the same app as OpenDisplay for iOS?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It's an independent client, written from scratch in Kotlin, that implements the same network protocol to interoperate with the original Mac app. The official project only ships an iOS/iPadOS client."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it on Google Play?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Google Play version is currently in closed testing. Meanwhile, it's distributed via GitHub Releases — install it with adb install or by copying the APK to the device (enable unknown sources)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it need WiFi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It works over WiFi with automatic mDNS discovery. You can also connect over USB as a native accessory (AOA) — plug the cable and tap the system's prompt, no adb required. That native USB path currently needs a development fork of the Mac app; against the published Mac app, USB works through an adb-forward fallback covered in the repository."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on any Android tablet or phone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Requires Android 8.0 (API 26) or higher. Tested on real hardware (Samsung Galaxy Tab S9 FE+ and Galaxy Note10+/Tab S7+, Android 12 through 16), but not yet across a wide range of devices."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it change anything on the Mac app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No modification whatsoever — any protocol mismatch is this project's responsibility, not upstream's."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the license?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GPL-3.0, same as the original project. Open source, free to use including commercially; distributed modified versions must remain open source under the same license."
+      }
+    }
+  ]
+}
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -58,7 +144,8 @@
       An unofficial, open-source Android client for
       <a href="https://opendisplay.app/">OpenDisplay</a> — the original project only ships an
       iOS/iPadOS client. This one speaks the same network protocol, with no changes required on
-      the Mac app.
+      the Mac app. A free alternative to Duet Display, Sidecar and Spacedesk for anyone who
+      already owns an Android tablet and wants an extended display, not just mirroring.
     </p>
     <div class="specs">
       <span>Android 8.0+ (API 26)</span>
