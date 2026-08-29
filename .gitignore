@@ -38,8 +38,9 @@ local.properties
 /.playwright-mcp/
 /docs/icon-proposta/
 
-# APKs soltos na raiz — a release oficial vai pro GitHub Releases, não pro git.
+# APKs/AABs soltos na raiz — a release oficial vai pro GitHub Releases, não pro git.
 /*.apk
+/*.aab
 
 # Scripts pessoais de instalação via ADB — só local, não versionados (pedido do usuário).
 /install.sh
