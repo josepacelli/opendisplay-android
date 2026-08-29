@@ -1,7 +1,13 @@
 # OpenDisplay Android
 
+[![Latest release](https://img.shields.io/github/v/release/josepacelli/opendisplay-android?label=release)](https://github.com/josepacelli/opendisplay-android/releases/latest)
+[![Tests](https://github.com/josepacelli/opendisplay-android/actions/workflows/tests.yml/badge.svg)](https://github.com/josepacelli/opendisplay-android/actions/workflows/tests.yml)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/josepacelli/opendisplay-android?style=flat)](https://github.com/josepacelli/opendisplay-android/stargazers)
+
 **Turn your spare Android tablet into a second monitor for your Mac** — free, open source, no
-subscription.
+subscription. A Duet Display, Sidecar and Spacedesk alternative for anyone who already owns an
+Android tablet or phone and wants a real extended display, not just screen mirroring.
 
 Unofficial Android client for [OpenDisplay](https://github.com/peetzweg/opendisplay), filling the
 role of Sidecar/Duet Display: a real extended display (not just mirroring), low-latency H.264,
