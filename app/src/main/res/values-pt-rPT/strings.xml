@@ -32,6 +32,8 @@
     <string name="settings_immersive_show">Ocultar barras de estado e navegação enquanto ligado</string>
     <string name="settings_section_pip">Picture-in-Picture</string>
     <string name="settings_pip_show">Entrar automaticamente em Picture-in-Picture ao sair da app ligado</string>
+    <string name="settings_section_video">Vídeo</string>
+    <string name="settings_zoom_pinch">Ampliar o vídeo com o gesto de pinça</string>
     <string name="settings_section_details">Detalhes</string>
     <string name="settings_section_name">Nome</string>
     <string name="settings_name_label">Nome do equipamento</string>

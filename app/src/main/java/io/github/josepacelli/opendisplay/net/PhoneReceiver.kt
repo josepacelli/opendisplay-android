@@ -120,6 +120,7 @@ class PhoneReceiver(context: Context) {
         private const val KEY_PERF_HUD_POSITION = "perfHudPosition"
         private const val KEY_IMMERSIVE_FULLSCREEN = "immersiveFullscreen"
         private const val KEY_PIP_ENABLED = "pipEnabled"
+        private const val KEY_ZOOM_ENABLED = "zoomEnabled"
         private const val DEFAULT_SERVICE_NAME = "OpenDisplay Android"
         private const val WATCHDOG_TIMEOUT_MS = 5_000L
         private const val PING_INTERVAL_MS = 2_000L
@@ -261,6 +262,12 @@ class PhoneReceiver(context: Context) {
      * user-editable in Settings (#53). Defaults on. */
     private val _pipEnabled = MutableStateFlow(loadPipEnabled())
     val pipEnabled: StateFlow<Boolean> = _pipEnabled.asStateFlow()
+
+    /** Whether [io.github.josepacelli.opendisplay.ui.VideoSurface] should treat a two-finger
+     * spread as a local pinch-zoom of the video instead of always scrolling — user-editable
+     * in Settings. Defaults on; disabling it also resets any active zoom back to 100%. */
+    private val _zoomEnabled = MutableStateFlow(loadZoomEnabled())
+    val zoomEnabled: StateFlow<Boolean> = _zoomEnabled.asStateFlow()
 
     /** Clock sync (NTP-style): offset = macClock - ourClock, from the ping/pong
      * sample with the lowest RTT. Mirrors PhoneReceiver.swift exactly. */
@@ -491,6 +498,17 @@ class PhoneReceiver(context: Context) {
         appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_PIP_ENABLED, enabled)
+            .apply()
+    }
+
+    /** Turn pinch-to-zoom on/off and persist the choice.
+     * @param enabled whether [io.github.josepacelli.opendisplay.ui.VideoSurface] should zoom on a two-finger pinch. */
+    fun setZoomEnabled(enabled: Boolean) {
+        if (enabled == _zoomEnabled.value) return
+        _zoomEnabled.value = enabled
+        appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_ZOOM_ENABLED, enabled)
             .apply()
     }
 
@@ -1012,6 +1030,12 @@ class PhoneReceiver(context: Context) {
     private fun loadPipEnabled(): Boolean {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean(KEY_PIP_ENABLED, true)
+    }
+
+    /** @return the persisted pinch-to-zoom preference, defaulting to `true`. */
+    private fun loadZoomEnabled(): Boolean {
+        val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_ZOOM_ENABLED, true)
     }
 
     /** @return the current wall-clock time in milliseconds, as a [Double] (wire messages use floats). */
