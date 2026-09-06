@@ -40,6 +40,15 @@ Organized by file, in source order.
   — stay `UNDECIDED` and keep waiting.
 - **`handleTouchAndScroll`**, `UNDECIDED` state, pointer lifted: lifted before crossing slop or
   gaining a second pointer — a tap.
+- **`VideoSurface`**, the `pointerInput(receiver, zoomEnabled)` driver: `awaitEachGesture` is the
+  public loop that re-arms one gesture at a time (it drains leftover pointers in between), but it
+  rethrows a `CancellationException` that escapes a gesture — and that kills the whole touch
+  handler for the rest of the session ("touch dies after a pinch until reconnect"). The outer
+  `while` + `try/catch` re-arms it: a cancelled gesture is swallowed and the handler restarted as
+  long as the scope is still active; only a real scope cancellation (node removed) is rethrown.
+- **`VideoSurface`**, the `LaunchedEffect(zoomEnabled)` reset: turning pinch-zoom off mid-session
+  leaves the video stuck zoomed/panned otherwise — scale/pan are remembered Compose state that
+  nothing else resets.
 
 ## ui/ReceiverScreen.kt
 

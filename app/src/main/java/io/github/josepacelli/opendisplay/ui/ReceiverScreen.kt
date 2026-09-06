@@ -66,6 +66,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val showPerfHud by receiver.showPerfHud.collectAsState()
     val perfHudPosition by receiver.perfHudPosition.collectAsState()
     val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
+    val zoomEnabled by receiver.zoomEnabled.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
     var showSettings by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
@@ -94,6 +95,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
                 receiver = receiver,
                 videoDims = videoDims,
                 onVideoDimsChanged = { videoDims = it },
+                zoomEnabled = zoomEnabled,
                 modifier = Modifier.fillMaxSize(),
             )
             CursorOverlay(receiver = receiver, modifier = Modifier.fillMaxSize())

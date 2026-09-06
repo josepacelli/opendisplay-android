@@ -64,6 +64,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     val perfHudPosition by receiver.perfHudPosition.collectAsState()
     val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
     val pipEnabled by receiver.pipEnabled.collectAsState()
+    val zoomEnabled by receiver.zoomEnabled.collectAsState()
     var draftName by remember { mutableStateOf(currentName) }
     var detailsExpanded by remember { mutableStateOf(false) }
     val addressHint = remember { receiver.localAddressHint() }
@@ -106,6 +107,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                         modifier = Modifier.fillMaxWidth(),
                     )
                     PipSection(pipEnabled, receiver::setPipEnabled, modifier = Modifier.fillMaxWidth())
+                    VideoSection(zoomEnabled, receiver::setZoomEnabled, modifier = Modifier.fillMaxWidth())
                 } else {
                     NotificationSection(showNotification, receiver::setShowNotification)
                     PerfHudSection(
@@ -117,6 +119,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
                     )
                     ImmersiveSection(immersiveFullscreen, receiver::setImmersiveFullscreen)
                     PipSection(pipEnabled, receiver::setPipEnabled)
+                    VideoSection(zoomEnabled, receiver::setZoomEnabled)
                     NameSection(draftName, onNameChange = { draftName = it })
                 }
 
@@ -275,6 +278,22 @@ private fun PipSection(
 ) {
     SettingsSection(stringResource(R.string.settings_section_pip), modifier, stretchDivider = stretchDivider) {
         ToggleRow(stringResource(R.string.settings_pip_show), pipEnabled, onToggle)
+    }
+}
+
+/** @param zoomEnabled current toggle state.
+ * @param onToggle called with the new state when the switch is flipped.
+ * @param modifier applied to the section.
+ * @param stretchDivider see [NotificationSection]. */
+@Composable
+private fun VideoSection(
+    zoomEnabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    stretchDivider: Boolean = false,
+) {
+    SettingsSection(stringResource(R.string.settings_section_video), modifier, stretchDivider = stretchDivider) {
+        ToggleRow(stringResource(R.string.settings_zoom_pinch), zoomEnabled, onToggle)
     }
 }
 

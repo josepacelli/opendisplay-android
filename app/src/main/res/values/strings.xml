@@ -32,6 +32,8 @@
     <string name="settings_immersive_show">Hide status and navigation bars while connected</string>
     <string name="settings_section_pip">Picture-in-Picture</string>
     <string name="settings_pip_show">Auto-enter Picture-in-Picture when leaving the app while connected</string>
+    <string name="settings_section_video">Video</string>
+    <string name="settings_zoom_pinch">Pinch to zoom into the video</string>
     <string name="settings_section_details">Details</string>
     <string name="settings_section_name">Name</string>
     <string name="settings_name_label">Device name</string>

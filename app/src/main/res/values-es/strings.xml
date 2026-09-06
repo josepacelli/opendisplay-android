@@ -32,6 +32,8 @@
     <string name="settings_immersive_show">Ocultar barras de estado y navegación mientras esté conectado</string>
     <string name="settings_section_pip">Imagen en imagen</string>
     <string name="settings_pip_show">Entrar automáticamente en imagen en imagen al salir de la app estando conectado</string>
+    <string name="settings_section_video">Vídeo</string>
+    <string name="settings_zoom_pinch">Ampliar el vídeo con el gesto de pellizco</string>
     <string name="settings_section_details">Detalles</string>
     <string name="settings_section_name">Nombre</string>
     <string name="settings_name_label">Nombre del dispositivo</string>
