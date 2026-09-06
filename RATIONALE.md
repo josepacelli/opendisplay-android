@@ -49,6 +49,13 @@ Organized by file, in source order.
 - **`VideoSurface`**, the `LaunchedEffect(zoomEnabled)` reset: turning pinch-zoom off mid-session
   leaves the video stuck zoomed/panned otherwise — scale/pan are remembered Compose state that
   nothing else resets.
+- **`VideoSurface`**, the three-finger pan ([GestureMode.PAN]): pans by `panStart + (centroid -
+  panStartCentroid)` so the content under the fingers follows the fingers (grab-and-drag), then
+  clamps to the same bounds a pinch would allow so the video never uncovers the surface. Local
+  only, never sent to the Mac, and gated by the same [zoomEnabled] toggle as the pinch — at
+  scale 1 the clamp is `[0, 0]`, so a three-finger drag is a no-op instead of needing a separate
+  "is zoomed" check. A third finger landing mid-gesture is only promoted to pan while still
+  undecided; a drag/pinch already committed to TOUCH/SCROLL/ZOOM keeps its mode.
 
 ## ui/ReceiverScreen.kt
 
