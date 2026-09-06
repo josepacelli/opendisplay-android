@@ -166,6 +166,12 @@ fun VideoSurface(
  * With [zoomEnabled] off the spread branch never fires, so two fingers
  * always scroll.
  *
+ * Three fingers pan the zoomed view instead (like grabbing the picture):
+ * while zoomed in, dragging them moves which part of the video is visible,
+ * clamped so the video always covers the whole surface. Also gated by
+ * [zoomEnabled]; at 100% zoom there is nothing to pan, so the gesture is a
+ * no-op. Never sent to the Mac.
+ *
  * While zoomed, single-finger touch positions are mapped back through the
  * current zoom/pan before being normalized, so touch injection keeps landing
  * on the same Mac-screen point the finger is visually over.
@@ -196,6 +202,8 @@ private suspend fun AwaitPointerEventScope.handleGesture(
     var zoomStartPan = Offset.Zero
     var zoomStartDistance = 0f
     var zoomStartCentroid = Offset.Zero
+    var panStartPan = Offset.Zero
+    var panStartCentroid = Offset.Zero
 
     fun normalized(x: Float, y: Float): Pair<Double, Double> {
         val contentX = (x - zoomPan.value.x) / zoomScale.value
@@ -210,6 +218,12 @@ private suspend fun AwaitPointerEventScope.handleGesture(
 
         when (committedMode) {
             GestureMode.UNDECIDED -> when {
+                pressed.size >= 3 && zoomEnabled -> {
+                    committedMode = GestureMode.PAN
+                    panStartPan = zoomPan.value
+                    panStartCentroid = centroidOf(pressed)
+                }
+
                 pressed.size >= 2 -> {
                     committedMode = GestureMode.TWO_FINGER_UNDECIDED
                     twoFingerStartCentroid = centroidOf(pressed)
@@ -241,6 +255,12 @@ private suspend fun AwaitPointerEventScope.handleGesture(
                 val centroid = centroidOf(pressed)
                 val distance = distanceOf(pressed)
                 when {
+                    zoomEnabled && pressed.size >= 3 -> {
+                        committedMode = GestureMode.PAN
+                        panStartPan = zoomPan.value
+                        panStartCentroid = centroid
+                    }
+
                     zoomEnabled && abs(distance - twoFingerStartDistance) > PINCH_SLOP_PX -> {
                         committedMode = GestureMode.ZOOM
                         zoomStartScale = zoomScale.value
@@ -301,13 +321,27 @@ private suspend fun AwaitPointerEventScope.handleGesture(
                     newPan.y.coerceIn(minPanY, maxPanY),
                 )
             }
+
+            GestureMode.PAN -> {
+                if (pressed.size < 3) return
+                val centroid = centroidOf(pressed)
+                val newPan = panStartPan + (centroid - panStartCentroid)
+                val maxPanX = 0f
+                val minPanX = size.width - size.width * zoomScale.value
+                val maxPanY = 0f
+                val minPanY = size.height - size.height * zoomScale.value
+                zoomPan.value = Offset(
+                    newPan.x.coerceIn(minPanX, maxPanX),
+                    newPan.y.coerceIn(minPanY, maxPanY),
+                )
+            }
         }
     }
 }
 
-/** Which wire message (or local effect, for [GestureMode.ZOOM]) a gesture in progress
- * will become, once enough pointers/movement make that clear — see [handleGesture]. */
-private enum class GestureMode { UNDECIDED, TWO_FINGER_UNDECIDED, TOUCH, SCROLL, ZOOM }
+/** Which wire message (or local effect, for [GestureMode.ZOOM]/[GestureMode.PAN]) a gesture in
+ * progress will become, once enough pointers/movement make that clear — see [handleGesture]. */
+private enum class GestureMode { UNDECIDED, TWO_FINGER_UNDECIDED, TOUCH, SCROLL, ZOOM, PAN }
 
 /** Average position of every active pointer, for multi-finger scroll.
  * @param changes the currently active pointers.
