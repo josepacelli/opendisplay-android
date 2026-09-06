@@ -278,7 +278,7 @@
       </div>
       <div class="feature">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 114 0v6"></path><path d="M13 6.5a2 2 0 114 0V12"></path><path d="M17 9.5a2 2 0 114 0V15a7 7 0 01-7 7h-1a7 7 0 01-6-3.4L4.5 14a1.7 1.7 0 012.6-2.1L9 14"></path></svg></div>
-        <div><h4>Touch and scroll</h4><p>One finger becomes a click/drag, two fingers become scroll.</p></div>
+        <div><h4>Touch and scroll</h4><p>One finger becomes a click/drag, two fingers become scroll — in Extend mode. The Mac's Mirror mode is view-only: it silently ignores input from any client.</p></div>
       </div>
       <div class="feature">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"></circle><path d="M18.5 18.5L15 15"></path><path d="M10 7.5v5M7.5 10h5"></path></svg></div>
@@ -365,6 +365,15 @@
       <p>It works over WiFi with automatic mDNS discovery. You can also connect over USB as a
       native accessory (AOA) — plug the cable and tap the system's prompt, no <code>adb</code>
       required. See the repository for a fallback covering Mac apps without AOA support yet.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Does touch work in Mirror mode?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>No — Mirror mode on the Mac is view-only. The Mac app only accepts touch/scroll in Extend
+      mode (it never builds its input injector for a mirror session), so taps and scrolls sent from
+      here are silently ignored. Use Extend mode for anything interactive.</p>
     </details>
 
     <details class="faq">
