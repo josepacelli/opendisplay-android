@@ -59,6 +59,7 @@ class VideoDecoder(
     private var lastSeq: Long? = null
     private var justReconfigured = false
     private var desyncCount = 0
+    private var lastReconfigureAt = 0L
     private val bufferInfo = MediaCodec.BufferInfo()
 
     /** Update the seed size (e.g. after a rotation) before the next SPS/PPS
@@ -88,7 +89,13 @@ class VideoDecoder(
                 headersChanged = true
             }
         }
-        if (headersChanged) reconfigure()
+        if (headersChanged) {
+            val now = System.currentTimeMillis()
+            if (now - lastReconfigureAt > 1000) {
+                lastReconfigureAt = now
+                reconfigure()
+            }
+        }
         val expectedSeq = lastSeq?.plus(1)
         if (!headersChanged && !justReconfigured && expectedSeq != null && frame.seq != expectedSeq) {
             Log.warn("video frame gap (expected seq $expectedSeq, got ${frame.seq}) — requesting keyframe")
