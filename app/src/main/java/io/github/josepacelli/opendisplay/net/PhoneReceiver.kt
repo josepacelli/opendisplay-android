@@ -164,10 +164,12 @@ class PhoneReceiver(context: Context) {
 
     /** Forces the WiFi listener to drop and retry as soon as WiFi goes away mid-session —
      * otherwise it stays blocked in `accept()` on a socket bound to an address that no longer
-     * exists, silently unreachable, until something else happens to close it. */
+     * exists, silently unreachable, until something else happens to close it. Also re-advertises
+     * mDNS when the IP changes so the Mac can find us after wake/sleep cycles. */
     private val connectivityManager =
         appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
     private var connectivityCallback: ConnectivityManager.NetworkCallback? = null
+    @Volatile private var lastBoundAddress: InetAddress? = null
 
     /** The live connection. Identity check for "still the active session". */
     @Volatile private var link: Link? = null
@@ -351,12 +353,22 @@ class PhoneReceiver(context: Context) {
         connectivityCallback = callback
     }
 
-    /** Closes the WiFi `ServerSocket` if it's bound but WiFi/Ethernet isn't there anymore —
-     * unblocks its `accept()` so [listenLoop] retries and picks up the current reality
-     * (another address, or [R.string.status_no_wifi] if there's nothing to bind to). */
+    /** Closes the WiFi `ServerSocket` if WiFi/Ethernet went away, or if the IP changed —
+     * unblocks its `accept()` so [listenLoop] retries and binds to the new address.
+     * Also re-advertises mDNS when the IP changes so the Mac can find us after wake/sleep. */
     private fun recheckWifiListener() {
-        if (NetworkInfo.localIPv4InetAddress(appContext) != null) return
-        closeServerSocket(wifiServerSocket)
+        val currentAddress = NetworkInfo.localIPv4InetAddress(appContext)
+        if (currentAddress == null) {
+            closeServerSocket(wifiServerSocket)
+            lastBoundAddress = null
+            return
+        }
+        if (lastBoundAddress != null && !lastBoundAddress!!.equals(currentAddress)) {
+            Log.info("IP changed ${lastBoundAddress?.hostAddress} -> ${currentAddress.hostAddress}, restarting WiFi listener")
+            closeServerSocket(wifiServerSocket)
+            lastBoundAddress = null
+            unadvertise()
+        }
     }
 
     /** The device locked — nobody can see the stream. Tells the Mac (so it
@@ -592,6 +604,9 @@ class PhoneReceiver(context: Context) {
                 server.reuseAddress = true
                 server.bind(InetSocketAddress(bindAddress, port))
                 storeSocket(server)
+                if (bindAddress == NetworkInfo.localIPv4InetAddress(appContext)) {
+                    lastBoundAddress = bindAddress
+                }
                 advertiseOnce(port)
                 _status.value = appContext.getString(R.string.status_listening, port)
                 Log.info("listening on ${bindAddress.hostAddress}:$port")
