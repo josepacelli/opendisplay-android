@@ -91,6 +91,46 @@ a related reliability gap but isn't itself a new exposure — the socket never r
 cellular even before that fix, it just reported a stale "Listening" status. USB (`AccessoryLink`,
 loopback via `adb forward`) doesn't go through this check at all and was unaffected either way.
 
+## Security review — 2026-09-07
+
+Follow-up pass covering everything added since the review above (three-finger pan, pinch-zoom,
+SEO/growth metadata — none protocol-facing) plus a fresh read of the original scope. SCR-002
+through SCR-008 verified still intact, no regressions.
+
+| ID | Title | Severity | CWE | Status |
+|---|---|---|---|---|
+| SCR-012 | Peer-controlled control-message strings logged raw into logcat | Low | CWE-117 | Fixed — see [#79](https://github.com/josepacelli/opendisplay-android/issues/79) |
+| SCR-013 | Peer can force endless MediaCodec reconfigure churn via SPS/PPS toggling | Low | CWE-400 | Fixed — see [#80](https://github.com/josepacelli/opendisplay-android/issues/80) |
+| SCR-014 | `cursorImg` `ax`/`ay` not bounds-clamped (SCR-007 applied halfway) | Low | CWE-20 | Fixed — see [#81](https://github.com/josepacelli/opendisplay-android/issues/81) |
+
+Numbered from SCR-012 on: SCR-009 stays reserved for the still-open VPN-interface-binding finding
+tracked locally in `NOTES.md` (cut from this file in 82562d4 because it wasn't fixed yet — not
+worth publishing an open finding). Issues #79/#80/#81 were filed calling these SCR-009/010/011
+before that reservation was cross-checked; the numbers here are the ones that stick.
+
+SCR-012: the unknown-`type` and `stats` control-message handlers logged the peer's string/JSON
+verbatim into logcat. The control socket has no authentication (SCR-001), so any device on the LAN
+could inject arbitrary lines — including fake `OpenDisplay`-looking log entries — into
+`adb logcat -s OpenDisplay:*`. Fixed by escaping newlines/carriage-returns and truncating to 100
+chars before logging (`safeStringToLog`/`safeJsonToLog`).
+
+SCR-013: `VideoDecoder.submit()` called `reconfigure()` (full `MediaCodec` teardown/rebuild)
+whenever the incoming SPS or PPS differed from the last-seen one, with no throttle — a peer could
+toggle one byte in the SPS every frame and force a full codec rebuild up to ~60 times/second, a
+cheap CPU/battery-drain knob. Fixed by throttling `reconfigure()` to once a second. The first cut
+of this fix (merged, then corrected the same day) updated the last-seen SPS/PPS unconditionally
+even when the throttle skipped the actual reconfigure — a legitimate header change arriving inside
+the throttle window would then never get applied, since the peer only resends SPS/PPS when it
+changes again from its own perspective. Corrected by tracking "last seen" and "last applied"
+separately: a throttled change stays pending and is applied on the first `submit()` after the
+window passes, even without new SPS/PPS in that specific frame.
+
+SCR-014: `handleCursorImage()` clamped `nw`/`nh` (SCR-007) but read the cursor sprite hotspot
+(`ax`/`ay`) straight from the peer with no bound. Those values feed sprite-origin arithmetic in
+`CursorOverlay.kt`; an extreme value could displace the sprite far off-screen. No crash was
+demonstrated (same caveat as SCR-007 — Compose tolerated the tested extreme values), so this is
+defensive hardening, not a confirmed exploit. Fixed by clamping to `0.0..4.0`, same as `nw`/`nh`.
+
 ## What this app deliberately does not have
 
 No accounts, no telemetry, no central server, no TLS on the wire protocol — same philosophy as
