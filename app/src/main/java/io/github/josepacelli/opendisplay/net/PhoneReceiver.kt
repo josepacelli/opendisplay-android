@@ -147,6 +147,20 @@ class PhoneReceiver(context: Context) {
             if (uri.host !in ALLOWED_STORE_HOSTS) return null
             return raw
         }
+
+        /** Returns a version of [input] safe for logging: newlines replaced with \\n and
+         * control characters stripped or escaped. Limits length to prevent log spam. */
+        private fun safeStringToLog(input: String): String {
+            if (input.isEmpty()) return input
+            val escaped = input.replace("\n", "\\n").replace("\r", "\\r")
+            return if (escaped.length > 100) escaped.substring(0, 100) + "..." else escaped
+        }
+
+        /** Returns a version of [json] safe for logging: converts to string and applies
+         * the same sanitization as safeStringToLog. */
+        private fun safeJsonToLog(json: JSONObject): String {
+            return safeStringToLog(json.toString())
+        }
     }
 
     private val appContext = context.applicationContext
@@ -368,6 +382,7 @@ class PhoneReceiver(context: Context) {
             closeServerSocket(wifiServerSocket)
             lastBoundAddress = null
             unadvertise()
+            advertised = false
         }
     }
 
@@ -646,6 +661,7 @@ class PhoneReceiver(context: Context) {
         outputStream = newLink.output
         lastDataReceivedAt = System.currentTimeMillis()
         _connected.value = true
+        Log.info("Device connected via ${newLink.label}")
         _status.value = appContext.getString(R.string.settings_status_connection_connected)
         if (devicePixelsWide == 0) {
             Log.warn("sending hello before panel size is known — caller should call setPanelSize() first")
@@ -836,9 +852,9 @@ class PhoneReceiver(context: Context) {
 
             WireMessage.CURSOR_IMAGE -> handleCursorImage(obj)
 
-            WireMessage.STATS -> Log.info("MAC-STATS $obj")
+            WireMessage.STATS -> Log.info("MAC-STATS ${safeJsonToLog(obj)}")
 
-            else -> Log.info("unknown control message type: $type")
+            else -> Log.info("unknown control message type: ${safeStringToLog(type)}")
         }
     }
 
@@ -874,8 +890,8 @@ class PhoneReceiver(context: Context) {
                 png = png,
                 normalizedWidth = obj.optDouble("nw", 0.0).coerceIn(0.0, 4.0),
                 normalizedHeight = obj.optDouble("nh", 0.0).coerceIn(0.0, 4.0),
-                anchorX = obj.optDouble("ax", 0.0),
-                anchorY = obj.optDouble("ay", 0.0),
+                anchorX = obj.optDouble("ax", 0.0).coerceIn(0.0, 4.0),
+                anchorY = obj.optDouble("ay", 0.0).coerceIn(0.0, 4.0),
             ),
         )
     }
