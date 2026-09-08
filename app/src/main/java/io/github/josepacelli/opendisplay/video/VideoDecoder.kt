@@ -54,6 +54,8 @@ class VideoDecoder(
     private var codec: MediaCodec? = null
     private var currentSps: ByteArray? = null
     private var currentPps: ByteArray? = null
+    private var pendingSps: ByteArray? = null
+    private var pendingPps: ByteArray? = null
     private var spsDimensionsKnown = false
     private var lastErrorSignalAt = 0L
     private var lastSeq: Long? = null
@@ -73,26 +75,28 @@ class VideoDecoder(
         expectedHeight = height
     }
 
-    /** Feeds one wire [VideoFrame] to the decoder, reconfiguring first if it carries new SPS/PPS.
+    /** Feeds one wire [VideoFrame] to the decoder, reconfiguring first if it carries new SPS/PPS —
+     * throttled to once a second so a peer can't force a reconfigure per frame. A change that
+     * arrives inside the throttle window stays pending (not dropped) and gets applied on the
+     * first `submit()` after the window passes, even if that frame doesn't itself carry new
+     * SPS/PPS — otherwise the codec could stay desynced from [pendingSps]/[pendingPps] for the
+     * rest of the session, since the peer only resends headers when they change again.
      * @param frame the frame to decode. */
     fun submit(frame: VideoFrame) {
+        frame.sps?.let { pendingSps = it }
+        frame.pps?.let { pendingPps = it }
+        val sps = pendingSps
+        val pps = pendingPps
+        val headersPending = (sps != null && !sps.contentEquals(currentSps)) ||
+            (pps != null && !pps.contentEquals(currentPps))
         var headersChanged = false
-        frame.sps?.let {
-            if (currentSps == null || !it.contentEquals(currentSps)) {
-                currentSps = it
-                headersChanged = true
-            }
-        }
-        frame.pps?.let {
-            if (currentPps == null || !it.contentEquals(currentPps)) {
-                currentPps = it
-                headersChanged = true
-            }
-        }
-        if (headersChanged) {
+        if (headersPending) {
             val now = System.currentTimeMillis()
             if (now - lastReconfigureAt > 1000) {
                 lastReconfigureAt = now
+                currentSps = sps
+                currentPps = pps
+                headersChanged = true
                 reconfigure()
             }
         }
