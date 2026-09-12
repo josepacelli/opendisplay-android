@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenDisplay</string>
+
+    <string name="status_starting">起動中…</string>
+    <string name="status_stopped">停止中</string>
+    <string name="status_listening">ポート :%1$d で待機中</string>
+    <string name="status_no_wifi">WiFiネットワークがありません。WiFiをオンにするかUSBで接続してください。</string>
+
+    <string name="notification_title">OpenDisplay for Android · v%1$s</string>
+    <string name="notification_action_disconnect">切断</string>
+
+    <string name="idle_instruction_wifi">MacアプリのWiFi一覧からこのデバイスを選択してください</string>
+    <string name="idle_instruction_keep_open">このアプリを開いたままにしてください — ストリーミングは自動的に始まります</string>
+
+    <string name="settings_title">設定</string>
+    <string name="settings_section_status">ステータス</string>
+    <string name="settings_status_listening">待機中</string>
+    <string name="settings_status_listening_value">ポート %1$d</string>
+    <string name="settings_status_connection">接続</string>
+    <string name="settings_status_connection_waiting">Macの接続を待機中</string>
+    <string name="settings_status_connection_connected">接続済み</string>
+    <string name="settings_section_notification">通知</string>
+    <string name="settings_notification_show">通知を表示</string>
+    <string name="settings_section_perf_hud">パフォーマンスオーバーレイ</string>
+    <string name="settings_perf_hud_show">パフォーマンスオーバーレイを表示</string>
+    <string name="settings_perf_hud_position_top_start">左上</string>
+    <string name="settings_perf_hud_position_top_end">右上</string>
+    <string name="settings_perf_hud_position_bottom_start">左下</string>
+    <string name="settings_perf_hud_position_bottom_end">右下</string>
+    <string name="settings_section_immersive">全画面表示</string>
+    <string name="settings_immersive_show">接続中はステータスバーとナビゲーションバーを非表示にする</string>
+    <string name="settings_section_pip">ピクチャー・イン・ピクチャー</string>
+    <string name="settings_pip_show">接続中にアプリを離れたら自動でピクチャー・イン・ピクチャーに切り替える</string>
+    <string name="settings_section_video">ビデオ</string>
+    <string name="settings_zoom_pinch">ピンチ操作でビデオをズーム</string>
+    <string name="settings_section_details">詳細</string>
+    <string name="settings_section_name">名前</string>
+    <string name="settings_name_label">デバイス名</string>
+    <string name="settings_section_network">ネットワーク</string>
+    <string name="settings_manual_hint">このデバイスのネットワーク上のアドレスです。トラブルシューティング用に表示しています。WiFiの自動検出（mDNS）がMacと接続する唯一の方法で、Macアプリに手動入力の項目はありません:</string>
+    <string name="settings_address_unavailable">IPアドレスを取得できません — WiFi接続を確認してください。</string>
+    <string name="settings_section_how_to_connect">接続方法</string>
+    <string name="settings_howto_wifi">両方の端末を同じWiFiネットワークに接続し、Macアプリの接続メニューでこのデバイスを選択してください。</string>
+    <string name="settings_howto_rotate">端末を回転させると縦向きの第2モニターになります。</string>
+    <string name="settings_howto_touch">タッチ操作: タップでクリック、ドラッグでドラッグ、2本指のパンでスクロールします。</string>
+    <string name="settings_save">保存</string>
+    <string name="settings_cancel">キャンセル</string>
+
+    <string name="peer_replaced_warning">別のデバイス（%1$s）に接続を取られました。心当たりがない場合は、ネットワーク内の他のデバイスを確認してください。</string>
+    <string name="connection_unstable_warning">接続が不安定です — 復旧するまで映像が乱れることがあります。</string>
+
+    <string name="settings_section_about">情報</string>
+    <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
+    <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_mac_app">Macアプリ</string>
+    <string name="about_close">閉じる</string>
+</resources>

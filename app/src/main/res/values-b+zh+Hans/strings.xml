@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenDisplay</string>
+
+    <string name="status_starting">正在启动…</string>
+    <string name="status_stopped">已停止</string>
+    <string name="status_listening">正在监听端口 :%1$d</string>
+    <string name="status_no_wifi">没有 WiFi 网络。请打开 WiFi 或使用 USB 连接。</string>
+
+    <string name="notification_title">OpenDisplay for Android · v%1$s</string>
+    <string name="notification_action_disconnect">断开连接</string>
+
+    <string name="idle_instruction_wifi">在 Mac 应用的 WiFi 列表中选择此设备</string>
+    <string name="idle_instruction_keep_open">保持此应用打开 — 串流会自动开始</string>
+
+    <string name="settings_title">设置</string>
+    <string name="settings_section_status">状态</string>
+    <string name="settings_status_listening">正在监听</string>
+    <string name="settings_status_listening_value">端口 %1$d</string>
+    <string name="settings_status_connection">连接</string>
+    <string name="settings_status_connection_waiting">等待 Mac 连接</string>
+    <string name="settings_status_connection_connected">已连接</string>
+    <string name="settings_section_notification">通知</string>
+    <string name="settings_notification_show">显示通知</string>
+    <string name="settings_section_perf_hud">性能叠加层</string>
+    <string name="settings_perf_hud_show">显示性能叠加层</string>
+    <string name="settings_perf_hud_position_top_start">左上</string>
+    <string name="settings_perf_hud_position_top_end">右上</string>
+    <string name="settings_perf_hud_position_bottom_start">左下</string>
+    <string name="settings_perf_hud_position_bottom_end">右下</string>
+    <string name="settings_section_immersive">全屏</string>
+    <string name="settings_immersive_show">连接期间隐藏状态栏和导航栏</string>
+    <string name="settings_section_pip">画中画</string>
+    <string name="settings_pip_show">连接期间离开应用时自动进入画中画</string>
+    <string name="settings_section_video">视频</string>
+    <string name="settings_zoom_pinch">双指捏合缩放视频</string>
+    <string name="settings_section_details">详情</string>
+    <string name="settings_section_name">名称</string>
+    <string name="settings_name_label">设备名称</string>
+    <string name="settings_section_network">网络</string>
+    <string name="settings_manual_hint">此设备在网络中的地址，仅供排查问题时参考。WiFi 自动发现（mDNS）是 Mac 连接的唯一方式 — Mac 应用中没有手动输入地址的选项：</string>
+    <string name="settings_address_unavailable">IP 地址不可用 — 请检查 WiFi 连接。</string>
+    <string name="settings_section_how_to_connect">如何连接</string>
+    <string name="settings_howto_wifi">两台设备连接同一个 WiFi 网络，然后在 Mac 应用的连接菜单中选择此设备。</string>
+    <string name="settings_howto_rotate">旋转设备可获得竖屏的第二显示器。</string>
+    <string name="settings_howto_touch">触控：点按即点击，拖动即拖拽，双指平移即滚动。</string>
+    <string name="settings_save">保存</string>
+    <string name="settings_cancel">取消</string>
+
+    <string name="peer_replaced_warning">连接已被另一台设备（%1$s）接管。如果不是你本人操作，请检查网络中的其他设备。</string>
+    <string name="connection_unstable_warning">连接不稳定 — 画面可能出现卡顿，直到恢复正常。</string>
+
+    <string name="settings_section_about">关于</string>
+    <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
+    <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_mac_app">Mac 应用</string>
+    <string name="about_close">关闭</string>
+</resources>
