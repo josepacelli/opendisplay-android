@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenDisplay Android — monitor externo open source para o seu Mac</title>
+<meta name="description" content="Transforme um tablet ou telemóvel Android num segundo monitor estendido a sério para o seu Mac via WiFi ou USB. Alternativa gratuita e open source ao Duet Display, Sidecar e Spacedesk — sem conta, sem subscrição.">
+<meta name="keywords" content="monitor externo Android, ecrã externo Android, segundo monitor Mac, alternativa ao Duet Display, alternativa ao Sidecar, alternativa ao Spacedesk, tablet Android como segundo monitor, ecrã estendido Android, usar Android como monitor do Mac">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/pt-PT/">
+<link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/">
+<link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/">
+<link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/pt-BR/">
+<link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/">
+<link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/">
+<link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/">
+<link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/">
+
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://opendisplay.jpmo.dev.br/pt-PT/">
+<meta property="og:site_name" content="OpenDisplay Android">
+<meta property="og:title" content="OpenDisplay Android — monitor externo open source para o seu Mac">
+<meta property="og:description" content="Transforme um tablet ou telemóvel Android num segundo monitor estendido a sério para o seu Mac via WiFi ou USB. Alternativa gratuita e open source ao Duet Display, Sidecar e Spacedesk — sem conta, sem subscrição.">
+<meta property="og:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenDisplay Android — monitor externo open source para o seu Mac">
+<meta name="twitter:description" content="Transforme um tablet ou telemóvel Android num segundo monitor estendido a sério para o seu Mac via WiFi ou USB. Alternativa gratuita e open source ao Duet Display, Sidecar e Spacedesk — sem conta, sem subscrição.">
+<meta name="twitter:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenDisplay Android",
+  "operatingSystem": "Android 8.0+",
+  "applicationCategory": "UtilitiesApplication",
+  "description": "Cliente Android open source que transforma um tablet ou telemóvel num segundo monitor estendido a sério para um Mac via WiFi ou USB, falando o mesmo protocolo da aplicação original OpenDisplay para Mac.",
+  "url": "https://opendisplay.jpmo.dev.br/pt-PT/",
+  "downloadUrl": "https://github.com/josepacelli/opendisplay-android/releases/latest",
+  "license": "https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Jose Pacelli",
+    "url": "https://github.com/josepacelli"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "É a mesma aplicação que o OpenDisplay para iOS?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Não. É um cliente independente, escrito de raiz em Kotlin, que implementa o mesmo protocolo de rede para interoperar com a aplicação original do Mac. O projeto oficial só disponibiliza um cliente para iOS/iPadOS."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Está na Google Play?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A versão da Google Play está atualmente em teste fechado. Entretanto, é distribuída pelo GitHub Releases — instale com adb install ou copiando o APK para o dispositivo (ative origens desconhecidas)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Precisa de WiFi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Funciona por WiFi com descoberta automática por mDNS. Também é possível ligar por USB como acessório nativo (AOA) — ligue o cabo e aceite o aviso do sistema, sem precisar de adb. Esse caminho USB nativo hoje exige um fork de desenvolvimento da aplicação de Mac; contra a aplicação de Mac publicada, o USB funciona através de um fallback com adb forward, explicado no repositório."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Funciona em qualquer tablet ou telemóvel Android?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Requer Android 8.0 (API 26) ou superior. Testado em hardware real (Samsung Galaxy Tab S9 FE+ e Galaxy Note10+/Tab S7+, Android 12 a 16), mas ainda não numa gama ampla de dispositivos."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Altera alguma coisa na aplicação de Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nenhuma modificação — qualquer incompatibilidade de protocolo é responsabilidade deste projeto, não do projeto original."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qual é a licença?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GPL-3.0, igual ao projeto original. Open source, uso livre inclusive comercial; versões modificadas distribuídas têm de continuar open source sob a mesma licença."
+      }
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="4" width="15" height="11" rx="1.5"></rect>
+        <rect x="10" y="12" width="12" height="8" rx="1.5" fill="var(--bg)"></rect>
+      </svg>
+      OpenDisplay <span class="brand-sub">Android</span>
+    </div>
+    <nav>
+      <a href="#features">Funcionalidades</a>
+      <a href="#how-it-works">Como funciona</a>
+      <a href="#screenshots">Capturas de ecrã</a>
+      <a href="#install">Instalação</a>
+      <a href="#compare">Comparação</a>
+      <a href="#faq">Perguntas frequentes</a>
+      <a class="gh-stars" href="https://github.com/josepacelli/opendisplay-android" id="gh-stars">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        GitHub <span id="gh-stars-count">···</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <span class="status-badge"><span class="dot"></span>Alpha inicial · testado em hardware real</span>
+    <h1>Use o seu tablet ou telemóvel Android como um <em>segundo monitor a sério</em> para o seu Mac.</h1>
+    <p class="lead">
+      Um cliente Android não oficial e open source para o
+      <a href="https://opendisplay.app/">OpenDisplay</a> — o projeto original só disponibiliza um
+      cliente para iOS/iPadOS. Este fala o mesmo protocolo de rede, sem necessitar de qualquer
+      alteração na aplicação de Mac. Uma alternativa gratuita ao Duet Display, Sidecar e Spacedesk
+      para quem já tem um tablet Android e quer um ecrã estendido, não apenas espelhamento.
+    </p>
+    <div class="specs">
+      <span>Android 8.0+ (API 26)</span>
+      <span>macOS via a aplicação original OpenDisplay</span>
+      <span>GPL-3.0</span>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" href="#install">
+        Começar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m0 0l-6-6m6 6l6-6"></path></svg>
+      </a>
+      <a class="btn ghost" href="https://github.com/josepacelli/opendisplay-android">
+        Ver no GitHub
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"></path></svg>
+      </a>
+    </div>
+    <div class="kofi-badge-wrap">
+      <div class="kofi-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v6a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9h2a2 2 0 010 4h-2"></path><path d="M8 2v2M11 2v2M14 2v2"></path></svg>
+        <span>Gratuito, feito por uma pessoa só.</span>
+        <a href="#support"><strong>Apoie no Ko-fi ↓</strong></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <p class="eyebrow">Como funciona</p>
+    <h2>O Mac fica intocado. O dispositivo Android é quem escuta.</h2>
+    <p class="section-sub">
+      O dispositivo Android escuta e o Mac liga-se — é isso que permite funcionar via
+      WiFi sem qualquer configuração manual, através de descoberta por mDNS, sem uma única
+      alteração na aplicação original OpenDisplay para Mac.
+    </p>
+    <div class="diagram">
+      <div class="diagram-bar"><span></span><span></span><span></span></div>
+      <div class="diagram-grid">
+        <div class="diagram-col">
+          <p class="diagram-heading">MAC <span>(servidor, aplicação original OpenDisplay)</span></p>
+          <ol>
+            <li>CGVirtualDisplay</li>
+            <li><span class="arrow">→</span> ScreenCaptureKit <span class="arrow">→</span> VideoToolbox <span class="hl">H.264</span></li>
+            <li><span class="arrow">→</span> TCP <span class="dim">[4-byte length][Annex-B frame]</span> <span class="arrow">═══→</span></li>
+            <li><span class="arrow">←</span> control JSON <span class="dim">(hello, touch, scroll, ping)</span> <span class="arrow">═══</span></li>
+          </ol>
+        </div>
+        <div class="diagram-col">
+          <p class="diagram-heading">ANDROID <span>(este projeto)</span></p>
+          <ol>
+            <li>listens on <span class="hl">:9000</span></li>
+            <li><span class="arrow">→</span> MediaCodec <span class="arrow">→</span> SurfaceView</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots">
+    <p class="eyebrow">Capturas de ecrã</p>
+    <h2>Hardware real, ligação WiFi real.</h2>
+    <p class="section-sub">Nada de montagens — cada captura abaixo é uma sessão real entre um tablet Android e um Mac.</p>
+    <div class="gallery">
+      <figure>
+        <img src="../screenshots/tablet-mirroring-site.jpeg" alt="Tablet Android sobre uma secretária, a espelhar esta página vinda do Mac via WiFi" loading="lazy">
+        <figcaption>O tablet a espelhar esta própria página, transmitida em direto a partir do Mac via WiFi.</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/mac-arrange-displays.jpeg" alt="Definições de ecrãs do macOS a mostrar o diálogo de organizar ecrãs com o tablet Android listado como terceiro ecrã" loading="lazy">
+        <figcaption>Reconhecido no Mac como um terceiro ecrã normal em Definições do Sistema → Ecrãs.</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-home.jpeg" alt="Ecrã inicial da aplicação OpenDisplay Android, a escutar na porta 9000 e à espera que o Mac se ligue" loading="lazy">
+        <figcaption>Ecrã inicial da aplicação — a escutar em :9000, à espera que o Mac a encontre via WiFi.</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-settings.jpeg" alt="Diálogo de definições da aplicação OpenDisplay Android a mostrar o estado, o nome anunciado por mDNS e o endereço deste dispositivo para depuração" loading="lazy">
+        <figcaption>Definições: estado da ligação, o nome anunciado via mDNS e o endereço deste dispositivo para depuração.</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-mirroring.jpeg" alt="Aplicação OpenDisplay Android a espelhar o ecrã do Mac, a mostrar o repositório GitHub deste projeto num navegador" loading="lazy">
+        <figcaption>A meio da sessão: o ecrã do Mac — a página do GitHub deste repositório — espelhado em direto no tablet.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="install">
+    <p class="eyebrow">Instalação</p>
+    <h2>Duas aplicações que funcionam em conjunto.</h2>
+    <p class="section-sub">Instale as duas para começar — o lado do Mac é o projeto original OpenDisplay, sem modificações.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="tag">PASSO 1 · NO SEU MAC</span>
+        <h3>O emissor</h3>
+        <p>Captura um ecrã virtual e transmite-o. É o programa original OpenDisplay, sem modificações.</p>
+        <a class="btn primary" href="https://github.com/peetzweg/opendisplay/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path></svg>
+          Transferir para Mac
+        </a>
+        <p class="step-note">Prefere compilar você mesmo? <a href="https://github.com/peetzweg/opendisplay">Compilar a partir do código-fonte ↗</a></p>
+      </div>
+      <div class="step">
+        <span class="tag">PASSO 2 · NO SEU ANDROID</span>
+        <h3>O recetor</h3>
+        <p>Apresenta a transmissão e envia toque/deslocamento de volta.</p>
+        <a class="btn primary" href="https://github.com/josepacelli/opendisplay-android/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path></svg>
+          Transferir APK (v0.0.37)
+        </a>
+        <p class="step-note">
+          A versão da Google Play está em teste fechado — quer participar? Envie um e-mail para
+          <a href="mailto:josepacelli@gmail.com">josepacelli@gmail.com</a>. Entretanto, instale
+          manualmente o APK acima, ou <a href="https://github.com/josepacelli/opendisplay-android#build">compile a partir do código-fonte ↗</a>.
+          <a href="https://github.com/josepacelli/opendisplay-android/releases">Ver versões anteriores ↗</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <p class="eyebrow">Funcionalidades</p>
+    <h2>O que já funciona hoje.</h2>
+    <p class="section-sub">Validado contra a aplicação real de Mac, não uma folha de especificações.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8M12 17v4"></path><path d="M10 8l6 4-6 4V8z"></path></svg></div>
+        <div><h4>Vídeo H.264 por hardware</h4><p>Descodificação com <code>MediaCodec</code> direta para um Surface, sem conversão por CPU.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9a15 15 0 0119 0"></path><path d="M6 13a9.5 9.5 0 0112 0"></path><path d="M9.5 17a4.5 4.5 0 015 0"></path><circle cx="12" cy="20" r="0.9" fill="currentColor" stroke="none"></circle></svg></div>
+        <div><h4>Descoberta automática</h4><p>mDNS (<code>_opensidecar._tcp</code>) — o Mac encontra o dispositivo Android sozinho na mesma rede.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 114 0v6"></path><path d="M13 6.5a2 2 0 114 0V12"></path><path d="M17 9.5a2 2 0 114 0V15a7 7 0 01-7 7h-1a7 7 0 01-6-3.4L4.5 14a1.7 1.7 0 012.6-2.1L9 14"></path></svg></div>
+        <div><h4>Toque e deslocamento</h4><p>Um dedo passa a clique/arrasto, dois dedos passam a deslocamento — no modo Extend. O modo Mirror do Mac é apenas de visualização: ignora silenciosamente a entrada de qualquer cliente.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"></circle><path d="M18.5 18.5L15 15"></path><path d="M10 7.5v5M7.5 10h5"></path></svg></div>
+        <div><h4>Pinça para ampliar</h4><p>Afastar dois dedos no vídeo amplia localmente, tanto no modo Mirror como no Extend — sem necessitar de alterações no protocolo, e o toque continua a cair no ponto certo do Mac. Depois de ampliar, arraste com três dedos para navegar pela área ampliada.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg></div>
+        <div><h4>Cursor remoto</h4><p>Um ponto ou sprite descodificado, a espelhar em direto a posição do cursor do Mac.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
+        <div><h4>Serviço em primeiro plano</h4><p>Sobrevive à aplicação ir para segundo plano e retoma corretamente depois de desbloquear o ecrã.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114.9-4"></path><path d="M20 12a8 8 0 01-14.9 4"></path><path d="M18 4v4h-4M6 20v-4h4"></path></svg></div>
+        <div><h4>Recuperação de erros</h4><p>Erros do descodificador acionam um pedido automático de keyframe, sem derrubar a ligação.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M4 12h16M4 18h7"></path><circle cx="17" cy="6" r="2"></circle><circle cx="9" cy="18" r="2"></circle></svg></div>
+        <div><h4>Alternativa manual</h4><p>Nome mDNS editável e ligação por IP:porta para quando a descoberta automática falha.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6"></path><rect x="6" y="8" width="12" height="7" rx="2"></rect><path d="M12 15v3a4 4 0 01-4 4H6"></path></svg></div>
+        <div><h4>Acessório USB (AOA)</h4><p>Ligue o cabo, toque no aviso do sistema, pronto — sem <code>adb</code>, sem opções de programador.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"></rect><rect x="12" y="11" width="7" height="5" rx="1" fill="currentColor" stroke="none"></rect></svg></div>
+        <div><h4>Picture-in-Picture</h4><p>Saia da aplicação ligado e o vídeo continua a reproduzir-se numa janela flutuante.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.1A11 11 0 0112 5c5 0 9 4 10 7-0.5 1.4-1.4 2.9-2.6 4.1M6.6 6.6C4.5 8 3 10 2 12c1 3 5 7 10 7 1.3 0 2.6-.2 3.7-.7"></path><path d="M9.9 9.9a3 3 0 004.2 4.2"></path></svg></div>
+        <div><h4>Sem conta, sem telemetria</h4><p>Mesma filosofia do projeto original: sem servidor central, nada é enviado para fora.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <p class="eyebrow">Comparação</p>
+    <h2>Contra as alternativas mais conhecidas.</h2>
+    <p class="section-sub">Para usar um tablet Android como monitor externo.</p>
+    <div class="table-scroll">
+      <table class="compare">
+        <thead>
+          <tr><th></th><th>OpenDisplay Android</th><th>Duet Display</th><th>Spacedesk</th></tr>
+        </thead>
+        <tbody>
+          <tr class="self"><td>Preço</td><td class="yes">Grátis</td><td class="no">Pago</td><td class="no">Grátis (básico)</td></tr>
+          <tr class="self"><td>Open source</td><td class="yes">GPL-3.0</td><td class="no">Não</td><td class="no">Não</td></tr>
+          <tr class="self"><td>Precisa de conta</td><td class="yes">Não</td><td class="no">Sim</td><td class="no">Não</td></tr>
+          <tr class="self"><td>Mesmo protocolo do OpenDisplay Mac</td><td class="yes">Sim</td><td class="no">Não</td><td class="no">Não</td></tr>
+          <tr class="self"><td>Servidor central</td><td class="yes">Nenhum</td><td class="no">Sim</td><td class="no">Não</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="faq">
+    <p class="eyebrow">Perguntas frequentes</p>
+    <h2>Perguntas comuns.</h2>
+
+    <details class="faq">
+      <summary>É a mesma aplicação que o OpenDisplay para iOS?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Não. É um cliente independente, escrito de raiz em Kotlin, que implementa o
+      mesmo protocolo de rede para interoperar com a aplicação original do Mac. O projeto
+      oficial só disponibiliza um cliente para iOS/iPadOS.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Está na Google Play?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>A versão da Google Play está atualmente em teste fechado. Quer participar como
+      testador? Envie um e-mail para <a href="mailto:josepacelli@gmail.com">josepacelli@gmail.com</a>.
+      Entretanto, também é distribuída pelo GitHub Releases — instale com <code>adb install</code>
+      ou copiando o APK para o dispositivo (ative "origens desconhecidas").</p>
+    </details>
+
+    <details class="faq">
+      <summary>Precisa de WiFi?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Funciona por WiFi com descoberta automática por mDNS. Também é possível ligar por
+      USB como acessório nativo (AOA) — ligue o cabo e aceite o aviso do sistema, sem precisar de
+      <code>adb</code>. Veja no repositório o fallback para aplicações de Mac que ainda não
+      suportam AOA.</p>
+    </details>
+
+    <details class="faq">
+      <summary>O toque funciona no modo Mirror?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Não — o modo Mirror no Mac é apenas de visualização. A aplicação de Mac só aceita
+      toque/deslocamento no modo Extend (nunca cria o seu injetor de entrada para uma sessão de
+      espelho), portanto os toques e deslocamentos enviados a partir daqui são ignorados
+      silenciosamente. Use o modo Extend para qualquer coisa interativa.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Funciona em qualquer tablet ou telemóvel Android?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Requer Android 8.0 (API 26) ou superior. Testado em hardware real (Samsung
+      Galaxy Tab S9 FE+ e Galaxy Note10+/Tab S7+, Android 12 a 16), mas ainda não numa gama ampla
+      de dispositivos — toque/deslocamento/cursor já estão implementados, mas com validação de
+      campo ainda limitada. Nota: v0.0.7 e anteriores bloqueiam ao abrir no Android 12–13
+      (API 30-33); use v0.0.8 ou mais recente (corrigido em
+      <a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>).</p>
+    </details>
+
+    <details class="faq">
+      <summary>Altera alguma coisa na aplicação de Mac?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Nenhuma modificação — qualquer incompatibilidade de protocolo é responsabilidade deste projeto, não do projeto original.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Qual é a licença?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>GPL-3.0, igual ao projeto original. Open source, uso livre inclusive comercial;
+      versões modificadas distribuídas têm de continuar open source sob a mesma licença.</p>
+    </details>
+  </section>
+
+  <section id="contribute">
+    <p class="eyebrow">Contribute</p>
+    <h2>Issues e pull requests são bem-vindos.</h2>
+    <p class="section-sub">
+      Relatos de bugs e PRs vão para o
+      <a href="https://github.com/josepacelli/opendisplay-android">repositório do GitHub</a>, que
+      também tem os detalhes de arquitetura, protocolo e build. Relatos de bugs bem feitos são o
+      que realmente melhora um projeto paralelo de uma pessoa só — obrigado a todos abaixo.
+    </p>
+    <div class="credits">
+      <div class="credit">
+        <img src="https://github.com/gaeaearth.png" alt="" loading="lazy">
+        <p><strong>@gaeaearth</strong> — o testador inicial mais ativo deste projeto: o
+        crash de arranque no Android 12/13 (<a href="https://github.com/josepacelli/opendisplay-android/issues/4">#4</a>),
+        os problemas de timeout de ecrã/reconexão (<a href="https://github.com/josepacelli/opendisplay-android/issues/10">#10</a>,
+        também a correção de ecrã inativo em <a href="https://github.com/josepacelli/opendisplay-android/issues/28">#28</a>),
+        e a dica de ligação manual enganosa (<a href="https://github.com/josepacelli/opendisplay-android/issues/18">#18</a>).</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/edoardomich.png" alt="" loading="lazy">
+        <p><strong>@edoardomich</strong> — corrigiu o crash de arranque no Android 12/13
+        (<a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>).</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/jpbhdrey.png" alt="" loading="lazy">
+        <p><strong>@jpbhdrey</strong> — construiu o transporte de acessório USB (AOA)
+        (<a href="https://github.com/josepacelli/opendisplay-android/pull/33">#33</a>): ligue o
+        cabo, toque no aviso do sistema, pronto, sem opções de programador nem dança de <code>adb</code>.</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/dyss1992.png" alt="" loading="lazy">
+        <p><strong>@dyss1992</strong> — reportou o bug de proporção no modo Mirror em alguns
+        descodificadores Qualcomm com uma comparação controlada de antes/depois que tornou óbvia a
+        causa raiz (<a href="https://github.com/josepacelli/opendisplay-android/issues/44">#44</a>),
+        e sugeriu o modo ecrã inteiro imersivo
+        (<a href="https://github.com/josepacelli/opendisplay-android/issues/45">#45</a>).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="support-eyebrow">Apoie o projeto</div>
+    <div class="support-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v6a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9h2a2 2 0 010 4h-2"></path><path d="M8 2v2M11 2v2M14 2v2"></path></svg>
+      <strong>Ko-fi</strong>
+    </div>
+    <h2 class="support-title">Se o OpenDisplay Android lhe poupou a compra de um monitor, considere pagar-me um café.</h2>
+    <div class="support-copy">
+      <p>
+        Este é um projeto paralelo de uma pessoa só, feito e mantido por mim,
+        <a href="https://github.com/josepacelli">Jose Pacelli</a>, nas noites e fins de semana —
+        não é uma empresa.
+      </p>
+      <p>
+        Apoiar-me no Ko-fi mantém este projeto ativo e gratuito para todos, incluindo
+        quem não pode contribuir. O meu objetivo é fazer disto a melhor forma gratuita de
+        transformar um tablet Android a mais num segundo monitor a sério.
+      </p>
+      <p>Se isto o livrou de comprar um monitor, uma pequena ajuda mantém isto vivo. Obrigado.</p>
+    </div>
+    <div class="kofi-badge-wrap">
+      <div class="kofi-badge">
+        <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
+        <script type='text/javascript'>kofiwidget2.init('Apoie no Ko-fi', '#72a4f2', 'Q3D5259MWT');kofiwidget2.draw();</script>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/releases">Releases</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/issues">Issues</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE">Licença (GPL-3.0)</a>
+      <a href="privacy.html">Política de Privacidade</a>
+      <a href="https://opendisplay.app/">Projeto original (Mac/iOS)</a>
+    </div>
+    <div class="links langs">
+      <a href="/">EN</a>
+      <a href="/es/">ES</a>
+      <a href="/pt-BR/">PT-BR</a>
+      <span class="lang-current" aria-current="page" style="color:var(--text);font-weight:600;">PT-PT</span>
+      <a href="/zh-Hans/">中文</a>
+      <a href="/ja/">日本語</a>
+    </div>
+    <div class="disclaimer">Sem afiliação com o mantenedor do projeto original OpenDisplay. Fala o mesmo protocolo, mantido separadamente.</div>
+  </div>
+</footer>
+
+
+<script>
+  fetch("https://api.github.com/repos/josepacelli/opendisplay-android")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (!data || typeof data.stargazers_count !== "number") return;
+      const el = document.getElementById("gh-stars-count");
+      if (el) el.textContent = data.stargazers_count;
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>

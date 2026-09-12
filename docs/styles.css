@@ -298,4 +298,5 @@ footer { padding: 44px 0 64px; color: var(--text-faint); font-size: 0.85rem; }
 footer .links { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
 footer .links a { color: var(--text-dim); }
 footer .links a:hover { color: var(--accent); }
+footer .langs { margin-bottom: 24px; }
 footer .disclaimer { max-width: 70ch; }

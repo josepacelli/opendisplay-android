@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de Privacidade — OpenDisplay Android</title>
+<meta name="description" content="Política de privacidade do app OpenDisplay Android: sem contas, sem analytics, sem telemetria, sem coleta de dados.">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/pt-BR/privacy.html">
+<link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/privacy.html">
+<link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/privacy.html">
+<link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/pt-BR/privacy.html">
+<link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/privacy.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/privacy.html">
+<link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/privacy.html">
+<link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/privacy.html">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #0b0d10;
+    --bg-elev: #14171b;
+    --border: #23272d;
+    --text: #e8eaed;
+    --text-dim: #9aa2ad;
+    --accent: #5fd0a3;
+    --accent-dim: #2e5c48;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fafaf9;
+      --bg-elev: #ffffff;
+      --border: #e5e5e3;
+      --text: #16181c;
+      --text-dim: #5a6068;
+      --accent: #1f8a5f;
+      --accent-dim: #d6f0e3;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 80px; }
+  code { font-family: var(--mono); background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 0.9em; }
+  h1 { font-size: 1.8rem; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .updated { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 40px; }
+  h2 { font-size: 1.15rem; margin: 36px 0 10px; }
+  p, li { color: var(--text-dim); font-size: 0.96rem; }
+  ul { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--text-dim); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .back { display: inline-block; margin-top: 48px; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Política de Privacidade</h1>
+  <div class="updated">OpenDisplay Android · última atualização em 15/08/2026</div>
+
+  <p>OpenDisplay Android é um cliente open source que transforma um aparelho Android
+  num segundo monitor pra um Mac rodando o app original <a href="https://opendisplay.app/">OpenDisplay</a>.
+  Esta política cobre o que o app faz e não faz com os seus dados.</p>
+
+  <h2>Resumo rápido</h2>
+  <ul>
+    <li>Sem conta, sem cadastro, sem login.</li>
+    <li>Sem analytics, sem relatório de erros, sem SDKs de anúncios.</li>
+    <li>Nenhum dado é enviado a servidor operado pelo desenvolvedor — não existe um.</li>
+    <li>Todo o tráfego de rede é uma conexão direta entre o seu aparelho Android e o
+    seu próprio Mac, pela sua rede local (ou um cabo USB via <code>adb forward</code>).</li>
+  </ul>
+
+  <h2>O que o app faz na rede</h2>
+  <p>O app escuta numa porta TCP local e se anuncia via mDNS
+  (<code>_opensidecar._tcp</code>) pra que o app de Mac do OpenDisplay possa encontrá-lo e conectar
+  na mesma rede. Depois de conectado, ele troca frames de vídeo (conteúdo da tela do seu Mac) e
+  eventos de entrada (toque/scroll que você manda de volta) diretamente com aquele Mac — nada é
+  repassado por, ou armazenado em, nenhum servidor de terceiros ou do desenvolvedor.</p>
+
+  <h2>Permissões usadas</h2>
+  <table>
+    <tr><th>Permissão</th><th>Por quê</th></tr>
+    <tr><td><code>INTERNET</code></td><td>Abre o socket TCP local ao qual o Mac se conecta. Usado só pra conexão direta com o Mac descrita acima — não pra nenhum serviço de internet.</td></tr>
+    <tr><td><code>ACCESS_WIFI_STATE</code>, <code>CHANGE_WIFI_MULTICAST_STATE</code></td><td>Descoberta por mDNS na rede WiFi local, pra que o Mac encontre o aparelho automaticamente.</td></tr>
+    <tr><td><code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_CONNECTED_DEVICE</code></td><td>Mantém viva a conexão com o Mac enquanto o app atua como monitor externo, mesmo que não seja o app em primeiro plano.</td></tr>
+    <tr><td><code>POST_NOTIFICATIONS</code></td><td>Mostra a notificação de status exigida pelo serviço em primeiro plano acima.</td></tr>
+  </table>
+
+  <h2>Armazenamento de dados</h2>
+  <p>A única coisa que o app guarda localmente no aparelho são as suas próprias
+  configurações (o nome mDNS do aparelho) — guardadas nas preferências locais do app, nunca
+  transmitidas pra lugar nenhum, e removidas se você desinstalar o app.</p>
+
+  <h2>Terceiros</h2>
+  <p>Nenhum. O app não tem SDKs de terceiros, rede de anúncios, provedor de analytics,
+  nem backend na nuvem.</p>
+
+  <h2>Mudanças nesta política</h2>
+  <p>Qualquer mudança no que o app faz com os dados vai ser refletida nesta página, com
+  a data de "última atualização" acima.</p>
+
+  <h2>Contato</h2>
+  <p>Dúvidas ou preocupações: abra uma issue no
+  <a href="https://github.com/josepacelli/opendisplay-android/issues">repositório do GitHub</a>.</p>
+
+  <div class="links langs" style="display:flex;gap:20px;flex-wrap:wrap;margin-top:40px;">
+    <a href="/privacy.html">EN</a>
+      <a href="/es/privacy.html">ES</a>
+      <span class="lang-current" aria-current="page" style="color:var(--text);font-weight:600;">PT-BR</span>
+      <a href="/pt-PT/privacy.html">PT-PT</a>
+      <a href="/zh-Hans/privacy.html">中文</a>
+      <a href="/ja/privacy.html">日本語</a>
+  </div>
+  <a class="back" href="index.html">← Voltar pro OpenDisplay Android</a>
+
+</div>
+</body>
+</html>
