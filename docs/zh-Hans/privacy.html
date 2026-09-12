@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>隐私政策 — OpenDisplay Android</title>
+<meta name="description" content="OpenDisplay Android 应用的隐私政策：无账号、无分析、无遥测、不收集数据。">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/zh-Hans/privacy.html">
+<link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/privacy.html">
+<link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/privacy.html">
+<link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/pt-BR/privacy.html">
+<link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/privacy.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/privacy.html">
+<link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/privacy.html">
+<link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/privacy.html">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #0b0d10;
+    --bg-elev: #14171b;
+    --border: #23272d;
+    --text: #e8eaed;
+    --text-dim: #9aa2ad;
+    --accent: #5fd0a3;
+    --accent-dim: #2e5c48;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fafaf9;
+      --bg-elev: #ffffff;
+      --border: #e5e5e3;
+      --text: #16181c;
+      --text-dim: #5a6068;
+      --accent: #1f8a5f;
+      --accent-dim: #d6f0e3;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 80px; }
+  code { font-family: var(--mono); background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 0.9em; }
+  h1 { font-size: 1.8rem; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .updated { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 40px; }
+  h2 { font-size: 1.15rem; margin: 36px 0 10px; }
+  p, li { color: var(--text-dim); font-size: 0.96rem; }
+  ul { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--text-dim); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .back { display: inline-block; margin-top: 48px; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>隐私政策</h1>
+  <div class="updated">OpenDisplay Android · 最后更新于 2026-08-15</div>
+
+  <p>OpenDisplay Android 是一个开源客户端，把安卓设备变成运行原版
+  <a href="https://opendisplay.app/">OpenDisplay</a> 应用的 Mac 的第二显示器。本政策说明该应用
+  对你的数据会做什么、不会做什么。</p>
+
+  <h2>简要说明</h2>
+  <ul>
+    <li>无需账号、无需注册、无需登录。</li>
+    <li>没有分析统计，没有崩溃报告，没有广告 SDK。</li>
+    <li>不会向开发者运营的任何服务器发送数据 — 因为根本没有这样的服务器。</li>
+    <li>所有网络流量都是你的安卓设备与你自己的 Mac 之间的直接连接，走的是你的本地网络
+    （或者通过 <code>adb forward</code> 走 USB 数据线）。</li>
+  </ul>
+
+  <h2>应用在网络上做什么</h2>
+  <p>应用在本地 TCP 端口上监听，并通过 mDNS（<code>_opensidecar._tcp</code>）广播自己，
+  这样 OpenDisplay Mac 应用就能在同一网络中找到并连接它。连接建立后，它直接与那台 Mac 交换视频帧
+  （来自你 Mac 的屏幕内容）和输入事件（你发回去的触摸/滚动）— 不经过、也不存储在任何第三方或开发者的服务器上。</p>
+
+  <h2>使用的权限</h2>
+  <table>
+    <tr><th>权限</th><th>用途</th></tr>
+    <tr><td><code>INTERNET</code></td><td>打开 Mac 连接所用的本地 TCP 套接字。仅用于上文所述与 Mac 的直接连接 — 不用于任何互联网服务。</td></tr>
+    <tr><td><code>ACCESS_WIFI_STATE</code>, <code>CHANGE_WIFI_MULTICAST_STATE</code></td><td>在本地 WiFi 网络上进行 mDNS 发现，让 Mac 能自动找到该设备。</td></tr>
+    <tr><td><code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_CONNECTED_DEVICE</code></td><td>在应用充当外接显示器期间保持与 Mac 的连接，即使当前屏幕上显示的不是这个应用。</td></tr>
+    <tr><td><code>POST_NOTIFICATIONS</code></td><td>显示上述前台服务所需的状态通知。</td></tr>
+  </table>
+
+  <h2>数据存储</h2>
+  <p>应用在设备本地唯一保存的东西是它自己的设置（mDNS 设备名称）— 保存在应用本地的
+  偏好设置中，从不向外传输，卸载应用后也会一并删除。</p>
+
+  <h2>第三方</h2>
+  <p>没有。应用没有任何第三方 SDK、广告网络、分析服务商，也没有云端后端。</p>
+
+  <h2>本政策的变更</h2>
+  <p>应用对数据处理方式的任何变化都会体现在本页面上，并更新上方的"最后更新"日期。</p>
+
+  <h2>联系方式</h2>
+  <p>有疑问或顾虑：请在
+  <a href="https://github.com/josepacelli/opendisplay-android/issues">GitHub 仓库</a>提交 issue。</p>
+
+  <div class="links langs" style="display:flex;gap:20px;flex-wrap:wrap;margin-top:40px;">
+    <a href="/privacy.html">EN</a>
+      <a href="/es/privacy.html">ES</a>
+      <a href="/pt-BR/privacy.html">PT-BR</a>
+      <a href="/pt-PT/privacy.html">PT-PT</a>
+      <span class="lang-current" aria-current="page" style="color:var(--text);font-weight:600;">中文</span>
+      <a href="/ja/privacy.html">日本語</a>
+  </div>
+  <a class="back" href="index.html">← 返回 OpenDisplay Android</a>
+
+</div>
+</body>
+</html>

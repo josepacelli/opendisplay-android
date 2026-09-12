@@ -1,13 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://opendisplay.jpmo.dev.br/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/pt-BR/"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/"/>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/es/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/pt-BR/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/pt-PT/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/zh-Hans/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/ja/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://opendisplay.jpmo.dev.br/privacy.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/es/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.15</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/pt-BR/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.15</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/pt-PT/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.15</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/zh-Hans/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.15</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/ja/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.15</priority>
   </url>
 </urlset>

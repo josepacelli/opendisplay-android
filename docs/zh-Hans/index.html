@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenDisplay Android — 适用于 Mac 的开源外接显示器</title>
+<meta name="description" content="把安卓平板或手机变成 Mac 真正的扩展第二显示器，通过 WiFi 或 USB 连接。免费开源，可替代 Duet Display、Sidecar 和 Spacedesk — 无需账号，无需订阅。">
+<meta name="keywords" content="安卓外接显示器, 安卓外部显示屏, Mac第二屏幕, Duet Display替代品, Sidecar替代品, Spacedesk替代品, 安卓平板当第二显示器, 安卓扩展屏幕, 用安卓做Mac显示器">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/zh-Hans/">
+<link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/">
+<link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/">
+<link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/pt-BR/">
+<link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/">
+<link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/">
+<link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/">
+<link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/">
+
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://opendisplay.jpmo.dev.br/zh-Hans/">
+<meta property="og:site_name" content="OpenDisplay Android">
+<meta property="og:title" content="OpenDisplay Android — 适用于 Mac 的开源外接显示器">
+<meta property="og:description" content="把安卓平板或手机变成 Mac 真正的扩展第二显示器，通过 WiFi 或 USB 连接。免费开源，可替代 Duet Display、Sidecar 和 Spacedesk — 无需账号，无需订阅。">
+<meta property="og:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenDisplay Android — 适用于 Mac 的开源外接显示器">
+<meta name="twitter:description" content="把安卓平板或手机变成 Mac 真正的扩展第二显示器，通过 WiFi 或 USB 连接。免费开源，可替代 Duet Display、Sidecar 和 Spacedesk — 无需账号，无需订阅。">
+<meta name="twitter:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenDisplay Android",
+  "operatingSystem": "Android 8.0+",
+  "applicationCategory": "UtilitiesApplication",
+  "description": "开源安卓客户端，通过 WiFi 或 USB 把平板或手机变成 Mac 真正的扩展第二显示器，使用与原版 OpenDisplay Mac 应用相同的协议。",
+  "url": "https://opendisplay.jpmo.dev.br/zh-Hans/",
+  "downloadUrl": "https://github.com/josepacelli/opendisplay-android/releases/latest",
+  "license": "https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Jose Pacelli",
+    "url": "https://github.com/josepacelli"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "这和 iOS 版 OpenDisplay 是同一个应用吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不是。这是一个独立客户端，用 Kotlin 从零编写，实现了相同的网络协议以便和原版 Mac 应用互通。官方项目只提供 iOS/iPadOS 客户端。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "有上架 Google Play 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Google Play 版本目前处于封闭测试阶段。与此同时，可以通过 GitHub Releases 获取 — 用 adb install 安装，或把 APK 复制到设备上安装（需开启未知来源）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "必须要 WiFi 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "通过 WiFi 使用 mDNS 自动发现即可运行。也可以用 USB 作为原生配件（AOA）连接 — 插上数据线，点一下系统弹窗即可，无需 adb。目前这条原生 USB 路径需要 Mac 应用的开发分支；对着已发布的 Mac 应用，USB 通过仓库中说明的 adb-forward 回退方案实现。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "所有安卓平板或手机都能用吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "需要安卓 8.0（API 26）或更高版本。已在真实设备上测试（三星 Galaxy Tab S9 FE+ 和 Galaxy Note10+/Tab S7+，安卓 12 至 16），但尚未覆盖广泛的机型。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "会改动 Mac 应用吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不做任何修改 — 任何协议不兼容都是本项目的责任，与上游项目无关。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "许可证是什么？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GPL-3.0，与原项目相同。开源，可自由使用，包括商用；分发的修改版必须以同一许可证继续开源。"
+      }
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="4" width="15" height="11" rx="1.5"></rect>
+        <rect x="10" y="12" width="12" height="8" rx="1.5" fill="var(--bg)"></rect>
+      </svg>
+      OpenDisplay <span class="brand-sub">Android</span>
+    </div>
+    <nav>
+      <a href="#features">功能</a>
+      <a href="#how-it-works">工作原理</a>
+      <a href="#screenshots">截图</a>
+      <a href="#install">安装</a>
+      <a href="#compare">对比</a>
+      <a href="#faq">常见问题</a>
+      <a class="gh-stars" href="https://github.com/josepacelli/opendisplay-android" id="gh-stars">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        GitHub <span id="gh-stars-count">···</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <span class="status-badge"><span class="dot"></span>早期 Alpha 版 · 已在真机测试</span>
+    <h1>把你的安卓平板或手机变成 Mac <em>真正意义上</em>的第二显示器。</h1>
+    <p class="lead">
+      一个非官方的开源安卓客户端，对接
+      <a href="https://opendisplay.app/">OpenDisplay</a> — 原项目只提供 iOS/iPadOS 客户端。这个客户端
+      使用相同的网络协议，无需对 Mac 应用做任何改动。对于已经拥有安卓平板、想要真正扩展显示而不只是镜像的人来说，
+      是 Duet Display、Sidecar 和 Spacedesk 的免费替代方案。
+    </p>
+    <div class="specs">
+      <span>Android 8.0+ (API 26)</span>
+      <span>macOS（通过原版 OpenDisplay 应用）</span>
+      <span>GPL-3.0</span>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" href="#install">
+        开始使用
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m0 0l-6-6m6 6l6-6"></path></svg>
+      </a>
+      <a class="btn ghost" href="https://github.com/josepacelli/opendisplay-android">
+        在 GitHub 上查看
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"></path></svg>
+      </a>
+    </div>
+    <div class="kofi-badge-wrap">
+      <div class="kofi-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v6a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9h2a2 2 0 010 4h-2"></path><path d="M8 2v2M11 2v2M14 2v2"></path></svg>
+        <span>免费，由一个人独立开发。</span>
+        <a href="#support"><strong>在 Ko-fi 上支持 ↓</strong></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <p class="eyebrow">工作原理</p>
+    <h2>Mac 完全不变，由安卓设备负责监听。</h2>
+    <p class="section-sub">
+      由安卓设备负责监听，Mac 负责连接 — 这正是它能在 WiFi 下零配置运行的原因，
+      通过 mDNS 自动发现，无需对原版 OpenDisplay Mac 应用做任何改动。
+    </p>
+    <div class="diagram">
+      <div class="diagram-bar"><span></span><span></span><span></span></div>
+      <div class="diagram-grid">
+        <div class="diagram-col">
+          <p class="diagram-heading">MAC <span>（服务端，原版 OpenDisplay 应用）</span></p>
+          <ol>
+            <li>CGVirtualDisplay</li>
+            <li><span class="arrow">→</span> ScreenCaptureKit <span class="arrow">→</span> VideoToolbox <span class="hl">H.264</span></li>
+            <li><span class="arrow">→</span> TCP <span class="dim">[4-byte length][Annex-B frame]</span> <span class="arrow">═══→</span></li>
+            <li><span class="arrow">←</span> control JSON <span class="dim">(hello, touch, scroll, ping)</span> <span class="arrow">═══</span></li>
+          </ol>
+        </div>
+        <div class="diagram-col">
+          <p class="diagram-heading">ANDROID <span>（本项目）</span></p>
+          <ol>
+            <li>listens on <span class="hl">:9000</span></li>
+            <li><span class="arrow">→</span> MediaCodec <span class="arrow">→</span> SurfaceView</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots">
+    <p class="eyebrow">截图</p>
+    <h2>真实设备，真实 WiFi 连接。</h2>
+    <p class="section-sub">没有摆拍 — 下面每张截图都是安卓平板和 Mac 之间的真实会话。</p>
+    <div class="gallery">
+      <figure>
+        <img src="../screenshots/tablet-mirroring-site.jpeg" alt="桌上的安卓平板，通过 WiFi 镜像来自 Mac 的这个落地页" loading="lazy">
+        <figcaption>平板正在镜像这同一个页面，画面通过 WiFi 从 Mac 实时传输。</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/mac-arrange-displays.jpeg" alt="macOS 显示器设置中的排列显示器对话框，安卓平板作为第三块屏幕出现在列表中" loading="lazy">
+        <figcaption>在 Mac 的“系统设置 → 显示器”中被识别为普通的第三块显示器。</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-home.jpeg" alt="OpenDisplay Android 应用主屏幕，正在监听 9000 端口，等待 Mac 连接" loading="lazy">
+        <figcaption>应用主屏幕 — 正在监听 :9000 端口，等待 Mac 通过 WiFi 发现它。</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-settings.jpeg" alt="OpenDisplay Android 应用设置对话框，显示状态、mDNS 广播的设备名称，以及用于排查问题的本机地址" loading="lazy">
+        <figcaption>设置：连接状态、通过 mDNS 广播的名称，以及用于排查问题的本机地址。</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-mirroring.jpeg" alt="OpenDisplay Android 应用正在镜像 Mac 屏幕，浏览器中显示的是本项目自己的 GitHub 仓库" loading="lazy">
+        <figcaption>会话进行中：Mac 的屏幕（本仓库的 GitHub 页面）实时镜像到平板上。</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="install">
+    <p class="eyebrow">安装</p>
+    <h2>两个应用协同工作。</h2>
+    <p class="section-sub">两个都装上才能开始 — Mac 那一端就是原版 OpenDisplay 项目，未做任何修改。</p>
+    <div class="steps">
+      <div class="step">
+        <span class="tag">第 1 步 · 在你的 Mac 上</span>
+        <h3>发送端</h3>
+        <p>捕获一个虚拟显示器并推流。这就是原版 OpenDisplay 程序，未做修改。</p>
+        <a class="btn primary" href="https://github.com/peetzweg/opendisplay/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path></svg>
+          下载 Mac 版
+        </a>
+        <p class="step-note">想自己编译？<a href="https://github.com/peetzweg/opendisplay">从源码构建 ↗</a></p>
+      </div>
+      <div class="step">
+        <span class="tag">第 2 步 · 在你的安卓设备上</span>
+        <h3>接收端</h3>
+        <p>显示视频流，并把触摸/滚动操作发回去。</p>
+        <a class="btn primary" href="https://github.com/josepacelli/opendisplay-android/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path></svg>
+          下载 APK（v0.0.37）
+        </a>
+        <p class="step-note">
+          Google Play 版本正在封闭测试 — 想参加吗？发邮件到
+          <a href="mailto:josepacelli@gmail.com">josepacelli@gmail.com</a>。与此同时，可以手动安装
+          上面的 APK，或者<a href="https://github.com/josepacelli/opendisplay-android#build">从源码构建 ↗</a>。
+          <a href="https://github.com/josepacelli/opendisplay-android/releases">查看以往版本 ↗</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <p class="eyebrow">功能</p>
+    <h2>目前已经能用的功能。</h2>
+    <p class="section-sub">针对真实的 Mac 应用验证过，不是纸面规格。</p>
+    <div class="features">
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8M12 17v4"></path><path d="M10 8l6 4-6 4V8z"></path></svg></div>
+        <div><h4>硬件 H.264 解码</h4><p><code>MediaCodec</code> 直接解码到 Surface，无需 CPU 转换。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9a15 15 0 0119 0"></path><path d="M6 13a9.5 9.5 0 0112 0"></path><path d="M9.5 17a4.5 4.5 0 015 0"></path><circle cx="12" cy="20" r="0.9" fill="currentColor" stroke="none"></circle></svg></div>
+        <div><h4>自动发现</h4><p>通过 mDNS（<code>_opensidecar._tcp</code>）— Mac 会在同一网络中自动找到安卓设备。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 114 0v6"></path><path d="M13 6.5a2 2 0 114 0V12"></path><path d="M17 9.5a2 2 0 114 0V15a7 7 0 01-7 7h-1a7 7 0 01-6-3.4L4.5 14a1.7 1.7 0 012.6-2.1L9 14"></path></svg></div>
+        <div><h4>触摸与滚动</h4><p>在 Extend 模式下，单指变成点击/拖拽，双指变成滚动。Mac 的 Mirror 模式仅供查看：会静默忽略任何客户端的输入。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"></circle><path d="M18.5 18.5L15 15"></path><path d="M10 7.5v5M7.5 10h5"></path></svg></div>
+        <div><h4>双指缩放</h4><p>在视频上双指张开即可本地缩放，Mirror 和 Extend 模式都可以 — 无需改动协议，触摸依旧精准落在 Mac 上的对应位置。缩放后，用三指拖动可以在放大区域内移动。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg></div>
+        <div><h4>远程光标</h4><p>一个圆点或解码出的光标图案，实时映射 Mac 的光标位置。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
+        <div><h4>前台服务</h4><p>应用切到后台也能存活，解锁屏幕后能正确恢复。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114.9-4"></path><path d="M20 12a8 8 0 01-14.9 4"></path><path d="M18 4v4h-4M6 20v-4h4"></path></svg></div>
+        <div><h4>错误恢复</h4><p>解码器出错会自动请求关键帧，而不会断开连接。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M4 12h16M4 18h7"></path><circle cx="17" cy="6" r="2"></circle><circle cx="9" cy="18" r="2"></circle></svg></div>
+        <div><h4>手动兜底</h4><p>可编辑的 mDNS 名称和 IP:端口连接方式，供自动发现失败时使用。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6"></path><rect x="6" y="8" width="12" height="7" rx="2"></rect><path d="M12 15v3a4 4 0 01-4 4H6"></path></svg></div>
+        <div><h4>USB 配件（AOA）</h4><p>插上数据线，点一下系统弹窗，就这么简单 — 不需要 <code>adb</code>，不需要开发者选项。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"></rect><rect x="12" y="11" width="7" height="5" rx="1" fill="currentColor" stroke="none"></rect></svg></div>
+        <div><h4>画中画</h4><p>连接状态下离开应用，视频会继续在悬浮窗口中播放。</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.1A11 11 0 0112 5c5 0 9 4 10 7-0.5 1.4-1.4 2.9-2.6 4.1M6.6 6.6C4.5 8 3 10 2 12c1 3 5 7 10 7 1.3 0 2.6-.2 3.7-.7"></path><path d="M9.9 9.9a3 3 0 004.2 4.2"></path></svg></div>
+        <div><h4>无账号，无遥测</h4><p>和原项目理念一致：没有中心服务器，不会往外发送任何数据。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <p class="eyebrow">对比</p>
+    <h2>与最知名的替代方案对比。</h2>
+    <p class="section-sub">面向把安卓平板当作外接显示器使用的场景。</p>
+    <div class="table-scroll">
+      <table class="compare">
+        <thead>
+          <tr><th></th><th>OpenDisplay Android</th><th>Duet Display</th><th>Spacedesk</th></tr>
+        </thead>
+        <tbody>
+          <tr class="self"><td>价格</td><td class="yes">免费</td><td class="no">付费</td><td class="no">核心功能免费</td></tr>
+          <tr class="self"><td>开源</td><td class="yes">GPL-3.0</td><td class="no">否</td><td class="no">否</td></tr>
+          <tr class="self"><td>需要账号</td><td class="yes">否</td><td class="no">是</td><td class="no">否</td></tr>
+          <tr class="self"><td>与 OpenDisplay Mac 相同协议</td><td class="yes">是</td><td class="no">否</td><td class="no">否</td></tr>
+          <tr class="self"><td>中心服务器</td><td class="yes">无</td><td class="no">有</td><td class="no">无</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="faq">
+    <p class="eyebrow">常见问题</p>
+    <h2>常见问题解答。</h2>
+
+    <details class="faq">
+      <summary>这和 iOS 版 OpenDisplay 是同一个应用吗？
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>不是。这是一个独立客户端，用 Kotlin 从零编写，实现了相同的网络协议以便和原版
+      Mac 应用互通。官方项目只提供 iOS/iPadOS 客户端。</p>
+    </details>
+
+    <details class="faq">
+      <summary>有上架 Google Play 吗？
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Google Play 版本目前处于封闭测试阶段。想成为测试者吗？发邮件到
+      <a href="mailto:josepacelli@gmail.com">josepacelli@gmail.com</a>。与此同时，也可以通过
+      GitHub Releases 获取 — 用 <code>adb install</code> 安装，或把 APK 复制到设备上安装
+      （需开启"未知来源"）。</p>
+    </details>
+
+    <details class="faq">
+      <summary>必须要 WiFi 吗？
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>通过 WiFi 使用 mDNS 自动发现即可运行。也可以用 USB 作为原生配件（AOA）连接 —
+      插上数据线，点一下系统弹窗即可，无需 <code>adb</code>。仓库中有针对尚不支持 AOA 的 Mac 应用的
+      回退方案说明。</p>
+    </details>
+
+    <details class="faq">
+      <summary>Mirror 模式下触摸能用吗？
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>不能 — Mac 上的 Mirror 模式仅供查看。Mac 应用只在 Extend 模式下接受触摸/滚动（镜像会话根本不会
+      创建输入注入器），所以从这里发出的点击和滚动都会被静默忽略。需要交互操作请使用 Extend 模式。</p>
+    </details>
+
+    <details class="faq">
+      <summary>所有安卓平板或手机都能用吗？
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>需要安卓 8.0（API 26）或更高版本。已在真实设备上测试（三星 Galaxy Tab S9 FE+
+      和 Galaxy Note10+/Tab S7+，安卓 12 至 16），但尚未覆盖广泛的机型 — 触摸/滚动/光标功能已实现，
+      但目前的实际验证还比较有限。注意：v0.0.7 及更早版本在安卓 12–13（API 30-33）上启动会崩溃；
+      请使用 v0.0.8 或更新版本（已在
+      <a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a> 中修复）。</p>
+    </details>
+
+    <details class="faq">
+      <summary>会改动 Mac 应用吗？
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>完全不做任何修改 — 任何协议不兼容都是本项目的责任，与上游项目无关。</p>
+    </details>
+
+    <details class="faq">
+      <summary>许可证是什么？
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>GPL-3.0，与原项目相同。开源，可自由使用，包括商用；分发的修改版必须以同一
+      许可证继续开源。</p>
+    </details>
+  </section>
+
+  <section id="contribute">
+    <p class="eyebrow">Contribute</p>
+    <h2>欢迎提交 issue 和 pull request。</h2>
+    <p class="section-sub">
+      Bug 报告和 PR 请提交到
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub 仓库</a>，里面也有架构、
+      协议和构建细节。认真的 bug 报告才是真正让一个人的业余项目变得更好的关键 — 感谢下面每一位。
+    </p>
+    <div class="credits">
+      <div class="credit">
+        <img src="https://github.com/gaeaearth.png" alt="" loading="lazy">
+        <p><strong>@gaeaearth</strong> — 本项目最活跃的早期测试者：安卓 12/13
+        启动崩溃问题（<a href="https://github.com/josepacelli/opendisplay-android/issues/4">#4</a>），
+        屏幕超时/重连问题（<a href="https://github.com/josepacelli/opendisplay-android/issues/10">#10</a>，
+        以及 <a href="https://github.com/josepacelli/opendisplay-android/issues/28">#28</a> 中的息屏修复），
+        还有容易误导人的手动连接提示（<a href="https://github.com/josepacelli/opendisplay-android/issues/18">#18</a>）。</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/edoardomich.png" alt="" loading="lazy">
+        <p><strong>@edoardomich</strong> — 修复了安卓 12/13 的启动崩溃问题
+        (<a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>)。</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/jpbhdrey.png" alt="" loading="lazy">
+        <p><strong>@jpbhdrey</strong> — 实现了 USB 配件（AOA）传输方式
+        (<a href="https://github.com/josepacelli/opendisplay-android/pull/33">#33</a>)：插上数据线，
+        点一下系统弹窗即可，无需开发者选项，也不用折腾 <code>adb</code>。</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/dyss1992.png" alt="" loading="lazy">
+        <p><strong>@dyss1992</strong> — 通过有对照的前后对比，报告了部分高通解码器在
+        Mirror 模式下的宽高比问题，让根因一目了然
+        (<a href="https://github.com/josepacelli/opendisplay-android/issues/44">#44</a>)，
+        并建议了沉浸式全屏模式
+        (<a href="https://github.com/josepacelli/opendisplay-android/issues/45">#45</a>)。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="support-eyebrow">支持这个项目</div>
+    <div class="support-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v6a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9h2a2 2 0 010 4h-2"></path><path d="M8 2v2M11 2v2M14 2v2"></path></svg>
+      <strong>Ko-fi</strong>
+    </div>
+    <h2 class="support-title">如果 OpenDisplay Android 帮你省下了买显示器的钱，可以考虑请我喝杯咖啡。</h2>
+    <div class="support-copy">
+      <p>
+        这是一个人的业余项目，由我
+        <a href="https://github.com/josepacelli">Jose Pacelli</a> 在晚上和周末构建与维护 — 不是公司。
+      </p>
+      <p>
+        在 Ko-fi 上支持我，能让这个项目持续维护并对所有人免费，包括那些无力赞助的人。
+        我的目标是让它成为把闲置安卓平板变成真正第二显示器的最佳免费方案。
+      </p>
+      <p>如果它帮你省下了买显示器的钱，一点小小的打赏就能帮它继续走下去。谢谢你。</p>
+    </div>
+    <div class="kofi-badge-wrap">
+      <div class="kofi-badge">
+        <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
+        <script type='text/javascript'>kofiwidget2.init('在 Ko-fi 上支持', '#72a4f2', 'Q3D5259MWT');kofiwidget2.draw();</script>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/releases">发布版本</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/issues">问题反馈</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE">许可证 (GPL-3.0)</a>
+      <a href="privacy.html">隐私政策</a>
+      <a href="https://opendisplay.app/">原始项目 (Mac/iOS)</a>
+    </div>
+    <div class="links langs">
+      <a href="/">EN</a>
+      <a href="/es/">ES</a>
+      <a href="/pt-BR/">PT-BR</a>
+      <a href="/pt-PT/">PT-PT</a>
+      <span class="lang-current" aria-current="page" style="color:var(--text);font-weight:600;">中文</span>
+      <a href="/ja/">日本語</a>
+    </div>
+    <div class="disclaimer">与原版 OpenDisplay 项目的维护者无关联。使用相同协议，独立维护。</div>
+  </div>
+</footer>
+
+
+<script>
+  fetch("https://api.github.com/repos/josepacelli/opendisplay-android")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (!data || typeof data.stargazers_count !== "number") return;
+      const el = document.getElementById("gh-stars-count");
+      if (el) el.textContent = data.stargazers_count;
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
