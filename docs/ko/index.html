@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenDisplay Android — Mac용 오픈소스 외부 모니터</title>
+<meta name="description" content="Android 태블릿이나 폰을 Mac의 진짜 확장 세컨드 모니터로 만들어줍니다. WiFi 또는 USB로 연결. Duet Display, Sidecar, Spacedesk의 무료 오픈소스 대안 — 계정도, 구독도 필요 없습니다.">
+<meta name="keywords" content="Android 세컨드 모니터, Android 외부 디스플레이, Mac 세컨드 스크린, Duet Display 대안, Sidecar 대안, Spacedesk 대안, Android 태블릿 세컨드 모니터, Android 확장 디스플레이, Android를 Mac 디스플레이로">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/ko/">
+<link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/">
+<link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/">
+<link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/pt-BR/">
+<link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/">
+<link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/">
+<link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/">
+<link rel="alternate" hreflang="ko" href="https://opendisplay.jpmo.dev.br/ko/">
+<link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/">
+
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://opendisplay.jpmo.dev.br/ko/">
+<meta property="og:site_name" content="OpenDisplay Android">
+<meta property="og:title" content="OpenDisplay Android — Mac용 오픈소스 외부 모니터">
+<meta property="og:description" content="Android 태블릿이나 폰을 Mac의 진짜 확장 세컨드 모니터로 만들어줍니다. WiFi 또는 USB로 연결. Duet Display, Sidecar, Spacedesk의 무료 오픈소스 대안 — 계정도, 구독도 필요 없습니다.">
+<meta property="og:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenDisplay Android — Mac용 오픈소스 외부 모니터">
+<meta name="twitter:description" content="Android 태블릿이나 폰을 Mac의 진짜 확장 세컨드 모니터로 만들어줍니다. WiFi 또는 USB로 연결. Duet Display, Sidecar, Spacedesk의 무료 오픈소스 대안 — 계정도, 구독도 필요 없습니다.">
+<meta name="twitter:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenDisplay Android",
+  "operatingSystem": "Android 8.0+",
+  "applicationCategory": "UtilitiesApplication",
+  "description": "WiFi 또는 USB로 태블릿이나 폰을 Mac의 진짜 확장 세컨드 모니터로 만들어주는 오픈소스 Android 클라이언트. 오리지널 OpenDisplay Mac 앱과 동일한 프로토콜로 통신합니다.",
+  "url": "https://opendisplay.jpmo.dev.br/ko/",
+  "downloadUrl": "https://github.com/josepacelli/opendisplay-android/releases/latest",
+  "license": "https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Jose Pacelli",
+    "url": "https://github.com/josepacelli"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "iOS용 OpenDisplay와 같은 앱인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "아닙니다. Kotlin으로 처음부터 새로 작성된 독립 클라이언트로, 오리지널 Mac 앱과 상호운용하기 위해 동일한 네트워크 프로토콜을 구현했습니다. 공식 프로젝트는 iOS/iPadOS 클라이언트만 제공합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Google Play에 있나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Google Play 버전은 현재 비공개 테스트 중입니다. 그동안은 GitHub Releases로 배포됩니다 — adb install로 설치하거나 APK를 기기에 복사해서 설치하세요 (출처를 알 수 없는 앱 허용 필요)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "WiFi가 꼭 필요한가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "mDNS 자동 검색으로 WiFi를 통해 동작합니다. USB로 네이티브 액세서리(AOA)로 연결할 수도 있습니다 — 케이블을 꽂고 시스템 프롬프트를 누르기만 하면 되며 adb는 필요 없습니다. 이 네이티브 USB 경로는 현재 Mac 앱의 개발 포크가 필요합니다. 공식 배포된 Mac 앱에서는 저장소에 안내된 adb-forward 대체 방법으로 USB를 사용할 수 있습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "아무 Android 태블릿이나 폰에서 동작하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Android 8.0(API 26) 이상이 필요합니다. 실제 기기(Samsung Galaxy Tab S9 FE+, Galaxy Note10+/Tab S7+, Android 12~16)에서 테스트했지만, 아직 다양한 기기에서 폭넓게 검증되지는 않았습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mac 앱에 어떤 변경이라도 가하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "전혀 변경하지 않습니다 — 프로토콜 불일치가 있다면 그것은 업스트림이 아닌 이 프로젝트의 책임입니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "라이선스는 무엇인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GPL-3.0, 오리지널 프로젝트와 동일합니다. 오픈소스이며 상업적 사용을 포함해 자유롭게 사용할 수 있습니다. 배포되는 수정 버전도 동일한 라이선스로 오픈소스를 유지해야 합니다."
+      }
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="4" width="15" height="11" rx="1.5"></rect>
+        <rect x="10" y="12" width="12" height="8" rx="1.5" fill="var(--bg)"></rect>
+      </svg>
+      OpenDisplay <span class="brand-sub">Android</span>
+    </div>
+    <nav>
+      <a href="#features">기능</a>
+      <a href="#how-it-works">작동 방식</a>
+      <a href="#screenshots">스크린샷</a>
+      <a href="#install">설치</a>
+      <a href="#compare">비교</a>
+      <a href="#faq">자주 묻는 질문</a>
+      <a class="gh-stars" href="https://github.com/josepacelli/opendisplay-android" id="gh-stars">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        GitHub <span id="gh-stars-count">···</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <span class="status-badge"><span class="dot"></span>초기 알파 · 실제 기기에서 테스트됨</span>
+    <h1>Android 태블릿이나 폰을 Mac의 <em>진짜</em> 세컨드 모니터로 사용하세요.</h1>
+    <p class="lead">
+      <a href="https://opendisplay.app/">OpenDisplay</a>의 비공식 오픈소스 Android 클라이언트입니다
+      — 오리지널 프로젝트는 iOS/iPadOS 클라이언트만 제공합니다. 동일한 네트워크 프로토콜로 통신하기 때문에
+      Mac 앱 쪽은 전혀 변경할 필요가 없습니다. 이미 Android 태블릿을 가지고 있고 미러링이 아니라 확장
+      디스플레이를 원하는 사람을 위한 Duet Display, Sidecar, Spacedesk의 무료 대안입니다.
+    </p>
+    <div class="specs">
+      <span>Android 8.0+ (API 26)</span>
+      <span>macOS (오리지널 OpenDisplay 앱 경유)</span>
+      <span>GPL-3.0</span>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" href="#install">
+        시작하기
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m0 0l-6-6m6 6l6-6"></path></svg>
+      </a>
+      <a class="btn ghost" href="https://github.com/josepacelli/opendisplay-android">
+        GitHub에서 보기
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"></path></svg>
+      </a>
+    </div>
+    <div class="kofi-badge-wrap">
+      <div class="kofi-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v6a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9h2a2 2 0 010 4h-2"></path><path d="M8 2v2M11 2v2M14 2v2"></path></svg>
+        <span>무료이며, 혼자서 개발하고 있습니다.</span>
+        <a href="#support"><strong>Ko-fi로 후원하기 ↓</strong></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <p class="eyebrow">작동 방식</p>
+    <h2>Mac은 그대로 둡니다. 대기하는 쪽은 Android 기기입니다.</h2>
+    <p class="section-sub">
+      Android 기기가 대기하고 Mac이 접속합니다 — 이 방식 덕분에 별도 설정 없이 WiFi로 동작합니다.
+      mDNS 자동 검색을 사용하며, 오리지널 OpenDisplay Mac 앱에는 어떤 변경도 가하지 않습니다.
+    </p>
+    <div class="diagram">
+      <div class="diagram-bar"><span></span><span></span><span></span></div>
+      <div class="diagram-grid">
+        <div class="diagram-col">
+          <p class="diagram-heading">MAC <span>(서버, 오리지널 OpenDisplay 앱)</span></p>
+          <ol>
+            <li>CGVirtualDisplay</li>
+            <li><span class="arrow">→</span> ScreenCaptureKit <span class="arrow">→</span> VideoToolbox <span class="hl">H.264</span></li>
+            <li><span class="arrow">→</span> TCP <span class="dim">[4-byte length][Annex-B frame]</span> <span class="arrow">═══→</span></li>
+            <li><span class="arrow">←</span> control JSON <span class="dim">(hello, touch, scroll, ping)</span> <span class="arrow">═══</span></li>
+          </ol>
+        </div>
+        <div class="diagram-col">
+          <p class="diagram-heading">ANDROID <span>(이 프로젝트)</span></p>
+          <ol>
+            <li>listens on <span class="hl">:9000</span></li>
+            <li><span class="arrow">→</span> MediaCodec <span class="arrow">→</span> SurfaceView</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots">
+    <p class="eyebrow">스크린샷</p>
+    <h2>실제 기기, 실제 WiFi 연결.</h2>
+    <p class="section-sub">연출된 목업이 아닙니다 — 아래 사진 모두 Android 태블릿과 Mac 간의 실제 세션입니다.</p>
+    <div class="gallery">
+      <figure>
+        <img src="../screenshots/tablet-mirroring-site.jpeg" alt="책상 위 Android 태블릿이 Mac에서 WiFi로 이 랜딩 페이지를 미러링하는 모습" loading="lazy">
+        <figcaption>Mac에서 WiFi로 실시간 전송되어, 바로 이 페이지를 미러링 중인 태블릿.</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/mac-arrange-displays.jpeg" alt="macOS 디스플레이 설정의 디스플레이 정렬 대화상자에 세 번째 화면으로 표시된 Android 태블릿" loading="lazy">
+        <figcaption>Mac의 시스템 설정 → 디스플레이에서 일반적인 세 번째 디스플레이로 인식됩니다.</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-home.jpeg" alt="포트 9000에서 대기하며 Mac의 연결을 기다리는 OpenDisplay Android 앱 홈 화면" loading="lazy">
+        <figcaption>앱 홈 화면 — :9000에서 대기하며, Mac이 WiFi로 찾아주기를 기다리고 있습니다.</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-settings.jpeg" alt="상태, mDNS로 알려지는 기기 이름, 문제 해결용 기기 주소를 보여주는 OpenDisplay Android 앱 설정 대화상자" loading="lazy">
+        <figcaption>설정: 연결 상태, mDNS로 알려지는 이름, 문제 해결용 이 기기의 주소.</figcaption>
+      </figure>
+      <figure>
+        <img src="../screenshots/app-mirroring.jpeg" alt="브라우저에 이 프로젝트 자체의 GitHub 저장소를 띄운 채 Mac 화면을 미러링하는 OpenDisplay Android 앱" loading="lazy">
+        <figcaption>세션 도중: Mac 화면(이 저장소의 GitHub 페이지)이 태블릿에 실시간으로 미러링되고 있습니다.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="install">
+    <p class="eyebrow">설치</p>
+    <h2>함께 동작하는 두 개의 앱.</h2>
+    <p class="section-sub">시작하려면 둘 다 설치하세요 — Mac 쪽은 오리지널 OpenDisplay 프로젝트를 그대로, 무수정으로 사용합니다.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="tag">1단계 · MAC에서</span>
+        <h3>송신 측</h3>
+        <p>가상 디스플레이를 캡처해서 스트리밍합니다. 오리지널 OpenDisplay 프로그램 그대로, 무수정입니다.</p>
+        <a class="btn primary" href="https://github.com/peetzweg/opendisplay/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path></svg>
+          Mac용 다운로드
+        </a>
+        <p class="step-note">직접 빌드하고 싶으신가요? <a href="https://github.com/peetzweg/opendisplay">소스에서 빌드 ↗</a></p>
+      </div>
+      <div class="step">
+        <span class="tag">2단계 · ANDROID에서</span>
+        <h3>수신 측</h3>
+        <p>화면을 표시하고 터치/스크롤을 다시 전송합니다.</p>
+        <a class="btn primary" href="https://github.com/josepacelli/opendisplay-android/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path></svg>
+          APK 다운로드 (v0.0.38)
+        </a>
+        <p class="step-note">
+          Google Play 버전은 비공개 테스트 중입니다 — 참여하고 싶으시면
+          <a href="mailto:josepacelli@gmail.com">josepacelli@gmail.com</a>으로 메일 주세요. 그동안은
+          위의 APK를 사이드로드하거나, <a href="https://github.com/josepacelli/opendisplay-android#build">소스에서 빌드 ↗</a>하세요.
+          <a href="https://github.com/josepacelli/opendisplay-android/releases">이전 릴리스 보기 ↗</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <p class="eyebrow">기능</p>
+    <h2>지금 이미 동작하는 것들.</h2>
+    <p class="section-sub">스펙 시트가 아니라 실제 Mac 앱으로 검증했습니다.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8M12 17v4"></path><path d="M10 8l6 4-6 4V8z"></path></svg></div>
+        <div><h4>하드웨어 H.264 비디오</h4><p><code>MediaCodec</code>으로 Surface에 직접 디코딩, CPU 변환 없음.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9a15 15 0 0119 0"></path><path d="M6 13a9.5 9.5 0 0112 0"></path><path d="M9.5 17a4.5 4.5 0 015 0"></path><circle cx="12" cy="20" r="0.9" fill="currentColor" stroke="none"></circle></svg></div>
+        <div><h4>자동 검색</h4><p>mDNS(<code>_opensidecar._tcp</code>) — 같은 네트워크에서 Mac이 Android 기기를 스스로 찾습니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 114 0v6"></path><path d="M13 6.5a2 2 0 114 0V12"></path><path d="M17 9.5a2 2 0 114 0V15a7 7 0 01-7 7h-1a7 7 0 01-6-3.4L4.5 14a1.7 1.7 0 012.6-2.1L9 14"></path></svg></div>
+        <div><h4>터치와 스크롤</h4><p>Extend 모드에서 손가락 하나는 클릭/드래그, 손가락 두 개는 스크롤이 됩니다. Mac의 Mirror 모드는 보기 전용이라 어떤 클라이언트의 입력도 조용히 무시합니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"></circle><path d="M18.5 18.5L15 15"></path><path d="M10 7.5v5M7.5 10h5"></path></svg></div>
+        <div><h4>핀치 줌</h4><p>영상 위에서 두 손가락을 벌리면 로컬에서 확대됩니다. Mirror나 Extend 어느 모드에서든 사용 가능하며 프로토콜 변경도 필요 없고, 터치도 Mac 쪽의 정확한 위치에 전달됩니다. 확대한 뒤에는 손가락 세 개로 드래그해 확대 영역을 이동할 수 있습니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg></div>
+        <div><h4>원격 커서</h4><p>점 또는 디코딩된 스프라이트로 Mac의 커서 위치를 실시간으로 반영합니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
+        <div><h4>포그라운드 서비스</h4><p>앱이 백그라운드로 가도 유지되며, 화면 잠금 해제 후에도 정상적으로 재개됩니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114.9-4"></path><path d="M20 12a8 8 0 01-14.9 4"></path><path d="M18 4v4h-4M6 20v-4h4"></path></svg></div>
+        <div><h4>오류 복구</h4><p>디코더 오류 발생 시 연결을 끊지 않고 자동으로 키프레임을 요청합니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M4 12h16M4 18h7"></path><circle cx="17" cy="6" r="2"></circle><circle cx="9" cy="18" r="2"></circle></svg></div>
+        <div><h4>수동 대체 연결</h4><p>자동 검색이 실패할 때를 위해 편집 가능한 mDNS 이름과 IP:포트 연결을 제공합니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6"></path><rect x="6" y="8" width="12" height="7" rx="2"></rect><path d="M12 15v3a4 4 0 01-4 4H6"></path></svg></div>
+        <div><h4>USB 액세서리(AOA)</h4><p>케이블을 꽂고 시스템 프롬프트를 누르기만 하면 됩니다 — <code>adb</code>도, 개발자 옵션도 필요 없습니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"></rect><rect x="12" y="11" width="7" height="5" rx="1" fill="currentColor" stroke="none"></rect></svg></div>
+        <div><h4>PIP(화면 속 화면)</h4><p>연결된 상태로 앱을 벗어나도 영상이 떠 있는 창에서 계속 재생됩니다.</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.1A11 11 0 0112 5c5 0 9 4 10 7-0.5 1.4-1.4 2.9-2.6 4.1M6.6 6.6C4.5 8 3 10 2 12c1 3 5 7 10 7 1.3 0 2.6-.2 3.7-.7"></path><path d="M9.9 9.9a3 3 0 004.2 4.2"></path></svg></div>
+        <div><h4>계정 없음, 텔레메트리 없음</h4><p>오리지널 프로젝트와 같은 철학입니다: 중앙 서버 없음, 외부로 전송되는 데이터 없음.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <p class="eyebrow">비교</p>
+    <h2>가장 잘 알려진 대안들과 비교.</h2>
+    <p class="section-sub">Android 태블릿을 외부 모니터로 사용하는 용도 기준.</p>
+    <div class="table-scroll">
+      <table class="compare">
+        <thead>
+          <tr><th></th><th>OpenDisplay Android</th><th>Duet Display</th><th>Spacedesk</th></tr>
+        </thead>
+        <tbody>
+          <tr class="self"><td>가격</td><td class="yes">무료</td><td class="no">유료</td><td class="no">무료 (핵심 기능)</td></tr>
+          <tr class="self"><td>오픈소스</td><td class="yes">GPL-3.0</td><td class="no">아니오</td><td class="no">아니오</td></tr>
+          <tr class="self"><td>계정 필요</td><td class="yes">아니오</td><td class="no">예</td><td class="no">아니오</td></tr>
+          <tr class="self"><td>OpenDisplay Mac과 같은 프로토콜</td><td class="yes">예</td><td class="no">아니오</td><td class="no">아니오</td></tr>
+          <tr class="self"><td>중앙 서버</td><td class="yes">없음</td><td class="no">있음</td><td class="no">없음</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="faq">
+    <p class="eyebrow">자주 묻는 질문</p>
+    <h2>자주 묻는 질문.</h2>
+
+    <details class="faq">
+      <summary>iOS용 OpenDisplay와 같은 앱인가요?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>아닙니다. Kotlin으로 처음부터 새로 작성된 독립 클라이언트로, 오리지널 Mac 앱과
+      상호운용하기 위해 동일한 네트워크 프로토콜을 구현했습니다. 공식 프로젝트는
+      iOS/iPadOS 클라이언트만 제공합니다.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Google Play에 있나요?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Google Play 버전은 현재 비공개 테스트 중입니다. 테스터로 참여하고 싶으시면
+      <a href="mailto:josepacelli@gmail.com">josepacelli@gmail.com</a>으로 메일 주세요.
+      그동안은 GitHub Releases로도 배포됩니다 — <code>adb install</code>로 설치하거나
+      APK를 기기에 복사해서 설치하세요 ("출처를 알 수 없는 앱" 허용 필요).</p>
+    </details>
+
+    <details class="faq">
+      <summary>WiFi가 꼭 필요한가요?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>mDNS 자동 검색으로 WiFi를 통해 동작합니다. USB로 네이티브 액세서리(AOA)로
+      연결할 수도 있습니다 — 케이블을 꽂고 시스템 프롬프트를 누르기만 하면 되며 <code>adb</code>는
+      필요 없습니다. AOA를 아직 지원하지 않는 Mac 앱을 위한 대체 방법은 저장소를 참고하세요.</p>
+    </details>
+
+    <details class="faq">
+      <summary>Mirror 모드에서도 터치가 되나요?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>안 됩니다 — Mac 쪽 Mirror 모드는 보기 전용입니다. Mac 앱은 Extend 모드에서만 터치/스크롤을
+      받아들입니다(미러 세션에서는 입력 인젝터 자체를 만들지 않습니다). 그래서 여기서 보내는
+      탭이나 스크롤은 조용히 무시됩니다. 상호작용이 필요하면 Extend 모드를 사용하세요.</p>
+    </details>
+
+    <details class="faq">
+      <summary>아무 Android 태블릿이나 폰에서 동작하나요?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>Android 8.0(API 26) 이상이 필요합니다. 실제 기기(Samsung Galaxy Tab S9 FE+,
+      Galaxy Note10+/Tab S7+, Android 12~16)에서 테스트했지만, 아직 다양한 기기에서
+      폭넓게 검증되지는 않았습니다 — 터치/스크롤/커서는 구현되어 있지만 실사용 검증은
+      아직 제한적입니다. 참고: v0.0.7 이하 버전은 Android 12~13(API 30-33)에서
+      실행 시 크래시가 발생합니다. v0.0.8 이상을 사용하세요
+      (<a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>에서 수정됨).</p>
+    </details>
+
+    <details class="faq">
+      <summary>Mac 앱에 어떤 변경이라도 가하나요?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>전혀 변경하지 않습니다 — 프로토콜 불일치가 있다면 그것은 업스트림이 아닌 이 프로젝트의 책임입니다.</p>
+    </details>
+
+    <details class="faq">
+      <summary>라이선스는 무엇인가요?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </summary>
+      <p>GPL-3.0, 오리지널 프로젝트와 동일합니다. 오픈소스이며 상업적 사용을 포함해 자유롭게
+      사용할 수 있습니다. 배포되는 수정 버전도 동일한 라이선스로 오픈소스를 유지해야 합니다.</p>
+    </details>
+  </section>
+
+  <section id="contribute">
+    <p class="eyebrow">Contribute</p>
+    <h2>이슈와 풀 리퀘스트를 환영합니다.</h2>
+    <p class="section-sub">
+      버그 리포트와 PR은
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub 저장소</a>로 보내주세요.
+      아키텍처, 프로토콜, 빌드 관련 세부 사항도 거기에 있습니다. 꼼꼼한 버그 리포트야말로 혼자 만드는
+      사이드 프로젝트를 실제로 더 좋게 만들어줍니다 — 아래 모든 분들께 감사드립니다.
+    </p>
+    <div class="credits">
+      <div class="credit">
+        <img src="https://github.com/gaeaearth.png" alt="" loading="lazy">
+        <p><strong>@gaeaearth</strong> — 이 프로젝트에서 가장 적극적인 초기 테스터: Android
+        12/13 실행 시 크래시(<a href="https://github.com/josepacelli/opendisplay-android/issues/4">#4</a>),
+        화면 타임아웃/재연결 문제(<a href="https://github.com/josepacelli/opendisplay-android/issues/10">#10</a>,
+        <a href="https://github.com/josepacelli/opendisplay-android/issues/28">#28</a>의 유휴 화면 수정도 포함),
+        혼동을 주던 수동 연결 안내(<a href="https://github.com/josepacelli/opendisplay-android/issues/18">#18</a>)를 제보.</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/edoardomich.png" alt="" loading="lazy">
+        <p><strong>@edoardomich</strong> — Android 12/13 실행 시 크래시를 수정
+        (<a href="https://github.com/josepacelli/opendisplay-android/pull/5">#5</a>).</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/jpbhdrey.png" alt="" loading="lazy">
+        <p><strong>@jpbhdrey</strong> — USB 액세서리(AOA) 전송 방식을 구현
+        (<a href="https://github.com/josepacelli/opendisplay-android/pull/33">#33</a>): 케이블을 꽂고
+        시스템 프롬프트를 누르기만 하면 끝, 개발자 옵션도 <code>adb</code>와의 씨름도 필요 없습니다.</p>
+      </div>
+      <div class="credit">
+        <img src="https://github.com/dyss1992.png" alt="" loading="lazy">
+        <p><strong>@dyss1992</strong> — 일부 Qualcomm 디코더에서 발생하는 Mirror 모드 화면 비율 버그를,
+        전후 비교로 근본 원인을 명확히 드러낸 리포트로 제보
+        (<a href="https://github.com/josepacelli/opendisplay-android/issues/44">#44</a>),
+        몰입형 전체 화면 모드도 제안
+        (<a href="https://github.com/josepacelli/opendisplay-android/issues/45">#45</a>).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="support-eyebrow">프로젝트 후원하기</div>
+    <div class="support-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v6a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9h2a2 2 0 010 4h-2"></path><path d="M8 2v2M11 2v2M14 2v2"></path></svg>
+      <strong>Ko-fi</strong>
+    </div>
+    <h2 class="support-title">OpenDisplay Android 덕분에 모니터를 안 사도 됐다면, 커피 한 잔 사주시는 건 어떨까요.</h2>
+    <div class="support-copy">
+      <p>
+        이건 제가, <a href="https://github.com/josepacelli">Jose Pacelli</a>가
+        저녁과 주말 시간에 혼자 만들고 유지보수하는 사이드 프로젝트입니다 — 회사가 아닙니다.
+      </p>
+      <p>
+        Ko-fi로 후원해 주시면 이 프로젝트를 계속 유지하고, 후원할 여유가 없는 사람들에게도
+        무료로 제공할 수 있습니다. 남는 Android 태블릿을 진짜 세컨드 모니터로 바꾸는 가장
+        좋은 무료 방법이 되는 것이 제 목표입니다.
+      </p>
+      <p>모니터를 안 사도 됐다면, 작은 팁 하나가 이 프로젝트를 계속 이어가는 힘이 됩니다. 감사합니다.</p>
+    </div>
+    <div class="kofi-badge-wrap">
+      <div class="kofi-badge">
+        <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
+        <script type='text/javascript'>kofiwidget2.init('Ko-fi로 후원하기', '#72a4f2', 'Q3D5259MWT');kofiwidget2.draw();</script>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/josepacelli/opendisplay-android">GitHub</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/releases">릴리스</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/issues">이슈</a>
+      <a href="https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE">라이선스 (GPL-3.0)</a>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="https://opendisplay.app/">오리지널 프로젝트 (Mac/iOS)</a>
+    </div>
+    <div class="links langs">
+      <a href="/">EN</a>
+      <a href="/es/">ES</a>
+      <a href="/pt-BR/">PT-BR</a>
+      <a href="/pt-PT/">PT-PT</a>
+      <a href="/zh-Hans/">中文</a>
+      <a href="/ja/">日本語</a>
+      <span class="lang-current" aria-current="page" style="color:var(--text);font-weight:600;">한국어</span>
+    </div>
+    <div class="disclaimer">오리지널 OpenDisplay 프로젝트 관리자와는 무관합니다. 동일한 프로토콜로 통신하지만 별도로 관리됩니다.</div>
+  </div>
+</footer>
+
+
+<script>
+  fetch("https://api.github.com/repos/josepacelli/opendisplay-android")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (!data || typeof data.stargazers_count !== "number") return;
+      const el = document.getElementById("gh-stars-count");
+      if (el) el.textContent = data.stargazers_count;
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>

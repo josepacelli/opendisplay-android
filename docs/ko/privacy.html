@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>개인정보처리방침 — OpenDisplay Android</title>
+<meta name="description" content="OpenDisplay Android 앱의 개인정보처리방침: 계정 없음, 분석 없음, 텔레메트리 없음, 데이터 수집 없음.">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/ko/privacy.html">
+<link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/privacy.html">
+<link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/privacy.html">
+<link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/pt-BR/privacy.html">
+<link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/privacy.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/privacy.html">
+<link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/privacy.html">
+<link rel="alternate" hreflang="ko" href="https://opendisplay.jpmo.dev.br/ko/privacy.html">
+<link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/privacy.html">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #0b0d10;
+    --bg-elev: #14171b;
+    --border: #23272d;
+    --text: #e8eaed;
+    --text-dim: #9aa2ad;
+    --accent: #5fd0a3;
+    --accent-dim: #2e5c48;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fafaf9;
+      --bg-elev: #ffffff;
+      --border: #e5e5e3;
+      --text: #16181c;
+      --text-dim: #5a6068;
+      --accent: #1f8a5f;
+      --accent-dim: #d6f0e3;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 80px; }
+  code { font-family: var(--mono); background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 0.9em; }
+  h1 { font-size: 1.8rem; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .updated { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 40px; }
+  h2 { font-size: 1.15rem; margin: 36px 0 10px; }
+  p, li { color: var(--text-dim); font-size: 0.96rem; }
+  ul { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--text-dim); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .back { display: inline-block; margin-top: 48px; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>개인정보처리방침</h1>
+  <div class="updated">OpenDisplay Android · 최종 업데이트 2026-08-15</div>
+
+  <p>OpenDisplay Android는 오리지널 <a href="https://opendisplay.app/">OpenDisplay</a> 앱을
+  실행하는 Mac의 세컨드 모니터로 Android 기기를 바꿔주는 오픈소스 클라이언트입니다.
+  이 방침은 앱이 여러분의 데이터로 무엇을 하고, 무엇을 하지 않는지 설명합니다.</p>
+
+  <h2>요약</h2>
+  <ul>
+    <li>계정, 가입, 로그인 없음.</li>
+    <li>분석, 크래시 리포트, 광고 SDK 없음.</li>
+    <li>개발자가 운영하는 서버로 전송되는 데이터 없음 — 애초에 그런 서버가 존재하지 않습니다.</li>
+    <li>모든 네트워크 트래픽은 여러분의 Android 기기와 여러분 자신의 Mac 사이의 직접 연결이며,
+    로컬 네트워크(또는 <code>adb forward</code>를 사용한 USB 케이블) 경유입니다.</li>
+  </ul>
+
+  <h2>앱이 네트워크에서 하는 일</h2>
+  <p>앱은 로컬 TCP 포트에서 대기하며 mDNS(<code>_opensidecar._tcp</code>)로 자신을 알려서
+  OpenDisplay Mac 앱이 같은 네트워크에서 찾아 연결할 수 있게 합니다. 연결되면 해당 Mac과
+  직접 비디오 프레임(Mac의 화면 내용)과 입력 이벤트(여러분이 다시 보내는 터치/스크롤)를
+  주고받습니다 — 제3자나 개발자 소유의 어떤 서버도 거치거나 저장하지 않습니다.</p>
+
+  <h2>사용하는 권한</h2>
+  <table>
+    <tr><th>권한</th><th>이유</th></tr>
+    <tr><td><code>INTERNET</code></td><td>Mac이 연결할 로컬 TCP 소켓을 엽니다. 위에서 설명한 Mac과의 직접 연결에만 사용되며, 인터넷상의 어떤 서비스에도 사용되지 않습니다.</td></tr>
+    <tr><td><code>ACCESS_WIFI_STATE</code>, <code>CHANGE_WIFI_MULTICAST_STATE</code></td><td>로컬 WiFi 네트워크에서의 mDNS 검색. Mac이 기기를 자동으로 찾을 수 있게 합니다.</td></tr>
+    <tr><td><code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_CONNECTED_DEVICE</code></td><td>앱이 외부 디스플레이 역할을 하는 동안, 화면에 표시된 앱이 아니더라도 Mac과의 연결을 유지합니다.</td></tr>
+    <tr><td><code>POST_NOTIFICATIONS</code></td><td>위 포그라운드 서비스에 필요한 상태 알림을 표시합니다.</td></tr>
+  </table>
+
+  <h2>데이터 저장</h2>
+  <p>앱이 기기에 로컬로 저장하는 유일한 것은 자체 설정(mDNS 기기 이름)입니다 —
+  앱의 로컬 설정에 저장되며, 어디로도 전송되지 않고, 앱을 삭제하면 함께 제거됩니다.</p>
+
+  <h2>제3자</h2>
+  <p>없습니다. 이 앱에는 서드파티 SDK, 광고 네트워크, 분석 제공업체, 클라우드 백엔드가
+  전혀 없습니다.</p>
+
+  <h2>이 방침의 변경</h2>
+  <p>앱이 데이터를 다루는 방식에 변경이 있으면 이 페이지에 반영되며, 위의 "최종 업데이트"
+  날짜도 함께 갱신됩니다.</p>
+
+  <h2>문의</h2>
+  <p>질문이나 문의사항은
+  <a href="https://github.com/josepacelli/opendisplay-android/issues">GitHub 저장소</a>에 이슈를 등록해 주세요.</p>
+
+  <div class="links langs" style="display:flex;gap:20px;flex-wrap:wrap;margin-top:40px;">
+    <a href="/privacy.html">EN</a>
+      <a href="/es/privacy.html">ES</a>
+      <a href="/pt-BR/privacy.html">PT-BR</a>
+      <a href="/pt-PT/privacy.html">PT-PT</a>
+      <a href="/zh-Hans/privacy.html">中文</a>
+      <a href="/ja/privacy.html">日本語</a>
+      <span class="lang-current" aria-current="page" style="color:var(--text);font-weight:600;">한국어</span>
+  </div>
+  <a class="back" href="index.html">← OpenDisplay Android로 돌아가기</a>
+
+</div>
+</body>
+</html>

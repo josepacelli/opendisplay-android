@@ -11,6 +11,7 @@
     <xhtml:link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/"/>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://opendisplay.jpmo.dev.br/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/"/>
   </url>
   <url>
@@ -35,6 +36,11 @@
   </url>
   <url>
     <loc>https://opendisplay.jpmo.dev.br/ja/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/ko/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -65,6 +71,11 @@
   </url>
   <url>
     <loc>https://opendisplay.jpmo.dev.br/ja/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.15</priority>
+  </url>
+  <url>
+    <loc>https://opendisplay.jpmo.dev.br/ko/privacy.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.15</priority>
   </url>
