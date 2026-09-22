@@ -194,3 +194,33 @@ Organized by file, in source order.
   via Maven metadata that the feature only started publishing from 2.3.0. Deobfuscated Compose
   stack traces aren't worth losing release builds over until AGP's built-in Kotlin support
   catches up.
+
+## web/vite.config.ts
+
+- **`build.emptyOutDir: false`**: the build's `outDir` is `../docs`, which still holds the
+  hand-authored static HTML for every locale except pt-BR (`en/`, `es/`, `ja/`, `ko/`, `pt-PT/`,
+  `zh-Hans/`) plus their shared root-level `styles.css`/`nav-scroll.js`/`lang-switch.js`/
+  `scroll-reveal.js`/`back-to-top.js` (each locale page references those via `../`, see
+  `docs/en/index.html`). Emptying `docs/` before each build would wipe all of that; `false` lets
+  Vite overwrite only the files this app actually outputs (`index.html`, `code-of-conduct.html`,
+  `contributing.html`, `privacy.html`, `assets/`) and leaves the rest of `docs/` alone until the
+  other locales migrate to this stack too (issue #104's follow-up).
+
+## web/package.json
+
+- **`prebuild` deletes `../docs/assets` before every build**: verified by real attempt — with
+  `emptyOutDir: false` (see `vite.config.ts` above), Vite never cleans its own previous hashed
+  output either, so two builds in a row left both old and new `index-*.js`/`src-*.css` sitting in
+  `docs/assets/` forever. `docs/assets/` holds only files this build produces (every other
+  locale's shared JS/CSS lives at the `docs/` root, not in `assets/`), so wiping just that one
+  subfolder first is safe and keeps it from growing without bound.
+
+## web/src/components/sections/Support.tsx
+
+- **Ko-fi rendered as a plain link, not the official `Widget_2.js` embed**: verified by real
+  attempt — loading `https://storage.ko-fi.com/cdn/widget/Widget_2.js` via a dynamically injected
+  `<script>` (the only option in a React SPA; the original static page could put the `<script>`
+  tag directly in the HTML) blanked the entire rendered page. The widget calls `document.write`,
+  which implicitly calls `document.open()` first when the document has already finished
+  loading — that wipes out everything React already rendered, not just the widget's own markup.
+  A static button linking straight to the Ko-fi page sidesteps the whole failure mode.
