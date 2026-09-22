@@ -20,7 +20,7 @@ export function Screenshots() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item, i) => (
           <figure key={FILES[i]} className="overflow-hidden rounded-lg border border-border">
-            <img src={`screenshots/${FILES[i]}`} alt={item.alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+            <img src={`/screenshots/${FILES[i]}`} alt={item.alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
             <figcaption className="p-3 text-left text-sm text-muted-foreground">{item.caption}</figcaption>
           </figure>
         ))}

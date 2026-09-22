@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="min-h-svh w-full">
       <Header />
-      <div className="mx-auto max-w-[1126px] px-6">
+      <div className="mx-auto max-w-[920px] px-6">
         <Hero />
         <HowItWorks />
         <Screenshots />

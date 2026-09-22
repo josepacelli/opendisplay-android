@@ -1,13 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
+    --font-sans: 'Inter Variable', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,74 +48,75 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Cores tiradas direto de docs/styles.css (--bg/--text/--accent/--border, light e dark). */
 :root {
-    --background: #ffffff;
-    --foreground: #08060d;
+    --background: #fafaf9;
+    --foreground: #16181c;
     --card: #ffffff;
-    --card-foreground: #08060d;
+    --card-foreground: #16181c;
     --popover: #ffffff;
-    --popover-foreground: #08060d;
-    --primary: #aa3bff;
-    --primary-foreground: #ffffff;
-    --secondary: #f4f3ec;
-    --secondary-foreground: #08060d;
-    --muted: #f4f3ec;
-    --muted-foreground: #6b6375;
-    --accent: rgba(170, 59, 255, 0.1);
-    --accent-foreground: #08060d;
+    --popover-foreground: #16181c;
+    --primary: #1f8a5f;
+    --primary-foreground: #06110c;
+    --secondary: #f3f2f0;
+    --secondary-foreground: #16181c;
+    --muted: #f3f2f0;
+    --muted-foreground: #5a6068;
+    --accent: #d6f0e3;
+    --accent-foreground: #16181c;
     --destructive: oklch(0.577 0.245 27.325);
-    --border: #e5e4e7;
-    --input: #e5e4e7;
-    --ring: rgba(170, 59, 255, 0.5);
+    --border: #e5e5e3;
+    --input: #e5e5e3;
+    --ring: rgba(31, 138, 95, 0.35);
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
+    --radius: 0.75rem;
     --sidebar: #ffffff;
-    --sidebar-foreground: #08060d;
-    --sidebar-primary: #aa3bff;
-    --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #f4f3ec;
-    --sidebar-accent-foreground: #08060d;
-    --sidebar-border: #e5e4e7;
-    --sidebar-ring: rgba(170, 59, 255, 0.5);
+    --sidebar-foreground: #16181c;
+    --sidebar-primary: #1f8a5f;
+    --sidebar-primary-foreground: #06110c;
+    --sidebar-accent: #f3f2f0;
+    --sidebar-accent-foreground: #16181c;
+    --sidebar-border: #e5e5e3;
+    --sidebar-ring: rgba(31, 138, 95, 0.35);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #16171d;
-    --foreground: #f3f4f6;
-    --card: #16171d;
-    --card-foreground: #f3f4f6;
-    --popover: #16171d;
-    --popover-foreground: #f3f4f6;
-    --primary: #c084fc;
-    --primary-foreground: #16171d;
-    --secondary: #1f2028;
-    --secondary-foreground: #f3f4f6;
-    --muted: #1f2028;
-    --muted-foreground: #9ca3af;
-    --accent: rgba(192, 132, 252, 0.15);
-    --accent-foreground: #f3f4f6;
+    --background: #0b0d10;
+    --foreground: #e8eaed;
+    --card: #14171b;
+    --card-foreground: #e8eaed;
+    --popover: #14171b;
+    --popover-foreground: #e8eaed;
+    --primary: #5fd0a3;
+    --primary-foreground: #06110c;
+    --secondary: #191d22;
+    --secondary-foreground: #e8eaed;
+    --muted: #191d22;
+    --muted-foreground: #9aa2ad;
+    --accent: #2e5c48;
+    --accent-foreground: #e8eaed;
     --destructive: oklch(0.704 0.191 22.216);
-    --border: #2e303a;
-    --input: #2e303a;
-    --ring: rgba(192, 132, 252, 0.5);
+    --border: #23272d;
+    --input: #23272d;
+    --ring: rgba(95, 208, 163, 0.4);
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
-    --sidebar: #16171d;
-    --sidebar-foreground: #f3f4f6;
-    --sidebar-primary: #c084fc;
-    --sidebar-primary-foreground: #16171d;
-    --sidebar-accent: #1f2028;
-    --sidebar-accent-foreground: #f3f4f6;
-    --sidebar-border: #2e303a;
-    --sidebar-ring: rgba(192, 132, 252, 0.5);
+    --sidebar: #14171b;
+    --sidebar-foreground: #e8eaed;
+    --sidebar-primary: #5fd0a3;
+    --sidebar-primary-foreground: #06110c;
+    --sidebar-accent: #191d22;
+    --sidebar-accent-foreground: #e8eaed;
+    --sidebar-border: #23272d;
+    --sidebar-ring: rgba(95, 208, 163, 0.4);
   }
 }
 

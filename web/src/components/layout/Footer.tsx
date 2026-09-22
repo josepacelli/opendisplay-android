@@ -14,7 +14,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto max-w-[1126px] px-6 py-10 text-center">
+      <div className="mx-auto max-w-[920px] px-6 py-10 text-center">
         <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
           <a className="text-muted-foreground no-underline hover:text-foreground" href="https://github.com/josepacelli/opendisplay-android">
             {t('footer.links.github')}

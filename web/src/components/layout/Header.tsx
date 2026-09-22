@@ -23,7 +23,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-[1126px] items-center gap-4 px-6 py-3.5">
+      <div className="mx-auto flex max-w-[920px] items-center gap-4 px-6 py-3.5">
         <div className="flex items-center gap-2 whitespace-nowrap font-medium text-foreground">
           <MonitorSmartphone className="size-5 text-primary" aria-hidden="true" />
           {t('brand.name')} <span className="text-muted-foreground">{t('brand.sub')}</span>
