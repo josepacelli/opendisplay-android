@@ -15,10 +15,10 @@ export function LangSwitch() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false)
     }
-    document.addEventListener('click', onClick)
+    document.addEventListener('mousedown', onClick)
     document.addEventListener('keydown', onKey)
     return () => {
-      document.removeEventListener('click', onClick)
+      document.removeEventListener('mousedown', onClick)
       document.removeEventListener('keydown', onKey)
     }
   }, [open])

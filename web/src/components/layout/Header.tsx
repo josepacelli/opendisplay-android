@@ -23,10 +23,14 @@ export function Header() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setMenuOpen(false)
     }
-    document.addEventListener('click', onClick)
+    // 'mousedown', não 'click': o clique que abre o menu já troca o ícone
+    // (Menu -> X) antes do 'click' borbulhar até o document, então o alvo
+    // original deixa de existir na árvore e "contains" dá falso positivo de
+    // clique-fora, fechando o menu na hora que ele abre.
+    document.addEventListener('mousedown', onClick)
     document.addEventListener('keydown', onKey)
     return () => {
-      document.removeEventListener('click', onClick)
+      document.removeEventListener('mousedown', onClick)
       document.removeEventListener('keydown', onKey)
     }
   }, [menuOpen])
