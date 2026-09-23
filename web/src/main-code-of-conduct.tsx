@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { CodeOfConduct } from './pages/CodeOfConduct.tsx'
+import { CodeOfConduct } from './pages/pt-BR/CodeOfConduct.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

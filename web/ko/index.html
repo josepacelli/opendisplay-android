@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenDisplay Android — Mac용 오픈소스 외부 모니터</title>
+<meta name="description" content="Android 태블릿이나 폰을 Mac의 진짜 확장 세컨드 모니터로 만들어줍니다. WiFi 또는 USB로 연결. Duet Display, Sidecar, Spacedesk의 무료 오픈소스 대안 — 계정도, 구독도 필요 없습니다.">
+<meta name="keywords" content="Android 세컨드 모니터, Android 외부 디스플레이, Mac 세컨드 스크린, Duet Display 대안, Sidecar 대안, Spacedesk 대안, Android 태블릿 세컨드 모니터, Android 확장 디스플레이, Android를 Mac 디스플레이로">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/ko/">
+<link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/en/">
+<link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/">
+<link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/">
+<link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/">
+<link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/">
+<link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/">
+<link rel="alternate" hreflang="ko" href="https://opendisplay.jpmo.dev.br/ko/">
+<link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://opendisplay.jpmo.dev.br/ko/">
+<meta property="og:site_name" content="OpenDisplay Android">
+<meta property="og:title" content="OpenDisplay Android — Mac용 오픈소스 외부 모니터">
+<meta property="og:description" content="Android 태블릿이나 폰을 Mac의 진짜 확장 세컨드 모니터로 만들어줍니다. WiFi 또는 USB로 연결. Duet Display, Sidecar, Spacedesk의 무료 오픈소스 대안 — 계정도, 구독도 필요 없습니다.">
+<meta property="og:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenDisplay Android — Mac용 오픈소스 외부 모니터">
+<meta name="twitter:description" content="Android 태블릿이나 폰을 Mac의 진짜 확장 세컨드 모니터로 만들어줍니다. WiFi 또는 USB로 연결. Duet Display, Sidecar, Spacedesk의 무료 오픈소스 대안 — 계정도, 구독도 필요 없습니다.">
+<meta name="twitter:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenDisplay Android",
+  "operatingSystem": "Android 8.0+",
+  "applicationCategory": "UtilitiesApplication",
+  "description": "WiFi 또는 USB로 태블릿이나 폰을 Mac의 진짜 확장 세컨드 모니터로 만들어주는 오픈소스 Android 클라이언트. 오리지널 OpenDisplay Mac 앱과 동일한 프로토콜로 통신합니다.",
+  "url": "https://opendisplay.jpmo.dev.br/ko/",
+  "downloadUrl": "https://github.com/josepacelli/opendisplay-android/releases/latest",
+  "license": "https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Jose Pacelli",
+    "url": "https://github.com/josepacelli"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "iOS용 OpenDisplay와 같은 앱인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "아닙니다. Kotlin으로 처음부터 새로 작성된 독립 클라이언트로, 오리지널 Mac 앱과 상호운용하기 위해 동일한 네트워크 프로토콜을 구현했습니다. 공식 프로젝트는 iOS/iPadOS 클라이언트만 제공합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Google Play에 있나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Google Play 버전은 현재 비공개 테스트 중입니다. 그동안은 GitHub Releases로 배포됩니다 — adb install로 설치하거나 APK를 기기에 복사해서 설치하세요 (출처를 알 수 없는 앱 허용 필요)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "WiFi가 꼭 필요한가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "mDNS 자동 검색으로 WiFi를 통해 동작합니다. USB로 네이티브 액세서리(AOA)로 연결할 수도 있습니다 — 케이블을 꽂고 시스템 프롬프트를 누르기만 하면 되며 adb는 필요 없습니다. 이 네이티브 USB 경로는 현재 Mac 앱의 개발 포크가 필요합니다. 공식 배포된 Mac 앱에서는 저장소에 안내된 adb-forward 대체 방법으로 USB를 사용할 수 있습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "아무 Android 태블릿이나 폰에서 동작하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Android 8.0(API 26) 이상이 필요합니다. 실제 기기(Samsung Galaxy Tab S9 FE+, Galaxy Note10+/Tab S7+, Android 12~16)에서 테스트했지만, 아직 다양한 기기에서 폭넓게 검증되지는 않았습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mac 앱에 어떤 변경이라도 가하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "전혀 변경하지 않습니다 — 프로토콜 불일치가 있다면 그것은 업스트림이 아닌 이 프로젝트의 책임입니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "라이선스는 무엇인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GPL-3.0, 오리지널 프로젝트와 동일합니다. 오픈소스이며 상업적 사용을 포함해 자유롭게 사용할 수 있습니다. 배포되는 수정 버전도 동일한 라이선스로 오픈소스를 유지해야 합니다."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

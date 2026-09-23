@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenDisplay Android — monitor externo open source para o seu Mac</title>
+<meta name="description" content="Transforme um tablet ou telemóvel Android num segundo monitor estendido a sério para o seu Mac via WiFi ou USB. Alternativa gratuita e open source ao Duet Display, Sidecar e Spacedesk — sem conta, sem subscrição.">
+<meta name="keywords" content="monitor externo Android, ecrã externo Android, segundo monitor Mac, alternativa ao Duet Display, alternativa ao Sidecar, alternativa ao Spacedesk, tablet Android como segundo monitor, ecrã estendido Android, usar Android como monitor do Mac">
+<link rel="canonical" href="https://opendisplay.jpmo.dev.br/pt-PT/">
+<link rel="alternate" hreflang="en" href="https://opendisplay.jpmo.dev.br/en/">
+<link rel="alternate" hreflang="es" href="https://opendisplay.jpmo.dev.br/es/">
+<link rel="alternate" hreflang="pt-BR" href="https://opendisplay.jpmo.dev.br/">
+<link rel="alternate" hreflang="pt-PT" href="https://opendisplay.jpmo.dev.br/pt-PT/">
+<link rel="alternate" hreflang="zh-Hans" href="https://opendisplay.jpmo.dev.br/zh-Hans/">
+<link rel="alternate" hreflang="ja" href="https://opendisplay.jpmo.dev.br/ja/">
+<link rel="alternate" hreflang="ko" href="https://opendisplay.jpmo.dev.br/ko/">
+<link rel="alternate" hreflang="x-default" href="https://opendisplay.jpmo.dev.br/">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://opendisplay.jpmo.dev.br/pt-PT/">
+<meta property="og:site_name" content="OpenDisplay Android">
+<meta property="og:title" content="OpenDisplay Android — monitor externo open source para o seu Mac">
+<meta property="og:description" content="Transforme um tablet ou telemóvel Android num segundo monitor estendido a sério para o seu Mac via WiFi ou USB. Alternativa gratuita e open source ao Duet Display, Sidecar e Spacedesk — sem conta, sem subscrição.">
+<meta property="og:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenDisplay Android — monitor externo open source para o seu Mac">
+<meta name="twitter:description" content="Transforme um tablet ou telemóvel Android num segundo monitor estendido a sério para o seu Mac via WiFi ou USB. Alternativa gratuita e open source ao Duet Display, Sidecar e Spacedesk — sem conta, sem subscrição.">
+<meta name="twitter:image" content="https://opendisplay.jpmo.dev.br/screenshots/tablet-mirroring-site.jpeg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenDisplay Android",
+  "operatingSystem": "Android 8.0+",
+  "applicationCategory": "UtilitiesApplication",
+  "description": "Cliente Android open source que transforma um tablet ou telemóvel num segundo monitor estendido a sério para um Mac via WiFi ou USB, falando o mesmo protocolo da aplicação original OpenDisplay para Mac.",
+  "url": "https://opendisplay.jpmo.dev.br/pt-PT/",
+  "downloadUrl": "https://github.com/josepacelli/opendisplay-android/releases/latest",
+  "license": "https://github.com/josepacelli/opendisplay-android/blob/main/LICENSE",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Jose Pacelli",
+    "url": "https://github.com/josepacelli"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "É a mesma aplicação que o OpenDisplay para iOS?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Não. É um cliente independente, escrito de raiz em Kotlin, que implementa o mesmo protocolo de rede para interoperar com a aplicação original do Mac. O projeto oficial só disponibiliza um cliente para iOS/iPadOS."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Está na Google Play?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A versão da Google Play está atualmente em teste fechado. Entretanto, é distribuída pelo GitHub Releases — instale com adb install ou copiando o APK para o dispositivo (ative origens desconhecidas)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Precisa de WiFi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Funciona por WiFi com descoberta automática por mDNS. Também é possível ligar por USB como acessório nativo (AOA) — ligue o cabo e aceite o aviso do sistema, sem precisar de adb. Esse caminho USB nativo hoje exige um fork de desenvolvimento da aplicação de Mac; contra a aplicação de Mac publicada, o USB funciona através de um fallback com adb forward, explicado no repositório."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Funciona em qualquer tablet ou telemóvel Android?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Requer Android 8.0 (API 26) ou superior. Testado em hardware real (Samsung Galaxy Tab S9 FE+ e Galaxy Note10+/Tab S7+, Android 12 a 16), mas ainda não numa gama ampla de dispositivos."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Altera alguma coisa na aplicação de Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nenhuma modificação — qualquer incompatibilidade de protocolo é responsabilidade deste projeto, não do projeto original."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qual é a licença?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GPL-3.0, igual ao projeto original. Open source, uso livre inclusive comercial; versões modificadas distribuídas têm de continuar open source sob a mesma licença."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

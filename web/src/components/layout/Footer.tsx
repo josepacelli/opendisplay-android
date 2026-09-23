@@ -1,16 +1,19 @@
 import { useTranslation } from 'react-i18next'
+import { LOCALES, localeHref, resolveLocale } from '@/lib/locales'
 
-const LANGS = [
-  { href: '/en/', label: 'EN' },
-  { href: '/es/', label: 'ES' },
-  { href: '/pt-PT/', label: 'PT-PT' },
-  { href: '/zh-Hans/', label: '中文' },
-  { href: '/ja/', label: '日本語' },
-  { href: '/ko/', label: '한국어' },
-]
+const SHORT_LABELS: Record<string, string> = {
+  en: 'EN',
+  es: 'ES',
+  'pt-BR': 'PT-BR',
+  'pt-PT': 'PT-PT',
+  'zh-Hans': '中文',
+  ja: '日本語',
+  ko: '한국어',
+}
 
 export function Footer() {
   const { t } = useTranslation('landing')
+  const current = resolveLocale(document.documentElement.lang)
 
   return (
     <footer className="border-t border-border">
@@ -43,14 +46,21 @@ export function Footer() {
         </div>
 
         <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs">
-          <span aria-current="page" className="font-semibold text-foreground">
-            PT-BR
-          </span>
-          {LANGS.map((lang) => (
-            <a key={lang.href} href={lang.href} className="text-muted-foreground no-underline hover:text-foreground">
-              {lang.label}
-            </a>
-          ))}
+          {LOCALES.map((locale) =>
+            locale.code === current ? (
+              <span key={locale.code} aria-current="page" className="font-semibold text-foreground">
+                {SHORT_LABELS[locale.code]}
+              </span>
+            ) : (
+              <a
+                key={locale.code}
+                href={localeHref(locale.path, 'index')}
+                className="text-muted-foreground no-underline hover:text-foreground"
+              >
+                {SHORT_LABELS[locale.code]}
+              </a>
+            ),
+          )}
         </div>
 
         <p className="mt-5 text-xs text-muted-foreground">{t('footer.disclaimer')}</p>

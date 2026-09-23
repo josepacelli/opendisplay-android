@@ -1,19 +1,11 @@
 import { Globe } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-
-const LANGS = [
-  { href: '/en/', label: 'English' },
-  { href: '/es/', label: 'Español' },
-  { href: '/', label: 'Português (Brasil)', current: true },
-  { href: '/pt-PT/', label: 'Português (Portugal)' },
-  { href: '/zh-Hans/', label: '中文' },
-  { href: '/ja/', label: '日本語' },
-  { href: '/ko/', label: '한국어' },
-]
+import { LOCALES, localeHref, resolveLocale } from '@/lib/locales'
 
 export function LangSwitch() {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
+  const current = resolveLocale(document.documentElement.lang)
 
   useEffect(() => {
     if (!open) return
@@ -41,23 +33,23 @@ export function LangSwitch() {
         className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <Globe className="size-4" aria-hidden="true" />
-        <span>PT-BR</span>
+        <span>{current}</span>
       </button>
       {open && (
         <div className="absolute right-0 z-20 mt-1 min-w-44 rounded-md border border-border bg-popover p-1 shadow-md">
-          {LANGS.map((lang) => (
+          {LOCALES.map((locale) => (
             <a
-              key={lang.href}
-              href={lang.href}
-              aria-current={lang.current ? 'page' : undefined}
+              key={locale.code}
+              href={localeHref(locale.path, 'index')}
+              aria-current={locale.code === current ? 'page' : undefined}
               className={
                 'block rounded-sm px-2.5 py-1.5 text-sm no-underline ' +
-                (lang.current
+                (locale.code === current
                   ? 'font-semibold text-foreground'
                   : 'text-muted-foreground hover:bg-accent hover:text-foreground')
               }
             >
-              {lang.label}
+              {locale.label}
             </a>
           ))}
         </div>

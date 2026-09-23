@@ -1,0 +1,191 @@
+{
+  "nav": {
+    "features": "Features",
+    "howItWorks": "How it works",
+    "screenshots": "Screenshots",
+    "install": "Install",
+    "compare": "Compare",
+    "faq": "FAQ",
+    "github": "GitHub",
+    "scrollLeft": "Scroll navigation left",
+    "scrollRight": "Scroll navigation right"
+  },
+  "brand": {
+    "name": "OpenDisplay",
+    "sub": "Android"
+  },
+  "hero": {
+    "badge": "Early alpha · tested on real hardware",
+    "title": "Use your Android tablet or phone as a <em>real</em> second monitor for your Mac.",
+    "lead": "An unofficial, open-source Android client for <a>OpenDisplay</a> — the original project only ships an iOS/iPadOS client. This one speaks the same network protocol, with no changes required on the Mac app. A free alternative to Duet Display, Sidecar and Spacedesk for anyone who already owns an Android tablet and wants an extended display, not just mirroring.",
+    "specs": ["Android 8.0+ (API 26)", "macOS via the original OpenDisplay app", "GPL-3.0"],
+    "ctaStart": "Get started",
+    "ctaGithub": "View on GitHub",
+    "kofiText": "Free, and built by one person.",
+    "kofiSupport": "Support on Ko-fi ↓"
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "The Mac stays untouched. The Android device does the listening.",
+    "sub": "The Android device listens and the Mac connects — that's what lets it work over WiFi with zero manual setup, via mDNS discovery, without a single change to the original OpenDisplay Mac app.",
+    "mac": {
+      "heading": "MAC",
+      "headingSub": "(server, original OpenDisplay app)",
+      "steps": [
+        "CGVirtualDisplay",
+        "ScreenCaptureKit → VideoToolbox H.264",
+        "TCP [4-byte length][Annex-B frame] ═══→",
+        "← control JSON (hello, touch, scroll, ping) ═══"
+      ]
+    },
+    "android": {
+      "heading": "ANDROID",
+      "headingSub": "(this project)",
+      "steps": ["listens on :9000", "MediaCodec → SurfaceView"]
+    }
+  },
+  "screenshots": {
+    "eyebrow": "Screenshots",
+    "title": "Real hardware, real WiFi connection.",
+    "sub": "No staged mockups — every shot below is a live session between an Android tablet and a Mac.",
+    "items": [
+      {
+        "alt": "Android tablet on a desk, mirroring this landing page from the Mac over WiFi",
+        "caption": "The tablet mirroring this very page, streamed live from the Mac over WiFi."
+      },
+      {
+        "alt": "macOS Displays settings showing the Arrange Displays dialog with the Android tablet listed as a third screen",
+        "caption": "Recognized on the Mac as a regular third display in System Settings → Displays."
+      },
+      {
+        "alt": "OpenDisplay Android app home screen, listening on port 9000 and waiting for the Mac to connect",
+        "caption": "App home screen — listening on :9000, waiting for the Mac to pick it up over WiFi."
+      },
+      {
+        "alt": "OpenDisplay Android app settings dialog showing status, the mDNS-advertised device name, and this device's address for troubleshooting",
+        "caption": "Settings: connection status, the name advertised over mDNS, and this device's address for troubleshooting."
+      },
+      {
+        "alt": "OpenDisplay Android app mirroring the Mac's screen, showing this project's own GitHub repository in a browser",
+        "caption": "Mid-session: the Mac's screen — this repo's GitHub page — mirrored live on the tablet."
+      }
+    ]
+  },
+  "install": {
+    "eyebrow": "Installation",
+    "title": "Two apps that work together.",
+    "sub": "Install both to get going — the Mac side is the original OpenDisplay project, unmodified.",
+    "mac": {
+      "tag": "STEP 1 · ON YOUR MAC",
+      "title": "The sender",
+      "desc": "Captures a virtual display and streams it. It's the original OpenDisplay program, unmodified.",
+      "cta": "Download for Mac",
+      "note": "Prefer to build it yourself? <compile>Build from source ↗</compile>"
+    },
+    "android": {
+      "tag": "STEP 2 · ON YOUR ANDROID",
+      "title": "The receiver",
+      "desc": "Displays the stream and sends touch/scroll back.",
+      "cta": "Download APK (v0.0.41)",
+      "note": "Google Play version is in closed testing — want in? Email <mail>josepacelli@gmail.com</mail>. Meanwhile, sideload the APK above, or <compile>build it from source ↗</compile>. <releases>Browse older releases ↗</releases>"
+    }
+  },
+  "features": {
+    "eyebrow": "Features",
+    "title": "What already works today.",
+    "sub": "Validated against the real Mac app, not a spec sheet.",
+    "items": [
+      { "title": "Hardware H.264 video", "desc": "<code>MediaCodec</code> decoding straight to a Surface, no CPU conversion." },
+      { "title": "Automatic discovery", "desc": "mDNS (<code>_opensidecar._tcp</code>) — the Mac finds the Android device on its own on the same network." },
+      { "title": "Touch and scroll", "desc": "One finger becomes a click/drag, two fingers become scroll — in Extend mode. The Mac's Mirror mode is view-only: it silently ignores input from any client." },
+      { "title": "Pinch to zoom", "desc": "Two fingers spread on the video zoom in locally, on either Mirror or Extend mode — no protocol change needed, and touch still lands on the right spot on the Mac. Once zoomed, drag with three fingers to move around the magnified area." },
+      { "title": "Remote cursor", "desc": "A dot or decoded sprite, mirroring the Mac's cursor position live." },
+      { "title": "Foreground service", "desc": "Survives the app going to background and resumes correctly after unlocking the screen." },
+      { "title": "Error recovery", "desc": "Decoder errors trigger an automatic keyframe request, without dropping the connection." },
+      { "title": "Manual fallback", "desc": "Editable mDNS name and IP:port connection for when automatic discovery fails." },
+      { "title": "USB accessory (AOA)", "desc": "Plug the cable, tap the system's prompt, done — no <code>adb</code>, no developer options." },
+      { "title": "Picture-in-Picture", "desc": "Leave the app while connected and the video keeps playing in a floating window." },
+      { "title": "No account, no telemetry", "desc": "Same philosophy as the original project: no central server, nothing phoned home." }
+    ]
+  },
+  "compare": {
+    "eyebrow": "Compare",
+    "title": "Against the best-known alternatives.",
+    "sub": "For using an Android tablet as an external monitor.",
+    "headers": ["", "OpenDisplay Android", "Duet Display", "Spacedesk"],
+    "rows": [
+      { "label": "Price", "us": "Free", "duet": "Paid", "spacedesk": "Free (core)" },
+      { "label": "Open source", "us": "GPL-3.0", "duet": "No", "spacedesk": "No" },
+      { "label": "Account required", "us": "No", "duet": "Yes", "spacedesk": "No" },
+      { "label": "Same protocol as OpenDisplay Mac", "us": "Yes", "duet": "No", "spacedesk": "No" },
+      { "label": "Central server", "us": "None", "duet": "Yes", "spacedesk": "No" }
+    ]
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Common questions.",
+    "items": [
+      {
+        "q": "Is this the same app as OpenDisplay for iOS?",
+        "a": "No. It's an independent client, written from scratch in Kotlin, that implements the same network protocol to interoperate with the original Mac app. The official project only ships an iOS/iPadOS client."
+      },
+      {
+        "q": "Is it on Google Play?",
+        "a": "The Google Play version is currently in closed testing. Want in as a tester? Email <mail>josepacelli@gmail.com</mail>. Meanwhile, it's also distributed via GitHub Releases — install it with <code>adb install</code> or by copying the APK to the device (enable \"unknown sources\")."
+      },
+      {
+        "q": "Does it need WiFi?",
+        "a": "It works over WiFi with automatic mDNS discovery. You can also connect over USB as a native accessory (AOA) — plug the cable and tap the system's prompt, no <code>adb</code> required. See the repository for a fallback covering Mac apps without AOA support yet."
+      },
+      {
+        "q": "Does touch work in Mirror mode?",
+        "a": "No — Mirror mode on the Mac is view-only. The Mac app only accepts touch/scroll in Extend mode (it never builds its input injector for a mirror session), so taps and scrolls sent from here are silently ignored. Use Extend mode for anything interactive."
+      },
+      {
+        "q": "Does it work on any Android tablet or phone?",
+        "a": "Requires Android 8.0 (API 26) or higher. Tested on real hardware (Samsung Galaxy Tab S9 FE+ and Galaxy Note10+/Tab S7+, Android 12 through 16), but not yet across a wide range of devices — touch/scroll/cursor are implemented but with limited field validation so far. Note: v0.0.7 and earlier crash on launch on Android 12–13 (API 30-33); use v0.0.8 or newer (fixed in <pr5>#5</pr5>)."
+      },
+      {
+        "q": "Does it change anything on the Mac app?",
+        "a": "No modification whatsoever — any protocol mismatch is this project's responsibility, not upstream's."
+      },
+      {
+        "q": "What's the license?",
+        "a": "GPL-3.0, same as the original project. Open source, free to use including commercially; distributed modified versions must remain open source under the same license."
+      }
+    ]
+  },
+  "contribute": {
+    "eyebrow": "Contribute",
+    "title": "Issues and pull requests welcome.",
+    "desc": "Bug reports and PRs go on the <repo>GitHub repository</repo>, which also has the architecture, protocol and build details. Careful bug reports are what actually make a one-person side project better — thanks to everyone below.",
+    "credits": [
+      { "handle": "@gaeaearth", "text": "this project's most active early tester: the Android 12/13 launch crash (<issue4>#4</issue4>), the screen-timeout/reconnect issues (<issue10>#10</issue10>, also the idle-screen fix in <issue28>#28</issue28>), and the misleading manual-connection hint (<issue18>#18</issue18>)." },
+      { "handle": "@edoardomich", "text": "fixed the Android 12/13 launch crash (<pr5>#5</pr5>)." },
+      { "handle": "@jpbhdrey", "text": "built the USB accessory (AOA) transport (<pr33>#33</pr33>): plug the cable, tap the system's prompt, done, no developer options or <code>adb</code> dance required." },
+      { "handle": "@dyss1992", "text": "reported the Mirror mode aspect ratio bug on some Qualcomm decoders with a controlled before/after comparison that made the root cause obvious (<issue44>#44</issue44>), and suggested the immersive fullscreen mode (<issue45>#45</issue45>)." }
+    ]
+  },
+  "support": {
+    "eyebrow": "Support the project",
+    "logo": "Ko-fi",
+    "title": "If OpenDisplay Android saved you a monitor, consider buying me a coffee.",
+    "p1": "This is a one-person side project, built and maintained by me, <profile>Jose Pacelli</profile>, evenings and weekends — not a company.",
+    "p2": "Supporting me on Ko-fi keeps this project maintained and free for everyone, including people who can't afford to chip in. My goal is to make this the best free way to turn a spare Android tablet into a real second monitor.",
+    "p3": "If it saved you from buying a monitor, a small tip helps keep it going. Thank you."
+  },
+  "footer": {
+    "links": {
+      "github": "GitHub",
+      "releases": "Releases",
+      "issues": "Issues",
+      "license": "License (GPL-3.0)",
+      "codeOfConduct": "Code of Conduct",
+      "contributing": "Contributing",
+      "privacy": "Privacy Policy",
+      "original": "Original project (Mac/iOS)"
+    },
+    "disclaimer": "Not affiliated with the maintainer of the original OpenDisplay project. Speaks the same protocol, maintained separately."
+  },
+  "backToTop": "Back to top"
+}

@@ -1,14 +1,31 @@
 import type { ReactNode } from 'react'
+import { LOCALES, type PageId, localeHref, resolveLocale } from '@/lib/locales'
+
+const SHORT_LABELS: Record<string, string> = {
+  en: 'EN',
+  es: 'ES',
+  'pt-BR': 'PT-BR',
+  'pt-PT': 'PT-PT',
+  'zh-Hans': '中文',
+  ja: '日本語',
+  ko: '한국어',
+}
 
 export function LegalLayout({
   title,
   subtitle,
+  page,
+  backLabel,
   children,
 }: {
   title: string
   subtitle: string
+  page: PageId
+  backLabel: string
   children: ReactNode
 }) {
+  const current = resolveLocale(document.documentElement.lang)
+
   return (
     <div className="mx-auto max-w-2xl px-6 py-14 sm:py-20">
       <h1 className="text-3xl font-semibold tracking-tight text-foreground">{title}</h1>
@@ -18,11 +35,26 @@ export function LegalLayout({
         {children}
       </div>
 
-      <a
-        href="index.html"
-        className="mt-14 inline-block text-sm text-primary no-underline hover:underline"
-      >
-        ← Voltar pro OpenDisplay Android
+      <div className="mt-14 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+        {LOCALES.map((locale) =>
+          locale.code === current ? (
+            <span key={locale.code} aria-current="page" className="font-semibold text-foreground">
+              {SHORT_LABELS[locale.code]}
+            </span>
+          ) : (
+            <a
+              key={locale.code}
+              href={localeHref(locale.path, page)}
+              className="text-muted-foreground no-underline hover:text-foreground"
+            >
+              {SHORT_LABELS[locale.code]}
+            </a>
+          ),
+        )}
+      </div>
+
+      <a href={localeHref(LOCALES.find((l) => l.code === current)!.path, 'index')} className="mt-4 inline-block text-sm text-primary no-underline hover:underline">
+        ← {backLabel}
       </a>
     </div>
   )
