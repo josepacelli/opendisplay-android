@@ -73,7 +73,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = DialogContainerAlpha),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = DialogContainerAlpha),
         title = { Text(stringResource(R.string.settings_title)) },
         text = {
             Column(

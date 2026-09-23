@@ -37,7 +37,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = DialogContainerAlpha),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = DialogContainerAlpha),
         title = { Text(stringResource(R.string.settings_section_about)) },
         text = {
             Column(modifier = Modifier.widthIn(max = 420.dp)) {
