@@ -110,6 +110,17 @@ adb logcat -s OpenDisplay:*      # 앱 로그`}</code>
       </section>
 
       <section>
+        <h2>감사의 말</h2>
+        <p>
+          <a href="https://github.com/VirgilChen97">@VirgilChen97</a>님은 수정 코드가 한 줄도 없던
+          시점에{' '}
+          <a href="https://github.com/josepacelli/opendisplay-android/issues/113">issue #113</a>{' '}
+          댓글에서 진짜 근본 원인(디코더 출력 드레인이 다음 입력 프레임에 종속되어 있던 것)을 정확히
+          짚어주셨습니다. 기여가 꼭 코드일 필요는 없습니다 — 정확한 진단도 훌륭한 기여입니다.
+        </p>
+      </section>
+
+      <section>
         <h2>라이선스</h2>
         <p>
           기여함으로써, 당신의 기여가 이 프로젝트의{' '}

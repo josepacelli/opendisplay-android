@@ -29,8 +29,16 @@ import java.nio.ByteBuffer
  * AVCC), so wire NALUs are fed through unchanged, just prefixed with start
  * codes.
  *
- * Not thread-safe — feed it from a single thread/coroutine (the same one
- * draining [io.github.josepacelli.opendisplay.net.PhoneReceiver.videoFrames]).
+ * [submit]/[release] aren't thread-safe against each other — feed them from a single
+ * thread/coroutine (the same one draining
+ * [io.github.josepacelli.opendisplay.net.PhoneReceiver.videoFrames]). Internally, each
+ * configured codec gets its own dedicated thread blocking on `dequeueOutputBuffer` so a
+ * decoded frame reaches the [Surface] the instant it's ready, instead of waiting for the
+ * *next* [submit] to trigger a drain — on a mostly static screen NALUs arrive seconds
+ * apart, and that coupling held every decoded frame hostage to the next network packet
+ * (issue #113). [onSizeChanged]/[onError] can therefore fire from either the calling
+ * thread or that drain thread; both are serialized against each other so a caller never
+ * sees them run concurrently.
  *
  * @param surface where decoded frames are rendered.
  * @param expectedWidth seed width in pixels, used until the real size arrives.
@@ -51,18 +59,18 @@ class VideoDecoder(
     private val onSizeChanged: (width: Int, height: Int) -> Unit = { _, _ -> },
     private val onError: (desyncCount: Int) -> Unit = {},
 ) {
-    private var codec: MediaCodec? = null
+    @Volatile private var codec: MediaCodec? = null
+    @Volatile private var drainThread: Thread? = null
     private var currentSps: ByteArray? = null
     private var currentPps: ByteArray? = null
     private var pendingSps: ByteArray? = null
     private var pendingPps: ByteArray? = null
-    private var spsDimensionsKnown = false
+    @Volatile private var spsDimensionsKnown = false
     private var lastErrorSignalAt = 0L
     private var lastSeq: Long? = null
     private var justReconfigured = false
     private var desyncCount = 0
     private var lastReconfigureAt = 0L
-    private val bufferInfo = MediaCodec.BufferInfo()
 
     /** Update the seed size (e.g. after a rotation) before the next SPS/PPS
      * change triggers a reconfigure. Does not itself force a reconfigure —
@@ -113,6 +121,7 @@ class VideoDecoder(
     }
 
     /** Tears down any existing codec and builds a fresh one from [currentSps]/[currentPps]. */
+    @Synchronized
     private fun reconfigure() {
         val sps = currentSps ?: return
         val pps = currentPps ?: return
@@ -137,11 +146,19 @@ class VideoDecoder(
             mediaCodec.configure(format, surface, null, 0)
             mediaCodec.start()
             codec = mediaCodec
+            startDrainThread(mediaCodec)
             Log.info("MediaCodec configured, seed ${seedWidth}x$seedHeight (sps-derived: $spsDimensionsKnown)")
         } catch (e: Exception) {
             Log.error("MediaCodec configure failed", e)
             signalError()
         }
+    }
+
+    private fun startDrainThread(mediaCodec: MediaCodec) {
+        val thread = Thread({ drainLoop(mediaCodec) }, "VideoDecoder-drain")
+        thread.isDaemon = true
+        drainThread = thread
+        thread.start()
     }
 
     /** Writes one access unit's NALUs into an input buffer and submits it.
@@ -163,7 +180,6 @@ class VideoDecoder(
                 size += START_CODE.size + nalu.size
             }
             mediaCodec.queueInputBuffer(index, 0, size, System.nanoTime() / 1000, 0)
-            drainOutput(mediaCodec)
         } catch (e: Exception) {
             Log.error("decode failed — rebuilding on the next keyframe", e)
             signalError()
@@ -175,6 +191,7 @@ class VideoDecoder(
      * [reconfigure] (headersChanged in [submit] only fires on a *change*).
      * For a codec that's actually broken (threw on configure/queue) —
      * rebuilding is the only way back. */
+    @Synchronized
     private fun signalError() {
         release()
         currentSps = null
@@ -191,6 +208,7 @@ class VideoDecoder(
      * [desyncCount] resets after a quiet spell ([DESYNC_EPISODE_GAP_MS]) — it counts
      * a run of *recent* trouble, not a lifetime total, so a couple of isolated blips an
      * hour apart never add up to looking like sustained instability. */
+    @Synchronized
     private fun signalDesync() {
         val now = System.currentTimeMillis()
         if (now - lastErrorSignalAt <= 1000) return
@@ -200,14 +218,28 @@ class VideoDecoder(
         onError(desyncCount)
     }
 
-    /** Renders every output buffer the codec currently has ready, and reports a
-     * real output size once the codec settles on one.
-     * @param mediaCodec the running codec to drain. */
-    private fun drainOutput(mediaCodec: MediaCodec) {
-        while (true) {
-            val outIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, 0)
+    /** Runs on a dedicated thread for [mediaCodec]'s whole lifetime, blocking on
+     * `dequeueOutputBuffer` so a decoded frame reaches the [Surface] the moment it's ready
+     * — see the class doc for why this isn't just called inline from [queueAccessUnit]
+     * anymore. Exits once [codec] no longer points at [mediaCodec] (torn down by
+     * [release]) or the codec throws.
+     * @param mediaCodec the codec this thread owns. */
+    private fun drainLoop(mediaCodec: MediaCodec) {
+        val info = MediaCodec.BufferInfo()
+        while (codec === mediaCodec) {
+            val outIndex = try {
+                mediaCodec.dequeueOutputBuffer(info, DRAIN_TIMEOUT_US)
+            } catch (e: Exception) {
+                if (codec === mediaCodec) signalError()
+                return
+            }
             when {
-                outIndex >= 0 -> mediaCodec.releaseOutputBuffer(outIndex, true)
+                outIndex >= 0 -> try {
+                    mediaCodec.releaseOutputBuffer(outIndex, true)
+                } catch (e: Exception) {
+                    if (codec === mediaCodec) signalError()
+                    return
+                }
                 outIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
                     val format = mediaCodec.outputFormat
                     val width = format.getInteger(MediaFormat.KEY_WIDTH)
@@ -215,14 +247,26 @@ class VideoDecoder(
                     Log.info("decoder output format changed: ${width}x$height")
                     if (!spsDimensionsKnown) onSizeChanged(width, height)
                 }
-                else -> return
             }
         }
     }
 
-    /** Stops and releases the codec, if one exists — safe to call more than once. */
+    /** Stops and releases the codec, if one exists — safe to call more than once, and safe
+     * to call from [drainLoop]'s own thread (skips self-joining, which would otherwise
+     * deadlock). */
+    @Synchronized
     fun release() {
-        codec?.let {
+        val mc = codec
+        codec = null
+        val thread = drainThread
+        drainThread = null
+        if (thread != null && thread !== Thread.currentThread()) {
+            try {
+                thread.join(DRAIN_JOIN_TIMEOUT_MS)
+            } catch (_: InterruptedException) {
+            }
+        }
+        mc?.let {
             try {
                 it.stop()
             } catch (_: Exception) {
@@ -232,11 +276,12 @@ class VideoDecoder(
             } catch (_: Exception) {
             }
         }
-        codec = null
     }
 
     companion object {
         private val START_CODE = byteArrayOf(0, 0, 0, 1)
         private const val DESYNC_EPISODE_GAP_MS = 5_000L
+        private const val DRAIN_TIMEOUT_US = 10_000L
+        private const val DRAIN_JOIN_TIMEOUT_MS = 200L
     }
 }

@@ -107,6 +107,16 @@ adb logcat -s OpenDisplay:*      # アプリのログ`}</code>
       </section>
 
       <section>
+        <h2>謝辞</h2>
+        <p>
+          <a href="https://github.com/VirgilChen97">@VirgilChen97</a>さんは、修正のコードが一行もない段階で、
+          <a href="https://github.com/josepacelli/opendisplay-android/issues/113">issue #113</a>
+          のコメントで本当の原因（デコーダーの出力ドレインが次の入力フレームに依存していたこと）を的確に指摘してくれました。貢献はコードとは限りません
+          — 鋭い診断も立派な貢献です。
+        </p>
+      </section>
+
+      <section>
         <h2>ライセンス</h2>
         <p>
           貢献することで、あなたの貢献がこのプロジェクトの{' '}
