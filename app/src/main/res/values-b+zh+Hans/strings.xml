@@ -14,6 +14,7 @@
     <string name="idle_instruction_keep_open">保持此应用打开 — 串流会自动开始</string>
 
     <string name="settings_title">设置</string>
+    <string name="settings_tab_general">常规</string>
     <string name="settings_section_status">状态</string>
     <string name="settings_status_listening">正在监听</string>
     <string name="settings_status_listening_value">端口 %1$d</string>
@@ -33,7 +34,7 @@
     <string name="settings_section_pip">画中画</string>
     <string name="settings_pip_show">连接期间离开应用时自动进入画中画</string>
     <string name="settings_section_video">视频</string>
-    <string name="settings_zoom_pinch">双指捏合缩放视频</string>
+    <string name="settings_zoom_pinch">双指捏合缩放，三指平移已放大的画面</string>
     <string name="settings_section_details">详情</string>
     <string name="settings_section_name">名称</string>
     <string name="settings_name_label">设备名称</string>
@@ -51,6 +52,7 @@
     <string name="connection_unstable_warning">连接不稳定 — 画面可能出现卡顿，直到恢复正常。</string>
 
     <string name="settings_section_about">关于</string>
+    <string name="about_tagline">把你的 Android 平板或手机变成 Mac 真正的第二显示器。</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
     <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
     <string name="about_github">GitHub</string>

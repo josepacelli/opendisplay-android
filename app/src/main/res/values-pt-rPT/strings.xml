@@ -14,6 +14,7 @@
     <string name="idle_instruction_keep_open">Mantenha esta aplicação aberta — a transmissão começa automaticamente</string>
 
     <string name="settings_title">Definições</string>
+    <string name="settings_tab_general">Geral</string>
     <string name="settings_section_status">Estado</string>
     <string name="settings_status_listening">A escutar</string>
     <string name="settings_status_listening_value">Porta %1$d</string>
@@ -33,7 +34,7 @@
     <string name="settings_section_pip">Picture-in-Picture</string>
     <string name="settings_pip_show">Entrar automaticamente em Picture-in-Picture ao sair da app ligado</string>
     <string name="settings_section_video">Vídeo</string>
-    <string name="settings_zoom_pinch">Ampliar o vídeo com o gesto de pinça</string>
+    <string name="settings_zoom_pinch">Gesto de pinça para ampliar, três dedos para mover a área ampliada</string>
     <string name="settings_section_details">Detalhes</string>
     <string name="settings_section_name">Nome</string>
     <string name="settings_name_label">Nome do equipamento</string>
@@ -51,6 +52,7 @@
     <string name="connection_unstable_warning">Ligação instável — a imagem pode falhar até recuperar.</string>
 
     <string name="settings_section_about">Acerca de</string>
+    <string name="about_tagline">Transforma o teu tablet ou telemóvel Android num segundo monitor a sério para o teu Mac.</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
     <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
     <string name="about_github">GitHub</string>

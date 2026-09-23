@@ -14,6 +14,7 @@
     <string name="idle_instruction_keep_open">이 앱을 계속 열어 두세요 — 스트리밍이 자동으로 시작됩니다</string>
 
     <string name="settings_title">설정</string>
+    <string name="settings_tab_general">일반</string>
     <string name="settings_section_status">상태</string>
     <string name="settings_status_listening">대기 중</string>
     <string name="settings_status_listening_value">포트 %1$d</string>
@@ -33,7 +34,7 @@
     <string name="settings_section_pip">화면 속 화면(PIP)</string>
     <string name="settings_pip_show">연결 중 앱을 나가면 자동으로 화면 속 화면으로 전환</string>
     <string name="settings_section_video">영상</string>
-    <string name="settings_zoom_pinch">핀치로 영상 확대/축소</string>
+    <string name="settings_zoom_pinch">핀치로 확대, 세 손가락으로 확대 영역 이동</string>
     <string name="settings_section_details">세부 정보</string>
     <string name="settings_section_name">이름</string>
     <string name="settings_name_label">기기 이름</string>
@@ -51,6 +52,7 @@
     <string name="connection_unstable_warning">연결이 불안정합니다 — 복구될 때까지 화면이 끊길 수 있습니다.</string>
 
     <string name="settings_section_about">정보</string>
+    <string name="about_tagline">안드로이드 태블릿이나 폰을 Mac의 진짜 보조 모니터로 만들어줍니다.</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
     <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
     <string name="about_github">GitHub</string>

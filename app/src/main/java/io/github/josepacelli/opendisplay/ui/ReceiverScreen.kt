@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,7 +70,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val zoomEnabled by receiver.zoomEnabled.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
     var showSettings by remember { mutableStateOf(false) }
-    var showAbout by remember { mutableStateOf(false) }
+    var settingsInitialTab by remember { mutableIntStateOf(SETTINGS_TAB_GENERAL) }
 
     LaunchedEffect(connected) {
         if (connected) showSettings = false
@@ -105,8 +106,14 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
             Box(modifier = Modifier.fillMaxSize().background(Color.Black))
             IdleContent(
                 status = status,
-                onSettingsClick = { showSettings = true },
-                onAboutClick = { showAbout = true },
+                onSettingsClick = {
+                    settingsInitialTab = SETTINGS_TAB_GENERAL
+                    showSettings = true
+                },
+                onAboutClick = {
+                    settingsInitialTab = SETTINGS_TAB_ABOUT
+                    showSettings = true
+                },
             )
         }
 
@@ -124,10 +131,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     }
 
     if (showSettings) {
-        SettingsDialog(receiver = receiver, onDismiss = { showSettings = false })
-    }
-    if (showAbout) {
-        AboutDialog(onDismiss = { showAbout = false })
+        SettingsDialog(receiver = receiver, initialTab = settingsInitialTab, onDismiss = { showSettings = false })
     }
 }
 
