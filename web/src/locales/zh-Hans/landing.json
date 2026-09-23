@@ -91,7 +91,7 @@
       "tag": "第 2 步 · 在你的安卓设备上",
       "title": "接收端",
       "desc": "显示视频流，并把触摸/滚动操作发回去。",
-      "cta": "下载 APK（v0.0.42）",
+      "cta": "下载 APK（v0.0.43）",
       "note": "Google Play 版本正在封闭测试 — 想参加吗？发邮件到 <mail>josepacelli@gmail.com</mail>。与此同时，可以手动安装上面的 APK，或者<compile>从源码构建 ↗</compile>。<releases>查看以往版本 ↗</releases>"
     }
   },
