@@ -168,7 +168,8 @@
       { "handle": "@gaeaearth", "text": "this project's most active early tester: the Android 12/13 launch crash (<issue4>#4</issue4>), the screen-timeout/reconnect issues (<issue10>#10</issue10>, also the idle-screen fix in <issue28>#28</issue28>), and the misleading manual-connection hint (<issue18>#18</issue18>)." },
       { "handle": "@edoardomich", "text": "fixed the Android 12/13 launch crash (<pr5>#5</pr5>)." },
       { "handle": "@jpbhdrey", "text": "built the USB accessory (AOA) transport (<pr33>#33</pr33>): plug the cable, tap the system's prompt, done, no developer options or <code>adb</code> dance required." },
-      { "handle": "@dyss1992", "text": "reported the Mirror mode aspect ratio bug on some Qualcomm decoders with a controlled before/after comparison that made the root cause obvious (<issue44>#44</issue44>), and suggested the immersive fullscreen mode (<issue45>#45</issue45>)." }
+      { "handle": "@dyss1992", "text": "reported the Mirror mode aspect ratio bug on some Qualcomm decoders with a controlled before/after comparison that made the root cause obvious (<issue44>#44</issue44>), and suggested the immersive fullscreen mode (<issue45>#45</issue45>)." },
+      { "handle": "@VirgilChen97", "text": "pinpointed the real root cause of delayed typing/hover on a static screen in a comment on <issue113>#113</issue113>, before a single line of the fix existed." }
     ]
   },
   "support": {

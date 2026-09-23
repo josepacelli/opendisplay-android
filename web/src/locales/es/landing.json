@@ -168,7 +168,8 @@
       { "handle": "@gaeaearth", "text": "el probador temprano más activo de este proyecto: el fallo al abrir en Android 12/13 (<issue4>#4</issue4>), los problemas de tiempo de espera de pantalla/reconexión (<issue10>#10</issue10>, también la corrección de pantalla inactiva en <issue28>#28</issue28>), y el aviso engañoso de conexión manual (<issue18>#18</issue18>)." },
       { "handle": "@edoardomich", "text": "corrigió el fallo al abrir en Android 12/13 (<pr5>#5</pr5>)." },
       { "handle": "@jpbhdrey", "text": "construyó el transporte de accesorio USB (AOA) (<pr33>#33</pr33>): conecta el cable, acepta el aviso del sistema, listo, sin opciones de desarrollador ni bailar con <code>adb</code>." },
-      { "handle": "@dyss1992", "text": "reportó el error de aspecto en modo Mirror en algunos decodificadores Qualcomm con una comparación controlada de antes/después que dejó claro el origen del problema (<issue44>#44</issue44>), y sugirió el modo de pantalla completa inmersivo (<issue45>#45</issue45>)." }
+      { "handle": "@dyss1992", "text": "reportó el error de aspecto en modo Mirror en algunos decodificadores Qualcomm con una comparación controlada de antes/después que dejó claro el origen del problema (<issue44>#44</issue44>), y sugirió el modo de pantalla completa inmersivo (<issue45>#45</issue45>)." },
+      { "handle": "@VirgilChen97", "text": "señaló la causa raíz correcta del retraso al escribir o pasar el cursor en una pantalla estática, en un comentario en el <issue113>#113</issue113>, antes de que existiera una sola línea de la corrección." }
     ]
   },
   "support": {

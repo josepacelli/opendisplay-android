@@ -168,7 +168,8 @@
       { "handle": "@gaeaearth", "text": "本项目最活跃的早期测试者：安卓 12/13 启动崩溃问题（<issue4>#4</issue4>），屏幕超时/重连问题（<issue10>#10</issue10>，以及 <issue28>#28</issue28> 中的息屏修复），还有容易误导人的手动连接提示（<issue18>#18</issue18>）。" },
       { "handle": "@edoardomich", "text": "修复了安卓 12/13 的启动崩溃问题（<pr5>#5</pr5>）。" },
       { "handle": "@jpbhdrey", "text": "实现了 USB 配件（AOA）传输方式（<pr33>#33</pr33>）：插上数据线，点一下系统弹窗即可，无需开发者选项，也不用折腾 <code>adb</code>。" },
-      { "handle": "@dyss1992", "text": "通过有对照的前后对比，报告了部分高通解码器在 Mirror 模式下的宽高比问题，让根因一目了然（<issue44>#44</issue44>），并建议了沉浸式全屏模式（<issue45>#45</issue45>）。" }
+      { "handle": "@dyss1992", "text": "通过有对照的前后对比，报告了部分高通解码器在 Mirror 模式下的宽高比问题，让根因一目了然（<issue44>#44</issue44>），并建议了沉浸式全屏模式（<issue45>#45</issue45>）。" },
+      { "handle": "@VirgilChen97", "text": "在<issue113>#113</issue113>的评论里，在修复代码还一行都没有的时候，就准确指出了静态画面下打字/悬停延迟的真正根因。" }
     ]
   },
   "support": {

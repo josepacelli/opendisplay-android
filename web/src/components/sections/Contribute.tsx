@@ -2,7 +2,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { RevealSection } from '@/components/RevealSection'
 import { SectionHeading } from '@/components/SectionHeading'
 
-const CREDIT_HANDLES = ['gaeaearth', 'edoardomich', 'jpbhdrey', 'dyss1992']
+const CREDIT_HANDLES = ['gaeaearth', 'edoardomich', 'jpbhdrey', 'dyss1992', 'VirgilChen97']
 
 const CREDIT_COMPONENTS: Record<number, Record<string, React.ReactElement>> = {
   0: {
@@ -20,6 +20,7 @@ const CREDIT_COMPONENTS: Record<number, Record<string, React.ReactElement>> = {
     issue44: <a href="https://github.com/josepacelli/opendisplay-android/issues/44" />,
     issue45: <a href="https://github.com/josepacelli/opendisplay-android/issues/45" />,
   },
+  4: { issue113: <a href="https://github.com/josepacelli/opendisplay-android/issues/113" /> },
 }
 
 export function Contribute() {
