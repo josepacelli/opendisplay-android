@@ -103,7 +103,7 @@
       { "title": "Hardware H.264 video", "desc": "<code>MediaCodec</code> decoding straight to a Surface, no CPU conversion." },
       { "title": "Automatic discovery", "desc": "mDNS (<code>_opensidecar._tcp</code>) — the Mac finds the Android device on its own on the same network." },
       { "title": "Touch and scroll", "desc": "One finger becomes a click/drag, two fingers become scroll — in Extend mode. The Mac's Mirror mode is view-only: it silently ignores input from any client." },
-      { "title": "Pinch to zoom", "desc": "Two fingers spread on the video zoom in locally, on either Mirror or Extend mode — no protocol change needed, and touch still lands on the right spot on the Mac. Once zoomed, drag with three fingers to move around the magnified area." },
+      { "title": "Pinch to zoom", "desc": "Two fingers spread on the video zoom in locally, on either Mirror or Extend mode — no protocol change needed, and touch still lands on the right spot on the Mac. <b>Once zoomed, drag with three fingers to move around the magnified area.</b>" },
       { "title": "Remote cursor", "desc": "A dot or decoded sprite, mirroring the Mac's cursor position live." },
       { "title": "Foreground service", "desc": "Survives the app going to background and resumes correctly after unlocking the screen." },
       { "title": "Error recovery", "desc": "Decoder errors trigger an automatic keyframe request, without dropping the connection." },

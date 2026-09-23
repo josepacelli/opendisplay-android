@@ -47,13 +47,13 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/40 bg-background/60 backdrop-blur-xl backdrop-saturate-150">
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-6 py-3.5">
+      <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3.5">
         <div className="flex items-center gap-2 whitespace-nowrap font-medium text-foreground">
           <MonitorSmartphone className="size-5 text-primary" aria-hidden="true" />
           {t('brand.name')} <span className="text-muted-foreground">{t('brand.sub')}</span>
         </div>
 
-        <nav className="hidden min-w-0 flex-1 items-center gap-5 lg:flex">
+        <nav className="hidden min-w-0 flex-1 items-center gap-5 xl:flex">
           {links.map((link) => (
             <a
               key={link.id}
@@ -75,11 +75,11 @@ export function Header() {
           </a>
         </nav>
 
-        <div className="ml-auto flex items-center gap-1 lg:ml-0">
+        <div className="ml-auto flex items-center gap-1 xl:ml-0">
           <ThemeToggle />
           <LangSwitch />
 
-          <div ref={menuRef} className="relative lg:hidden">
+          <div ref={menuRef} className="relative xl:hidden">
             <button
               type="button"
               aria-haspopup="true"

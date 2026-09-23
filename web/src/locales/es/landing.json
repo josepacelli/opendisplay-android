@@ -103,7 +103,7 @@
       { "title": "Vídeo H.264 por hardware", "desc": "Decodificación con <code>MediaCodec</code> directo a un Surface, sin conversión por CPU." },
       { "title": "Descubrimiento automático", "desc": "mDNS (<code>_opensidecar._tcp</code>) — el Mac encuentra el dispositivo Android por sí solo en la misma red." },
       { "title": "Toque y desplazamiento", "desc": "Un dedo se convierte en clic/arrastre, dos dedos en desplazamiento — en modo Extend. El modo Mirror del Mac es solo de visualización: ignora en silencio la entrada de cualquier cliente." },
-      { "title": "Pellizcar para hacer zoom", "desc": "Separar dos dedos sobre el vídeo hace zoom localmente, tanto en modo Mirror como Extend — sin necesitar cambios de protocolo, y el toque sigue cayendo en el punto correcto del Mac. Una vez ampliado, arrastra con tres dedos para moverte por la zona ampliada." },
+      { "title": "Pellizcar para hacer zoom", "desc": "Separar dos dedos sobre el vídeo hace zoom localmente, tanto en modo Mirror como Extend — sin necesitar cambios de protocolo, y el toque sigue cayendo en el punto correcto del Mac. <b>Una vez ampliado, arrastra con tres dedos para moverte por la zona ampliada.</b>" },
       { "title": "Cursor remoto", "desc": "Un punto o un sprite decodificado, reflejando en vivo la posición del cursor del Mac." },
       { "title": "Servicio en primer plano", "desc": "Sobrevive a que la app pase a segundo plano y se retoma correctamente al desbloquear la pantalla." },
       { "title": "Recuperación de errores", "desc": "Los errores del decodificador activan una solicitud automática de keyframe, sin cortar la conexión." },
