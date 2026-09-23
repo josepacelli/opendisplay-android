@@ -168,7 +168,8 @@
       { "handle": "@gaeaearth", "text": "이 프로젝트에서 가장 적극적인 초기 테스터: Android 12/13 실행 시 크래시(<issue4>#4</issue4>), 화면 타임아웃/재연결 문제(<issue10>#10</issue10>, <issue28>#28</issue28>의 유휴 화면 수정도 포함), 혼동을 주던 수동 연결 안내(<issue18>#18</issue18>)를 제보." },
       { "handle": "@edoardomich", "text": "Android 12/13 실행 시 크래시를 수정 (<pr5>#5</pr5>)." },
       { "handle": "@jpbhdrey", "text": "USB 액세서리(AOA) 전송 방식을 구현 (<pr33>#33</pr33>): 케이블을 꽂고 시스템 프롬프트를 누르기만 하면 끝, 개발자 옵션도 <code>adb</code>와의 씨름도 필요 없습니다." },
-      { "handle": "@dyss1992", "text": "일부 Qualcomm 디코더에서 발생하는 Mirror 모드 화면 비율 버그를, 전후 비교로 근본 원인을 명확히 드러낸 리포트로 제보 (<issue44>#44</issue44>), 몰입형 전체 화면 모드도 제안 (<issue45>#45</issue45>)." }
+      { "handle": "@dyss1992", "text": "일부 Qualcomm 디코더에서 발생하는 Mirror 모드 화면 비율 버그를, 전후 비교로 근본 원인을 명확히 드러낸 리포트로 제보 (<issue44>#44</issue44>), 몰입형 전체 화면 모드도 제안 (<issue45>#45</issue45>)." },
+      { "handle": "@VirgilChen97", "text": "정지 화면에서 타이핑/호버가 지연되는 문제의 진짜 근본 원인을, 수정 코드가 한 줄도 없던 시점에 <issue113>#113</issue113> 댓글에서 정확히 짚어냄." }
     ]
   },
   "support": {
