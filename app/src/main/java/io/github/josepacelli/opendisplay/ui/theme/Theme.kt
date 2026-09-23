@@ -19,6 +19,11 @@ private val LightColors = lightColorScheme(
     primary = Accent,
 )
 
+/** Container alpha for [io.github.josepacelli.opendisplay.ui.SettingsDialog] and
+ * [io.github.josepacelli.opendisplay.ui.AboutDialog] — echoes the landing page's frosted-glass
+ * header without an actual blur (issue #109: real backdrop blur isn't feasible here). */
+const val DialogContainerAlpha = 0.85f
+
 /**
  * Deliberately minimal: this app is a fullscreen video receiver, not a
  * content-heavy UI, so there is no design-system investment here yet.

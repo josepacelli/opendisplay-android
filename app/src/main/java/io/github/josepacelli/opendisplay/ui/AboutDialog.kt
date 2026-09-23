@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.josepacelli.opendisplay.R
+import io.github.josepacelli.opendisplay.ui.theme.DialogContainerAlpha
 
 /**
  * Standalone About screen — version, license, and links to this client's
@@ -36,6 +37,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = DialogContainerAlpha),
         title = { Text(stringResource(R.string.settings_section_about)) },
         text = {
             Column(modifier = Modifier.widthIn(max = 420.dp)) {
