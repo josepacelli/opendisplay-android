@@ -119,6 +119,17 @@ adb logcat -s OpenDisplay:*      # app logs`}</code>
       </section>
 
       <section>
+        <h2>Acknowledgments</h2>
+        <p>
+          <a href="https://github.com/VirgilChen97">@VirgilChen97</a> pinpointed the real root
+          cause (decoder output draining held hostage to the next input frame) in a comment on{' '}
+          <a href="https://github.com/josepacelli/opendisplay-android/issues/113">issue #113</a>,
+          before a single line of the fix existed. A contribution doesn't have to be code — a
+          sharp diagnosis counts too.
+        </p>
+      </section>
+
+      <section>
         <h2>License</h2>
         <p>
           By contributing, you agree your contribution is licensed under this project's{' '}

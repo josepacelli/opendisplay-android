@@ -120,6 +120,18 @@ adb logcat -s OpenDisplay:*      # logs de la app`}</code>
       </section>
 
       <section>
+        <h2>Agradecimientos</h2>
+        <p>
+          <a href="https://github.com/VirgilChen97">@VirgilChen97</a> señaló la causa raíz
+          correcta (el vaciado de salida del decodificador dependía del siguiente frame de
+          entrada) en un comentario en el{' '}
+          <a href="https://github.com/josepacelli/opendisplay-android/issues/113">issue #113</a>,
+          antes de que existiera una sola línea de la corrección. Una contribución no tiene que
+          ser código — un diagnóstico acertado también cuenta.
+        </p>
+      </section>
+
+      <section>
         <h2>Licencia</h2>
         <p>
           Al contribuir, aceptas que tu contribución queda licenciada bajo la{' '}

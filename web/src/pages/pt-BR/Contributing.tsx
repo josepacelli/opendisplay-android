@@ -119,6 +119,17 @@ adb logcat -s OpenDisplay:*      # logs do app`}</code>
       </section>
 
       <section>
+        <h2>Agradecimentos</h2>
+        <p>
+          <a href="https://github.com/VirgilChen97">@VirgilChen97</a> apontou a causa raiz certa
+          (drenagem de saída do decoder presa ao próximo frame de entrada) num comentário na{' '}
+          <a href="https://github.com/josepacelli/opendisplay-android/issues/113">issue #113</a>,
+          antes de qualquer linha da correção existir. Contribuição não precisa ser código — um
+          diagnóstico certeiro também conta.
+        </p>
+      </section>
+
+      <section>
         <h2>Licença</h2>
         <p>
           Ao contribuir, você concorda que sua contribuição fica licenciada sob a{' '}

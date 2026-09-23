@@ -111,6 +111,16 @@ adb logcat -s OpenDisplay:*      # 应用日志`}</code>
       </section>
 
       <section>
+        <h2>致谢</h2>
+        <p>
+          <a href="https://github.com/VirgilChen97">@VirgilChen97</a> 在
+          <a href="https://github.com/josepacelli/opendisplay-android/issues/113">issue #113</a>
+          的评论里，在修复代码还一行都没有的时候，就准确指出了真正的根因（解码器输出的释放被绑定在下一帧输入上）。贡献不一定要写代码
+          — 精准的诊断同样算数。
+        </p>
+      </section>
+
+      <section>
         <h2>许可证</h2>
         <p>
           参与贡献即表示你同意你的贡献将按本项目的{' '}
