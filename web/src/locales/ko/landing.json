@@ -7,8 +7,8 @@
     "compare": "비교",
     "faq": "자주 묻는 질문",
     "github": "GitHub",
-    "scrollLeft": "탐색을 왼쪽으로 스크롤",
-    "scrollRight": "탐색을 오른쪽으로 스크롤"
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기"
   },
   "brand": {
     "name": "OpenDisplay",

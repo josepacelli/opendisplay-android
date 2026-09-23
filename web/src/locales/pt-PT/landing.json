@@ -7,8 +7,8 @@
     "compare": "Comparação",
     "faq": "Perguntas frequentes",
     "github": "GitHub",
-    "scrollLeft": "Rolar navegação para a esquerda",
-    "scrollRight": "Rolar navegação para a direita"
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu"
   },
   "brand": {
     "name": "OpenDisplay",

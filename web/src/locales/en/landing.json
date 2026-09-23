@@ -7,8 +7,8 @@
     "compare": "Compare",
     "faq": "FAQ",
     "github": "GitHub",
-    "scrollLeft": "Scroll navigation left",
-    "scrollRight": "Scroll navigation right"
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "brand": {
     "name": "OpenDisplay",

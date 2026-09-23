@@ -7,8 +7,8 @@
     "compare": "比較",
     "faq": "よくある質問",
     "github": "GitHub",
-    "scrollLeft": "ナビゲーションを左にスクロール",
-    "scrollRight": "ナビゲーションを右にスクロール"
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる"
   },
   "brand": {
     "name": "OpenDisplay",

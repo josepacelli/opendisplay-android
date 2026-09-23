@@ -7,8 +7,8 @@
     "compare": "对比",
     "faq": "常见问题",
     "github": "GitHub",
-    "scrollLeft": "向左滚动导航",
-    "scrollRight": "向右滚动导航"
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
   },
   "brand": {
     "name": "OpenDisplay",

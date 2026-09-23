@@ -36,7 +36,7 @@ export function LangSwitch() {
         <span>{current}</span>
       </button>
       {open && (
-        <div className="absolute right-0 z-20 mt-1 min-w-44 rounded-md border border-border bg-popover p-1 shadow-md">
+        <div className="absolute right-0 z-20 mt-1 min-w-44 rounded-md border border-border/60 bg-popover/80 p-1 shadow-lg backdrop-blur-xl backdrop-saturate-150">
           {LOCALES.map((locale) => (
             <a
               key={locale.code}
