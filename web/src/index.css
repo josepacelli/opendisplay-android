@@ -84,8 +84,13 @@
     --sidebar-ring: rgba(31, 138, 95, 0.35);
 }
 
+/*
+ * "auto" (sem data-theme, padrão): segue prefers-color-scheme do sistema.
+ * "light"/"dark" explícitos (data-theme, escolhidos no ThemeToggle e
+ * persistidos em localStorage): forçam a paleta independente do sistema.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --background: #0b0d10;
     --foreground: #e8eaed;
     --card: #14171b;
@@ -118,6 +123,40 @@
     --sidebar-border: #23272d;
     --sidebar-ring: rgba(95, 208, 163, 0.4);
   }
+}
+
+:root[data-theme='dark'] {
+  --background: #0b0d10;
+  --foreground: #e8eaed;
+  --card: #14171b;
+  --card-foreground: #e8eaed;
+  --popover: #14171b;
+  --popover-foreground: #e8eaed;
+  --primary: #5fd0a3;
+  --primary-foreground: #06110c;
+  --secondary: #191d22;
+  --secondary-foreground: #e8eaed;
+  --muted: #191d22;
+  --muted-foreground: #9aa2ad;
+  --accent: #2e5c48;
+  --accent-foreground: #e8eaed;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: #23272d;
+  --input: #23272d;
+  --ring: rgba(95, 208, 163, 0.4);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: #14171b;
+  --sidebar-foreground: #e8eaed;
+  --sidebar-primary: #5fd0a3;
+  --sidebar-primary-foreground: #06110c;
+  --sidebar-accent: #191d22;
+  --sidebar-accent-foreground: #e8eaed;
+  --sidebar-border: #23272d;
+  --sidebar-ring: rgba(95, 208, 163, 0.4);
 }
 
 @layer base {

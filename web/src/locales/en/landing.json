@@ -10,6 +10,11 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
+  "theme": {
+    "light": "Theme: light",
+    "dark": "Theme: dark",
+    "auto": "Theme: auto"
+  },
   "brand": {
     "name": "OpenDisplay",
     "sub": "Android"

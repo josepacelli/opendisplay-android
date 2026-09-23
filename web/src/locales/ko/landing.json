@@ -10,6 +10,11 @@
     "openMenu": "메뉴 열기",
     "closeMenu": "메뉴 닫기"
   },
+  "theme": {
+    "light": "테마: 라이트",
+    "dark": "테마: 다크",
+    "auto": "테마: 자동"
+  },
   "brand": {
     "name": "OpenDisplay",
     "sub": "Android"

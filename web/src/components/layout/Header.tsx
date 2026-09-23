@@ -5,6 +5,7 @@ import { useActiveSection } from '@/hooks/useActiveSection'
 import { useGithubStars } from '@/hooks/useGithubStars'
 import { cn } from '@/lib/utils'
 import { LangSwitch } from './LangSwitch'
+import { ThemeToggle } from './ThemeToggle'
 
 const SECTION_IDS = ['features', 'how-it-works', 'screenshots', 'install', 'compare', 'faq']
 
@@ -75,6 +76,7 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1 lg:ml-0">
+          <ThemeToggle />
           <LangSwitch />
 
           <div ref={menuRef} className="relative lg:hidden">
