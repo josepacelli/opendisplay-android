@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
+import io.github.josepacelli.opendisplay.ui.theme.DialogContainerAlpha
 
 private val WIDE_LAYOUT_MIN_WIDTH = 600.dp
 private val NARROW_DIALOG_MAX_WIDTH = 420.dp
@@ -72,6 +73,7 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = DialogContainerAlpha),
         title = { Text(stringResource(R.string.settings_title)) },
         text = {
             Column(
