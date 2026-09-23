@@ -14,6 +14,7 @@
     <string name="idle_instruction_keep_open">このアプリを開いたままにしてください — ストリーミングは自動的に始まります</string>
 
     <string name="settings_title">設定</string>
+    <string name="settings_tab_general">一般</string>
     <string name="settings_section_status">ステータス</string>
     <string name="settings_status_listening">待機中</string>
     <string name="settings_status_listening_value">ポート %1$d</string>
@@ -33,7 +34,7 @@
     <string name="settings_section_pip">ピクチャー・イン・ピクチャー</string>
     <string name="settings_pip_show">接続中にアプリを離れたら自動でピクチャー・イン・ピクチャーに切り替える</string>
     <string name="settings_section_video">ビデオ</string>
-    <string name="settings_zoom_pinch">ピンチ操作でビデオをズーム</string>
+    <string name="settings_zoom_pinch">ピンチでズーム、3本指で拡大部分を移動</string>
     <string name="settings_section_details">詳細</string>
     <string name="settings_section_name">名前</string>
     <string name="settings_name_label">デバイス名</string>
@@ -51,6 +52,7 @@
     <string name="connection_unstable_warning">接続が不安定です — 復旧するまで映像が乱れることがあります。</string>
 
     <string name="settings_section_about">情報</string>
+    <string name="about_tagline">AndroidタブレットやスマホをMacの本物の拡張ディスプレイに。</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
     <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
     <string name="about_github">GitHub</string>

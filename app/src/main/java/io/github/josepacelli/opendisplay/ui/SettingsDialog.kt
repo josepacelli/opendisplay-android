@@ -1,63 +1,92 @@
 package io.github.josepacelli.opendisplay.ui
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
-import io.github.josepacelli.opendisplay.ui.theme.DialogContainerAlpha
 
 private val WIDE_LAYOUT_MIN_WIDTH = 600.dp
-private val NARROW_DIALOG_MAX_WIDTH = 420.dp
-private val WIDE_DIALOG_MAX_WIDTH = 640.dp
+
+/** Tab indices for [SettingsDialog] — in tab-row order (Details first). */
+const val SETTINGS_TAB_DETAILS = 0
+const val SETTINGS_TAB_GENERAL = 1
+const val SETTINGS_TAB_ABOUT = 2
 
 /**
- * Grouped like the upstream iOS client's `SettingsView` (`Form` with
- * sections), adapted to what's actually true on Android: no USB / Metal
- * renderer / Local Network permission items — this app only ever listens
- * on plain TCP, so there's nothing OS-specific to toggle. Shown only while
+ * Full-screen settings, traditional Android style: a top app bar and a tab row splitting
+ * read-only reference info ("Details" — Status/Network/How to connect, previously a
+ * collapsible section), actionable settings ("General", grouped under category headers), and
+ * app info ("About" — version/license/links, merged back in from the standalone `AboutDialog`
+ * split out in issue #48; tabs solve the "dialog got too long" problem that split was
+ * addressing, so the separate dialog isn't needed anymore, issue #112). Shown only while
  * disconnected; once video is flowing this app has no chrome at all.
  *
- * Reference-only sections (Status/Network/How to connect) collapse behind
- * [DetailsSection] so the dialog stays short — see RATIONALE.md (issue
- * #48). On a wide window ([WIDE_LAYOUT_MIN_WIDTH]+) the actionable settings
- * lay out in two columns instead of stacking.
+ * Rendered as an edge-to-edge [Dialog] rather than [androidx.compose.material3.AlertDialog]
+ * so it can fill the screen while still getting back-press-to-dismiss for free.
  *
  * @param receiver the session whose settings are shown/edited.
- * @param onDismiss called when the dialog should close (Cancel, Save, or scrim tap).
+ * @param initialTab which tab is selected when the screen opens — one of the `SETTINGS_TAB_*` constants.
+ * @param onDismiss called when the screen should close (back press/gesture, or Save).
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
+fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENERAL, onDismiss: () -> Unit) {
     val currentName by receiver.serviceName.collectAsState()
     val connected by receiver.connected.collectAsState()
     val showNotification by receiver.showNotification.collectAsState()
@@ -67,156 +96,278 @@ fun SettingsDialog(receiver: PhoneReceiver, onDismiss: () -> Unit) {
     val pipEnabled by receiver.pipEnabled.collectAsState()
     val zoomEnabled by receiver.zoomEnabled.collectAsState()
     var draftName by remember { mutableStateOf(currentName) }
-    var detailsExpanded by remember { mutableStateOf(false) }
+    var selectedTab by remember { mutableIntStateOf(initialTab) }
     val addressHint = remember { receiver.localAddressHint() }
     val wide = LocalConfiguration.current.screenWidthDp.dp >= WIDE_LAYOUT_MIN_WIDTH
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = DialogContainerAlpha),
-        title = { Text(stringResource(R.string.settings_title)) },
-        text = {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = if (wide) WIDE_DIALOG_MAX_WIDTH else NARROW_DIALOG_MAX_WIDTH)
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                if (wide) {
-                    NameSection(draftName, onNameChange = { draftName = it }, modifier = Modifier.fillMaxWidth())
-                    Row(
-                        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
-                        horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    ) {
-                        NotificationSection(
-                            showNotification,
-                            receiver::setShowNotification,
-                            modifier = Modifier.weight(1f).fillMaxHeight(),
-                            stretchDivider = true,
-                        )
-                        ImmersiveSection(
-                            immersiveFullscreen,
-                            receiver::setImmersiveFullscreen,
-                            modifier = Modifier.weight(1f).fillMaxHeight(),
-                            stretchDivider = true,
-                        )
-                    }
-                    PerfHudSection(
-                        showPerfHud,
-                        receiver::setShowPerfHud,
-                        perfHudPosition,
-                        receiver::setPerfHudPosition,
-                        wide = true,
-                        modifier = Modifier.fillMaxWidth(),
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        val screenColor = MaterialTheme.colorScheme.surfaceContainerLow
+        Surface(modifier = Modifier.fillMaxSize(), color = screenColor) {
+            Column(modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.settings_title)) },
+                    navigationIcon = {
+                        IconButton(onClick = onDismiss) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_arrow_back),
+                                contentDescription = stringResource(R.string.settings_cancel),
+                            )
+                        }
+                    },
+                    actions = {
+                        Button(
+                            onClick = {
+                                receiver.setServiceName(draftName)
+                                onDismiss()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                            modifier = Modifier.padding(end = 12.dp),
+                        ) { Text(stringResource(R.string.settings_save)) }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = screenColor),
+                )
+                SecondaryTabRow(selectedTabIndex = selectedTab, containerColor = screenColor) {
+                    Tab(
+                        selected = selectedTab == SETTINGS_TAB_DETAILS,
+                        onClick = { selectedTab = SETTINGS_TAB_DETAILS },
+                        text = { Text(stringResource(R.string.settings_section_details)) },
                     )
-                    PipSection(pipEnabled, receiver::setPipEnabled, modifier = Modifier.fillMaxWidth())
-                    VideoSection(zoomEnabled, receiver::setZoomEnabled, modifier = Modifier.fillMaxWidth())
-                } else {
-                    NotificationSection(showNotification, receiver::setShowNotification)
-                    PerfHudSection(
-                        showPerfHud,
-                        receiver::setShowPerfHud,
-                        perfHudPosition,
-                        receiver::setPerfHudPosition,
-                        wide = false,
+                    Tab(
+                        selected = selectedTab == SETTINGS_TAB_GENERAL,
+                        onClick = { selectedTab = SETTINGS_TAB_GENERAL },
+                        text = { Text(stringResource(R.string.settings_tab_general)) },
                     )
-                    ImmersiveSection(immersiveFullscreen, receiver::setImmersiveFullscreen)
-                    PipSection(pipEnabled, receiver::setPipEnabled)
-                    VideoSection(zoomEnabled, receiver::setZoomEnabled)
-                    NameSection(draftName, onNameChange = { draftName = it })
+                    Tab(
+                        selected = selectedTab == SETTINGS_TAB_ABOUT,
+                        onClick = { selectedTab = SETTINGS_TAB_ABOUT },
+                        text = { Text(stringResource(R.string.settings_section_about)) },
+                    )
                 }
-
-                DetailsSection(
-                    expanded = detailsExpanded,
-                    onToggleExpanded = { detailsExpanded = !detailsExpanded },
-                    showDivider = false,
+                Column(
+                    modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(bottom = 16.dp),
                 ) {
-                    StatusSection(connected)
-                    NetworkSection(addressHint)
-                    HowToConnectSection()
+                    when (selectedTab) {
+                        SETTINGS_TAB_DETAILS -> DetailsTab(connected = connected, addressHint = addressHint)
+                        SETTINGS_TAB_GENERAL -> GeneralTab(
+                            draftName = draftName,
+                            onNameChange = { draftName = it },
+                            showNotification = showNotification,
+                            onToggleNotification = receiver::setShowNotification,
+                            showPerfHud = showPerfHud,
+                            onTogglePerfHud = receiver::setShowPerfHud,
+                            perfHudPosition = perfHudPosition,
+                            onPerfHudPositionChange = receiver::setPerfHudPosition,
+                            wide = wide,
+                            immersiveFullscreen = immersiveFullscreen,
+                            onToggleImmersive = receiver::setImmersiveFullscreen,
+                            pipEnabled = pipEnabled,
+                            onTogglePip = receiver::setPipEnabled,
+                            zoomEnabled = zoomEnabled,
+                            onToggleZoom = receiver::setZoomEnabled,
+                        )
+                        else -> AboutTab()
+                    }
                 }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                receiver.setServiceName(draftName)
-                onDismiss()
-            }) { Text(stringResource(R.string.settings_save)) }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.settings_cancel)) }
-        },
-    )
-}
-
-/** Connection status — read-only, lives inside [DetailsSection].
- * @param connected whether a Mac is currently connected. */
-@Composable
-private fun StatusSection(connected: Boolean) {
-    SettingsSection(stringResource(R.string.settings_section_status)) {
-        LabeledRow(
-            stringResource(R.string.settings_status_listening),
-            stringResource(R.string.settings_status_listening_value, PhoneReceiver.DEFAULT_PORT),
-        )
-        LabeledRow(
-            stringResource(R.string.settings_status_connection),
-            stringResource(
-                if (connected) R.string.settings_status_connection_connected
-                else R.string.settings_status_connection_waiting,
-            ),
-        )
+        }
     }
 }
 
-/** @param showNotification current toggle state.
- * @param onToggle called with the new state when the switch is flipped.
- * @param modifier applied to the section.
- * @param stretchDivider whether to push the trailing divider to the bottom of [modifier]'s
- * height, so it lines up with the section next to it in the wide two-column layout. */
+/** "General" tab: every actionable setting, grouped under category headers with
+ * traditional Android list rows (title/subtitle + trailing control).
+ * @param draftName the name field's current (unsaved) value.
+ * @param onNameChange called on every keystroke.
+ * @param showNotification current toggle state.
+ * @param onToggleNotification called with the new state when the switch is flipped.
+ * @param showPerfHud current toggle state.
+ * @param onTogglePerfHud called with the new state when the switch is flipped.
+ * @param perfHudPosition current corner the perf overlay renders in.
+ * @param onPerfHudPositionChange called with the new corner when a different one is picked.
+ * @param wide whether there's room to lay the four corner options out in one row instead of two.
+ * @param immersiveFullscreen current toggle state.
+ * @param onToggleImmersive called with the new state when the switch is flipped.
+ * @param pipEnabled current toggle state.
+ * @param onTogglePip called with the new state when the switch is flipped.
+ * @param zoomEnabled current toggle state.
+ * @param onToggleZoom called with the new state when the switch is flipped. */
 @Composable
-private fun NotificationSection(
+private fun GeneralTab(
+    draftName: String,
+    onNameChange: (String) -> Unit,
     showNotification: Boolean,
-    onToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    stretchDivider: Boolean = false,
-) {
-    SettingsSection(stringResource(R.string.settings_section_notification), modifier, stretchDivider = stretchDivider) {
-        ToggleRow(stringResource(R.string.settings_notification_show), showNotification, onToggle)
-    }
-}
-
-/** @param showPerfHud current toggle state.
- * @param onToggle called with the new state when the switch is flipped.
- * @param position current corner the perf overlay renders in.
- * @param onPositionChange called with the new corner when a different one is picked.
- * @param wide whether the dialog has room to lay the four corner options out in one row
- * instead of two — see [PerfHudPositionPicker].
- * @param modifier applied to the section.
- * @param stretchDivider see [NotificationSection]. */
-@Composable
-private fun PerfHudSection(
+    onToggleNotification: (Boolean) -> Unit,
     showPerfHud: Boolean,
-    onToggle: (Boolean) -> Unit,
-    position: PerfHudPosition,
-    onPositionChange: (PerfHudPosition) -> Unit,
+    onTogglePerfHud: (Boolean) -> Unit,
+    perfHudPosition: PerfHudPosition,
+    onPerfHudPositionChange: (PerfHudPosition) -> Unit,
     wide: Boolean,
-    modifier: Modifier = Modifier,
-    stretchDivider: Boolean = false,
+    immersiveFullscreen: Boolean,
+    onToggleImmersive: (Boolean) -> Unit,
+    pipEnabled: Boolean,
+    onTogglePip: (Boolean) -> Unit,
+    zoomEnabled: Boolean,
+    onToggleZoom: (Boolean) -> Unit,
 ) {
-    SettingsSection(stringResource(R.string.settings_section_perf_hud), modifier, stretchDivider = stretchDivider) {
-        ToggleRow(stringResource(R.string.settings_perf_hud_show), showPerfHud, onToggle)
+    SettingsCategory(stringResource(R.string.settings_section_name)) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.settings_name_label),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f).padding(end = 8.dp),
+            )
+            OutlinedTextField(value = draftName, onValueChange = onNameChange, singleLine = true, modifier = Modifier.weight(1f))
+        }
+    }
+
+    SettingsCategory(stringResource(R.string.settings_section_notification)) {
+        ToggleListItem(stringResource(R.string.settings_notification_show), showNotification, onToggleNotification)
+    }
+
+    SettingsCategory(stringResource(R.string.settings_section_immersive)) {
+        ToggleListItem(stringResource(R.string.settings_immersive_show), immersiveFullscreen, onToggleImmersive)
+    }
+
+    SettingsCategory(stringResource(R.string.settings_section_perf_hud)) {
+        ToggleListItem(stringResource(R.string.settings_perf_hud_show), showPerfHud, onTogglePerfHud)
         Spacer(modifier = Modifier.height(8.dp))
-        PerfHudPositionPicker(position, onPositionChange, wide)
+        PerfHudPositionPicker(perfHudPosition, onPerfHudPositionChange, wide, modifier = Modifier.padding(horizontal = 16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    SettingsCategory(stringResource(R.string.settings_section_pip)) {
+        ToggleListItem(stringResource(R.string.settings_pip_show), pipEnabled, onTogglePip)
+    }
+
+    SettingsCategory(stringResource(R.string.settings_section_video), showDivider = false) {
+        ToggleListItem(stringResource(R.string.settings_zoom_pinch), zoomEnabled, onToggleZoom)
     }
 }
 
-/** Four-corner picker for [PerfHudSection] — one row of four [FilterChip]s when there's
- * room ([wide]), two rows of two otherwise, laid out the same way the corners appear on
- * screen (top row above bottom row).
+/** "Details" tab: read-only reference info — status, network address, and static
+ * connection instructions. Was a collapsible section inside a single dialog
+ * (issue #48); now its own always-expanded tab (issue #112).
+ * @param connected whether a Mac is currently connected.
+ * @param addressHint this device's local `ip:port`, or `null` if unavailable. */
+@Composable
+private fun DetailsTab(connected: Boolean, addressHint: String?) {
+    SettingsCategory(stringResource(R.string.settings_section_status)) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+            LabeledRow(
+                stringResource(R.string.settings_status_listening),
+                stringResource(R.string.settings_status_listening_value, PhoneReceiver.DEFAULT_PORT),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LabeledRow(
+                stringResource(R.string.settings_status_connection),
+                stringResource(
+                    if (connected) R.string.settings_status_connection_connected
+                    else R.string.settings_status_connection_waiting,
+                ),
+            )
+        }
+    }
+
+    SettingsCategory(stringResource(R.string.settings_section_network)) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+            Text(text = stringResource(R.string.settings_manual_hint), style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = addressHint ?: stringResource(R.string.settings_address_unavailable),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
+    }
+
+    SettingsCategory(stringResource(R.string.settings_section_how_to_connect), showDivider = false) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+            Text(stringResource(R.string.settings_howto_wifi), style = MaterialTheme.typography.bodySmall)
+            Text(
+                stringResource(R.string.settings_howto_rotate),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 6.dp),
+            )
+            Text(
+                stringResource(R.string.settings_howto_touch),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 6.dp),
+            )
+        }
+    }
+}
+
+/** "About" tab: app icon, tagline, version/license, and links to this client's repo and the
+ * Mac sender's site. Merged back into [SettingsDialog] as a tab (issue #112) — was the
+ * standalone `AboutDialog` split out in issue #48 to keep the (then single-column) dialog from
+ * getting too long; tabs make that no longer a concern. */
+@Composable
+private fun AboutTab() {
+    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val versionName = remember {
+        @Suppress("DEPRECATION")
+        runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull()
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 32.dp, start = 24.dp, end = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier.size(88.dp).clip(CircleShape).background(Color.White),
+            contentAlignment = Alignment.Center,
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(R.string.about_tagline),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.widthIn(max = 360.dp),
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = versionName?.let { stringResource(R.string.about_version, it) }
+                ?: stringResource(R.string.about_version_unknown),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            OutlinedButton(onClick = {
+                uriHandler.openUri("https://github.com/josepacelli/opendisplay-android")
+            }) { Text(stringResource(R.string.about_github)) }
+            OutlinedButton(onClick = { uriHandler.openUri("https://opendisplay.app/") }) {
+                Text(stringResource(R.string.about_mac_app))
+            }
+        }
+    }
+}
+
+/** Four-corner picker for the performance overlay — one row of four [FilterChip]s when
+ * there's room ([wide]), two rows of two otherwise, laid out the same way the corners
+ * appear on screen (top row above bottom row).
  * @param selected the corner currently in effect.
  * @param onSelect called with the newly picked corner.
- * @param wide lay all four chips out in a single row instead of two. */
+ * @param wide lay all four chips out in a single row instead of two.
+ * @param modifier applied to the picker's outer column. */
 @Composable
-private fun PerfHudPositionPicker(selected: PerfHudPosition, onSelect: (PerfHudPosition) -> Unit, wide: Boolean) {
+private fun PerfHudPositionPicker(
+    selected: PerfHudPosition,
+    onSelect: (PerfHudPosition) -> Unit,
+    wide: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val options = listOf(
         PerfHudPosition.TOP_START to stringResource(R.string.settings_perf_hud_position_top_start),
         PerfHudPosition.TOP_END to stringResource(R.string.settings_perf_hud_position_top_end),
@@ -224,7 +375,7 @@ private fun PerfHudPositionPicker(selected: PerfHudPosition, onSelect: (PerfHudP
         PerfHudPosition.BOTTOM_END to stringResource(R.string.settings_perf_hud_position_bottom_end),
     )
     val rows = if (wide) listOf(options) else options.chunked(2)
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
         rows.forEachIndexed { index, row ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
@@ -251,163 +402,39 @@ private fun PositionChip(label: String, selected: Boolean, onClick: () -> Unit) 
     )
 }
 
-/** @param immersiveFullscreen current toggle state.
- * @param onToggle called with the new state when the switch is flipped.
- * @param modifier applied to the section.
- * @param stretchDivider see [NotificationSection]. */
+/** A titled group of rows, the traditional Android "preference category" shape: a small
+ * primary-colored header followed by its rows, with an optional trailing divider.
+ * @param title category heading.
+ * @param showDivider whether to draw a divider below the category.
+ * @param content the category's rows. */
 @Composable
-private fun ImmersiveSection(
-    immersiveFullscreen: Boolean,
-    onToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    stretchDivider: Boolean = false,
-) {
-    SettingsSection(stringResource(R.string.settings_section_immersive), modifier, stretchDivider = stretchDivider) {
-        ToggleRow(stringResource(R.string.settings_immersive_show), immersiveFullscreen, onToggle)
-    }
-}
-
-/** @param pipEnabled current toggle state.
- * @param onToggle called with the new state when the switch is flipped.
- * @param modifier applied to the section.
- * @param stretchDivider see [NotificationSection]. */
-@Composable
-private fun PipSection(
-    pipEnabled: Boolean,
-    onToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    stretchDivider: Boolean = false,
-) {
-    SettingsSection(stringResource(R.string.settings_section_pip), modifier, stretchDivider = stretchDivider) {
-        ToggleRow(stringResource(R.string.settings_pip_show), pipEnabled, onToggle)
-    }
-}
-
-/** @param zoomEnabled current toggle state.
- * @param onToggle called with the new state when the switch is flipped.
- * @param modifier applied to the section.
- * @param stretchDivider see [NotificationSection]. */
-@Composable
-private fun VideoSection(
-    zoomEnabled: Boolean,
-    onToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    stretchDivider: Boolean = false,
-) {
-    SettingsSection(stringResource(R.string.settings_section_video), modifier, stretchDivider = stretchDivider) {
-        ToggleRow(stringResource(R.string.settings_zoom_pinch), zoomEnabled, onToggle)
-    }
-}
-
-/** @param draftName the name field's current (unsaved) value.
- * @param onNameChange called on every keystroke.
- * @param modifier applied to the section.
- * @param stretchDivider see [NotificationSection]. */
-@Composable
-private fun NameSection(
-    draftName: String,
-    onNameChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    stretchDivider: Boolean = false,
-) {
-    SettingsSection(stringResource(R.string.settings_section_name), modifier, stretchDivider = stretchDivider) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = stringResource(R.string.settings_name_label),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.weight(1f).padding(end = 8.dp),
-            )
-            OutlinedTextField(
-                value = draftName,
-                onValueChange = onNameChange,
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-            )
-        }
-    }
-}
-
-/** @param addressHint this device's local `ip:port`, or `null` if unavailable — lives inside [DetailsSection]. */
-@Composable
-private fun NetworkSection(addressHint: String?) {
-    SettingsSection(stringResource(R.string.settings_section_network)) {
-        Text(text = stringResource(R.string.settings_manual_hint), style = MaterialTheme.typography.bodySmall)
-        Text(
-            text = addressHint ?: stringResource(R.string.settings_address_unavailable),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 4.dp),
-        )
-    }
-}
-
-/** Static connection instructions — lives inside [DetailsSection]. */
-@Composable
-private fun HowToConnectSection() {
-    SettingsSection(stringResource(R.string.settings_section_how_to_connect)) {
-        Text(stringResource(R.string.settings_howto_wifi), style = MaterialTheme.typography.bodySmall)
-        Text(
-            stringResource(R.string.settings_howto_rotate),
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 6.dp),
-        )
-        Text(
-            stringResource(R.string.settings_howto_touch),
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 6.dp),
-        )
-    }
-}
-
-/** A titled group of rows inside [SettingsDialog], with an optional trailing divider.
- * @param title section heading.
- * @param modifier applied to the section's outer column.
- * @param showDivider whether to draw a divider below the section.
- * @param stretchDivider whether to push the divider to the bottom of [modifier]'s height
- * (via a weighted spacer) instead of drawing it right after the content — only valid when
- * [modifier] gives this section a bounded height, e.g. `Modifier.weight(1f).fillMaxHeight()`
- * inside a `Row(Modifier.height(IntrinsicSize.Max))`, so a shorter section's divider still
- * lines up with the taller section next to it.
- * @param content the section's rows. */
-@Composable
-private fun SettingsSection(
-    title: String,
-    modifier: Modifier = Modifier,
-    showDivider: Boolean = true,
-    stretchDivider: Boolean = false,
-    content: @Composable () -> Unit,
-) {
-    Column(modifier = modifier.padding(top = 12.dp)) {
+private fun SettingsCategory(title: String, showDivider: Boolean = true, content: @Composable () -> Unit) {
+    Column(modifier = Modifier.padding(top = 12.dp)) {
         Text(
             text = title,
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
-        Column(modifier = Modifier.padding(top = 6.dp)) { content() }
-        if (showDivider) {
-            if (stretchDivider) Spacer(modifier = Modifier.weight(1f))
-            HorizontalDivider(modifier = Modifier.padding(top = 12.dp))
-        }
+        Spacer(modifier = Modifier.height(4.dp))
+        content()
+        if (showDivider) HorizontalDivider(modifier = Modifier.padding(top = 12.dp))
     }
 }
 
-/** A label + [Switch] row, the shared shape of every boolean setting in this dialog.
+/** A full-width, tap-anywhere-to-toggle row with a trailing [Switch] — the standard shape
+ * of every boolean setting in the traditional Android Settings app.
  * @param label what the switch controls.
  * @param checked its current state.
- * @param onCheckedChange called with the new state when flipped. */
+ * @param onCheckedChange called with the new state when flipped (by tapping the row or the switch). */
 @Composable
-private fun ToggleRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f).padding(end = 8.dp),
-        )
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
-    }
+private fun ToggleListItem(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    ListItem(
+        headlineContent = { Text(label) },
+        trailingContent = { Switch(checked = checked, onCheckedChange = onCheckedChange) },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        modifier = Modifier.clickable { onCheckedChange(!checked) },
+    )
 }
 
 /** A label/value pair on one row, right-aligned value.
@@ -421,42 +448,5 @@ private fun LabeledRow(label: String, value: String) {
     ) {
         Text(text = label, style = MaterialTheme.typography.bodyMedium)
         Text(text = value, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-/** Collapsed-by-default group for reference-only settings (Status/Network/How to
- * connect) — nothing in here is editable, so it doesn't need to always be visible.
- * @param expanded whether the group's content is currently shown.
- * @param onToggleExpanded called when the header is tapped.
- * @param showDivider whether to draw a divider below the section.
- * @param content the collapsible sections. */
-@Composable
-private fun DetailsSection(
-    expanded: Boolean,
-    onToggleExpanded: () -> Unit,
-    showDivider: Boolean = true,
-    content: @Composable () -> Unit,
-) {
-    Column(modifier = Modifier.padding(top = 12.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth().clickable(onClick = onToggleExpanded),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(R.string.settings_section_details),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = if (expanded) "▾" else "▸",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-        if (expanded) {
-            Column(modifier = Modifier.padding(top = 6.dp)) { content() }
-        }
-        if (showDivider) HorizontalDivider(modifier = Modifier.padding(top = 12.dp))
     }
 }
