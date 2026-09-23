@@ -1,0 +1,196 @@
+{
+  "nav": {
+    "features": "功能",
+    "howItWorks": "工作原理",
+    "screenshots": "截图",
+    "install": "安装",
+    "compare": "对比",
+    "faq": "常见问题",
+    "github": "GitHub",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
+  },
+  "theme": {
+    "light": "主题：浅色",
+    "dark": "主题：深色",
+    "auto": "主题：自动"
+  },
+  "brand": {
+    "name": "OpenDisplay",
+    "sub": "Android"
+  },
+  "hero": {
+    "badge": "早期 Alpha 版 · 已在真机测试",
+    "title": "把你的安卓平板或手机变成 Mac <em>真正意义上</em>的第二显示器。",
+    "lead": "一个非官方的开源安卓客户端，对接 <a>OpenDisplay</a> — 原项目只提供 iOS/iPadOS 客户端。这个客户端使用相同的网络协议，无需对 Mac 应用做任何改动。对于已经拥有安卓平板、想要真正扩展显示而不只是镜像的人来说，是 Duet Display、Sidecar 和 Spacedesk 的免费替代方案。",
+    "specs": ["Android 8.0+ (API 26)", "macOS（通过原版 OpenDisplay 应用）", "GPL-3.0"],
+    "ctaStart": "开始使用",
+    "ctaGithub": "在 GitHub 上查看",
+    "kofiText": "免费，由一个人独立开发。",
+    "kofiSupport": "在 Ko-fi 上支持 ↓"
+  },
+  "howItWorks": {
+    "eyebrow": "工作原理",
+    "title": "Mac 完全不变，由安卓设备负责监听。",
+    "sub": "由安卓设备负责监听，Mac 负责连接 — 这正是它能在 WiFi 下零配置运行的原因，通过 mDNS 自动发现，无需对原版 OpenDisplay Mac 应用做任何改动。",
+    "mac": {
+      "heading": "MAC",
+      "headingSub": "（服务端，原版 OpenDisplay 应用）",
+      "steps": [
+        "CGVirtualDisplay",
+        "ScreenCaptureKit → VideoToolbox H.264",
+        "TCP [4-byte length][Annex-B frame] ═══→",
+        "← control JSON (hello, touch, scroll, ping) ═══"
+      ]
+    },
+    "android": {
+      "heading": "ANDROID",
+      "headingSub": "（本项目）",
+      "steps": ["listens on :9000", "MediaCodec → SurfaceView"]
+    }
+  },
+  "screenshots": {
+    "eyebrow": "截图",
+    "title": "真实设备，真实 WiFi 连接。",
+    "sub": "没有摆拍 — 下面每张截图都是安卓平板和 Mac 之间的真实会话。",
+    "items": [
+      {
+        "alt": "桌上的安卓平板，通过 WiFi 镜像来自 Mac 的这个落地页",
+        "caption": "平板正在镜像这同一个页面，画面通过 WiFi 从 Mac 实时传输。"
+      },
+      {
+        "alt": "macOS 显示器设置中的排列显示器对话框，安卓平板作为第三块屏幕出现在列表中",
+        "caption": "在 Mac 的“系统设置 → 显示器”中被识别为普通的第三块显示器。"
+      },
+      {
+        "alt": "OpenDisplay Android 应用主屏幕，正在监听 9000 端口，等待 Mac 连接",
+        "caption": "应用主屏幕 — 正在监听 :9000 端口，等待 Mac 通过 WiFi 发现它。"
+      },
+      {
+        "alt": "OpenDisplay Android 应用设置对话框，显示状态、mDNS 广播的设备名称，以及用于排查问题的本机地址",
+        "caption": "设置：连接状态、通过 mDNS 广播的名称，以及用于排查问题的本机地址。"
+      },
+      {
+        "alt": "OpenDisplay Android 应用正在镜像 Mac 屏幕，浏览器中显示的是本项目自己的 GitHub 仓库",
+        "caption": "会话进行中：Mac 的屏幕（本仓库的 GitHub 页面）实时镜像到平板上。"
+      }
+    ]
+  },
+  "install": {
+    "eyebrow": "安装",
+    "title": "两个应用协同工作。",
+    "sub": "两个都装上才能开始 — Mac 那一端就是原版 OpenDisplay 项目，未做任何修改。",
+    "mac": {
+      "tag": "第 1 步 · 在你的 Mac 上",
+      "title": "发送端",
+      "desc": "捕获一个虚拟显示器并推流。这就是原版 OpenDisplay 程序，未做修改。",
+      "cta": "下载 Mac 版",
+      "note": "想自己编译？<compile>从源码构建 ↗</compile>"
+    },
+    "android": {
+      "tag": "第 2 步 · 在你的安卓设备上",
+      "title": "接收端",
+      "desc": "显示视频流，并把触摸/滚动操作发回去。",
+      "cta": "下载 APK（v0.0.41）",
+      "note": "Google Play 版本正在封闭测试 — 想参加吗？发邮件到 <mail>josepacelli@gmail.com</mail>。与此同时，可以手动安装上面的 APK，或者<compile>从源码构建 ↗</compile>。<releases>查看以往版本 ↗</releases>"
+    }
+  },
+  "features": {
+    "eyebrow": "功能",
+    "title": "目前已经能用的功能。",
+    "sub": "针对真实的 Mac 应用验证过，不是纸面规格。",
+    "items": [
+      { "title": "硬件 H.264 解码", "desc": "<code>MediaCodec</code> 直接解码到 Surface，无需 CPU 转换。" },
+      { "title": "自动发现", "desc": "通过 mDNS（<code>_opensidecar._tcp</code>）— Mac 会在同一网络中自动找到安卓设备。" },
+      { "title": "触摸与滚动", "desc": "在 Extend 模式下，单指变成点击/拖拽，双指变成滚动。Mac 的 Mirror 模式仅供查看：会静默忽略任何客户端的输入。" },
+      { "title": "双指缩放", "desc": "在视频上双指张开即可本地缩放，Mirror 和 Extend 模式都可以 — 无需改动协议，触摸依旧精准落在 Mac 上的对应位置。缩放后，用三指拖动可以在放大区域内移动。" },
+      { "title": "远程光标", "desc": "一个圆点或解码出的光标图案，实时映射 Mac 的光标位置。" },
+      { "title": "前台服务", "desc": "应用切到后台也能存活，解锁屏幕后能正确恢复。" },
+      { "title": "错误恢复", "desc": "解码器出错会自动请求关键帧，而不会断开连接。" },
+      { "title": "手动兜底", "desc": "可编辑的 mDNS 名称和 IP:端口连接方式，供自动发现失败时使用。" },
+      { "title": "USB 配件（AOA）", "desc": "插上数据线，点一下系统弹窗，就这么简单 — 不需要 <code>adb</code>，不需要开发者选项。" },
+      { "title": "画中画", "desc": "连接状态下离开应用，视频会继续在悬浮窗口中播放。" },
+      { "title": "无账号，无遥测", "desc": "和原项目理念一致：没有中心服务器，不会往外发送任何数据。" }
+    ]
+  },
+  "compare": {
+    "eyebrow": "对比",
+    "title": "与最知名的替代方案对比。",
+    "sub": "面向把安卓平板当作外接显示器使用的场景。",
+    "headers": ["", "OpenDisplay Android", "Duet Display", "Spacedesk"],
+    "rows": [
+      { "label": "价格", "us": "免费", "duet": "付费", "spacedesk": "核心功能免费" },
+      { "label": "开源", "us": "GPL-3.0", "duet": "否", "spacedesk": "否" },
+      { "label": "需要账号", "us": "否", "duet": "是", "spacedesk": "否" },
+      { "label": "与 OpenDisplay Mac 相同协议", "us": "是", "duet": "否", "spacedesk": "否" },
+      { "label": "中心服务器", "us": "无", "duet": "有", "spacedesk": "无" }
+    ]
+  },
+  "faq": {
+    "eyebrow": "常见问题",
+    "title": "常见问题解答。",
+    "items": [
+      {
+        "q": "这和 iOS 版 OpenDisplay 是同一个应用吗？",
+        "a": "不是。这是一个独立客户端，用 Kotlin 从零编写，实现了相同的网络协议以便和原版 Mac 应用互通。官方项目只提供 iOS/iPadOS 客户端。"
+      },
+      {
+        "q": "有上架 Google Play 吗？",
+        "a": "Google Play 版本目前处于封闭测试阶段。想成为测试者吗？发邮件到 <mail>josepacelli@gmail.com</mail>。与此同时，也可以通过 GitHub Releases 获取 — 用 <code>adb install</code> 安装，或把 APK 复制到设备上安装（需开启\"未知来源\"）。"
+      },
+      {
+        "q": "必须要 WiFi 吗？",
+        "a": "通过 WiFi 使用 mDNS 自动发现即可运行。也可以用 USB 作为原生配件（AOA）连接 — 插上数据线，点一下系统弹窗即可，无需 <code>adb</code>。仓库中有针对尚不支持 AOA 的 Mac 应用的回退方案说明。"
+      },
+      {
+        "q": "Mirror 模式下触摸能用吗？",
+        "a": "不能 — Mac 上的 Mirror 模式仅供查看。Mac 应用只在 Extend 模式下接受触摸/滚动（镜像会话根本不会创建输入注入器），所以从这里发出的点击和滚动都会被静默忽略。需要交互操作请使用 Extend 模式。"
+      },
+      {
+        "q": "所有安卓平板或手机都能用吗？",
+        "a": "需要安卓 8.0（API 26）或更高版本。已在真实设备上测试（三星 Galaxy Tab S9 FE+ 和 Galaxy Note10+/Tab S7+，安卓 12 至 16），但尚未覆盖广泛的机型 — 触摸/滚动/光标功能已实现，但目前的实际验证还比较有限。注意：v0.0.7 及更早版本在安卓 12–13（API 30-33）上启动会崩溃；请使用 v0.0.8 或更新版本（已在 <pr5>#5</pr5> 中修复）。"
+      },
+      {
+        "q": "会改动 Mac 应用吗？",
+        "a": "完全不做任何修改 — 任何协议不兼容都是本项目的责任，与上游项目无关。"
+      },
+      {
+        "q": "许可证是什么？",
+        "a": "GPL-3.0，与原项目相同。开源，可自由使用，包括商用；分发的修改版必须以同一许可证继续开源。"
+      }
+    ]
+  },
+  "contribute": {
+    "eyebrow": "Contribute",
+    "title": "欢迎提交 issue 和 pull request。",
+    "desc": "Bug 报告和 PR 请提交到 <repo>GitHub 仓库</repo>，里面也有架构、协议和构建细节。认真的 bug 报告才是真正让一个人的业余项目变得更好的关键 — 感谢下面每一位。",
+    "credits": [
+      { "handle": "@gaeaearth", "text": "本项目最活跃的早期测试者：安卓 12/13 启动崩溃问题（<issue4>#4</issue4>），屏幕超时/重连问题（<issue10>#10</issue10>，以及 <issue28>#28</issue28> 中的息屏修复），还有容易误导人的手动连接提示（<issue18>#18</issue18>）。" },
+      { "handle": "@edoardomich", "text": "修复了安卓 12/13 的启动崩溃问题（<pr5>#5</pr5>）。" },
+      { "handle": "@jpbhdrey", "text": "实现了 USB 配件（AOA）传输方式（<pr33>#33</pr33>）：插上数据线，点一下系统弹窗即可，无需开发者选项，也不用折腾 <code>adb</code>。" },
+      { "handle": "@dyss1992", "text": "通过有对照的前后对比，报告了部分高通解码器在 Mirror 模式下的宽高比问题，让根因一目了然（<issue44>#44</issue44>），并建议了沉浸式全屏模式（<issue45>#45</issue45>）。" }
+    ]
+  },
+  "support": {
+    "eyebrow": "支持这个项目",
+    "logo": "Ko-fi",
+    "title": "如果 OpenDisplay Android 帮你省下了买显示器的钱，可以考虑请我喝杯咖啡。",
+    "p1": "这是一个人的业余项目，由我 <profile>Jose Pacelli</profile> 在晚上和周末构建与维护 — 不是公司。",
+    "p2": "在 Ko-fi 上支持我，能让这个项目持续维护并对所有人免费，包括那些无力赞助的人。我的目标是让它成为把闲置安卓平板变成真正第二显示器的最佳免费方案。",
+    "p3": "如果它帮你省下了买显示器的钱，一点小小的打赏就能帮它继续走下去。谢谢你。"
+  },
+  "footer": {
+    "links": {
+      "github": "GitHub",
+      "releases": "发布版本",
+      "issues": "问题反馈",
+      "license": "许可证 (GPL-3.0)",
+      "codeOfConduct": "行为准则",
+      "contributing": "贡献指南",
+      "privacy": "隐私政策",
+      "original": "原始项目 (Mac/iOS)"
+    },
+    "disclaimer": "与原版 OpenDisplay 项目的维护者无关联。使用相同协议，独立维护。"
+  },
+  "backToTop": "返回顶部"
+}

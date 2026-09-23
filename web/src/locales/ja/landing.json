@@ -1,0 +1,196 @@
+{
+  "nav": {
+    "features": "機能",
+    "howItWorks": "仕組み",
+    "screenshots": "スクリーンショット",
+    "install": "インストール",
+    "compare": "比較",
+    "faq": "よくある質問",
+    "github": "GitHub",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる"
+  },
+  "theme": {
+    "light": "テーマ: ライト",
+    "dark": "テーマ: ダーク",
+    "auto": "テーマ: 自動"
+  },
+  "brand": {
+    "name": "OpenDisplay",
+    "sub": "Android"
+  },
+  "hero": {
+    "badge": "初期アルファ版 · 実機でテスト済み",
+    "title": "AndroidタブレットやスマホをMacの<em>本物の</em>セカンドモニターとして使えます。",
+    "lead": "<a>OpenDisplay</a>の非公式オープンソースAndroidクライアントです — オリジナルプロジェクトが提供しているのはiOS/iPadOSクライアントのみです。これは同じネットワークプロトコルで通信するため、Macアプリ側の変更は一切不要です。すでにAndroidタブレットを持っていて、ミラーリングだけでなく拡張ディスプレイが欲しい人向けの、Duet Display、Sidecar、Spacedeskの無料代替です。",
+    "specs": ["Android 8.0+ (API 26)", "macOS（オリジナルのOpenDisplayアプリ経由）", "GPL-3.0"],
+    "ctaStart": "始める",
+    "ctaGithub": "GitHubで見る",
+    "kofiText": "無料、たった一人で開発しています。",
+    "kofiSupport": "Ko-fiで応援する ↓"
+  },
+  "howItWorks": {
+    "eyebrow": "仕組み",
+    "title": "Macには一切手を加えません。待ち受けるのはAndroid側です。",
+    "sub": "Android側が待ち受け、Mac側が接続する — この仕組みのおかげで、手動設定なしでWiFi経由で動作します。mDNSによる自動検出を使い、オリジナルのOpenDisplay Macアプリには一切変更を加えません。",
+    "mac": {
+      "heading": "MAC",
+      "headingSub": "（サーバー、オリジナルのOpenDisplayアプリ）",
+      "steps": [
+        "CGVirtualDisplay",
+        "ScreenCaptureKit → VideoToolbox H.264",
+        "TCP [4-byte length][Annex-B frame] ═══→",
+        "← control JSON (hello, touch, scroll, ping) ═══"
+      ]
+    },
+    "android": {
+      "heading": "ANDROID",
+      "headingSub": "（本プロジェクト）",
+      "steps": ["listens on :9000", "MediaCodec → SurfaceView"]
+    }
+  },
+  "screenshots": {
+    "eyebrow": "スクリーンショット",
+    "title": "実機、実際のWiFi接続。",
+    "sub": "作り物のモックアップではありません — 以下はすべてAndroidタブレットとMac間の実際のセッションです。",
+    "items": [
+      {
+        "alt": "デスク上のAndroidタブレットが、MacからWiFi経由でこのページをミラーリングしている様子",
+        "caption": "このページそのものをミラーリングしているタブレット。MacからWiFi経由でライブ配信中。"
+      },
+      {
+        "alt": "macOSのディスプレイ設定で、Androidタブレットが3台目の画面として表示されているディスプレイ配置ダイアログ",
+        "caption": "Macの「システム設定 → ディスプレイ」で通常の3台目のディスプレイとして認識されます。"
+      },
+      {
+        "alt": "OpenDisplay Androidアプリのホーム画面。ポート9000で待ち受け、Macの接続を待っている状態",
+        "caption": "アプリのホーム画面 — :9000で待ち受け、MacがWiFi経由で見つけるのを待っています。"
+      },
+      {
+        "alt": "OpenDisplay Androidアプリの設定ダイアログ。ステータス、mDNSで通知されるデバイス名、トラブルシューティング用のこの端末のアドレスを表示",
+        "caption": "設定：接続状態、mDNSで通知される名前、トラブルシューティング用のこの端末のアドレス。"
+      },
+      {
+        "alt": "OpenDisplay AndroidアプリがMacの画面をミラーリングし、ブラウザにこのプロジェクト自身のGitHubリポジトリを表示している様子",
+        "caption": "セッション中の様子：Macの画面（このリポジトリのGitHubページ）がタブレットにライブでミラーリングされています。"
+      }
+    ]
+  },
+  "install": {
+    "eyebrow": "インストール",
+    "title": "連携して動く2つのアプリ。",
+    "sub": "両方インストールして始めましょう — Mac側はオリジナルのOpenDisplayプロジェクトそのまま、無改造です。",
+    "mac": {
+      "tag": "ステップ1・Mac側",
+      "title": "送信側",
+      "desc": "仮想ディスプレイをキャプチャしてストリーミングします。オリジナルのOpenDisplayプログラムそのまま、無改造です。",
+      "cta": "Mac版をダウンロード",
+      "note": "自分でビルドしたいですか？<compile>ソースからビルド ↗</compile>"
+    },
+    "android": {
+      "tag": "ステップ2・Android側",
+      "title": "受信側",
+      "desc": "映像を表示し、タッチ/スクロールを送り返します。",
+      "cta": "APKをダウンロード（v0.0.41）",
+      "note": "Google Play版はクローズドテスト中です — 参加希望の方は<mail>josepacelli@gmail.com</mail>までメールしてください。それまでは、上記のAPKをサイドロードするか、<compile>ソースからビルド ↗</compile>してください。<releases>過去のリリースを見る ↗</releases>"
+    }
+  },
+  "features": {
+    "eyebrow": "機能",
+    "title": "現時点ですでに動作するもの。",
+    "sub": "仕様書ではなく、実際のMacアプリで検証済みです。",
+    "items": [
+      { "title": "ハードウェアH.264デコード", "desc": "<code>MediaCodec</code>でSurfaceに直接デコード、CPU変換なし。" },
+      { "title": "自動検出", "desc": "mDNS（<code>_opensidecar._tcp</code>）— Macが同じネットワーク上のAndroid端末を自動で見つけます。" },
+      { "title": "タッチとスクロール", "desc": "Extendモードでは、指1本がクリック/ドラッグに、指2本がスクロールになります。MacのMirrorモードは表示専用で、どのクライアントからの入力も黙って無視します。" },
+      { "title": "ピンチでズーム", "desc": "映像上で2本指を広げるとローカルでズームします。MirrorモードでもExtendモードでも使え、プロトコル変更は不要、タッチもMac側の正しい位置に届きます。ズーム後は3本指のドラッグで拡大領域内を移動できます。" },
+      { "title": "リモートカーソル", "desc": "ドットまたはデコードされたスプライトで、Macのカーソル位置をライブに反映します。" },
+      { "title": "フォアグラウンドサービス", "desc": "アプリがバックグラウンドに回っても維持され、画面ロック解除後も正しく再開します。" },
+      { "title": "エラー復旧", "desc": "デコーダーエラー時は接続を切らずに自動でキーフレームを要求します。" },
+      { "title": "手動フォールバック", "desc": "自動検出が失敗したときのために、編集可能なmDNS名とIP:ポート接続を用意しています。" },
+      { "title": "USBアクセサリ（AOA）", "desc": "ケーブルを挿してシステムのプロンプトをタップするだけ — <code>adb</code>も開発者向けオプションも不要です。" },
+      { "title": "ピクチャー・イン・ピクチャー", "desc": "接続中にアプリを離れても、映像はフローティングウィンドウで再生され続けます。" },
+      { "title": "アカウント不要、テレメトリなし", "desc": "オリジナルプロジェクトと同じ理念です：中央サーバーなし、外部に何も送信しません。" }
+    ]
+  },
+  "compare": {
+    "eyebrow": "比較",
+    "title": "よく知られた代替アプリとの比較。",
+    "sub": "Androidタブレットを外部モニターとして使う用途向け。",
+    "headers": ["", "OpenDisplay Android", "Duet Display", "Spacedesk"],
+    "rows": [
+      { "label": "価格", "us": "無料", "duet": "有料", "spacedesk": "無料（コア機能）" },
+      { "label": "オープンソース", "us": "GPL-3.0", "duet": "いいえ", "spacedesk": "いいえ" },
+      { "label": "アカウント必須", "us": "いいえ", "duet": "はい", "spacedesk": "いいえ" },
+      { "label": "OpenDisplay Macと同じプロトコル", "us": "はい", "duet": "いいえ", "spacedesk": "いいえ" },
+      { "label": "中央サーバー", "us": "なし", "duet": "あり", "spacedesk": "なし" }
+    ]
+  },
+  "faq": {
+    "eyebrow": "よくある質問",
+    "title": "よくある質問。",
+    "items": [
+      {
+        "q": "これはiOS版OpenDisplayと同じアプリですか？",
+        "a": "いいえ。これはKotlinでゼロから書かれた独立クライアントで、オリジナルのMacアプリと相互運用するために同じネットワークプロトコルを実装しています。公式プロジェクトが提供しているのはiOS/iPadOSクライアントのみです。"
+      },
+      {
+        "q": "Google Playにありますか？",
+        "a": "Google Play版は現在クローズドテスト中です。テスターとして参加希望の方は<mail>josepacelli@gmail.com</mail>までメールしてください。それまでは、GitHub Releasesでも配布しています — <code>adb install</code>でインストールするか、APKを端末にコピーしてインストールしてください（「提供元不明のアプリ」を許可）。"
+      },
+      {
+        "q": "WiFiは必要ですか？",
+        "a": "mDNSによる自動検出でWiFi経由で動作します。USBでネイティブアクセサリ（AOA）として接続することもできます — ケーブルを挿してシステムのプロンプトをタップするだけで、<code>adb</code>は不要です。AOA未対応のMacアプリ向けのフォールバックについてはリポジトリを参照してください。"
+      },
+      {
+        "q": "Mirrorモードでタッチはできますか？",
+        "a": "できません — Mac側のMirrorモードは表示専用です。MacアプリはExtendモードでしかタッチ/スクロールを受け付けません（ミラーセッションでは入力インジェクター自体を作成しません）。そのためここから送られるタップやスクロールは黙って無視されます。操作したい場合はExtendモードを使ってください。"
+      },
+      {
+        "q": "どのAndroidタブレットやスマホでも動きますか？",
+        "a": "Android 8.0（API 26）以上が必要です。実機（Samsung Galaxy Tab S9 FE+、Galaxy Note10+/Tab S7+、Android 12〜16）でテスト済みですが、幅広い機種での検証はまだです — タッチ/スクロール/カーソルは実装済みですが、実地検証はまだ限定的です。注意：v0.0.7以前はAndroid 12〜13（API 30-33）で起動時にクラッシュします。v0.0.8以降を使用してください（<pr5>#5</pr5>で修正済み）。"
+      },
+      {
+        "q": "Macアプリに何か変更を加えますか？",
+        "a": "一切変更しません — プロトコルの不一致があれば、それは本家ではなくこのプロジェクトの責任です。"
+      },
+      {
+        "q": "ライセンスは何ですか？",
+        "a": "GPL-3.0、オリジナルプロジェクトと同じです。オープンソースで、商用利用を含め自由に使えます。配布する改変版は同じライセンスの下でオープンソースのままである必要があります。"
+      }
+    ]
+  },
+  "contribute": {
+    "eyebrow": "Contribute",
+    "title": "IssueもPull Requestも歓迎です。",
+    "desc": "バグ報告やPRは<repo>GitHubリポジトリ</repo>へお願いします。アーキテクチャ、プロトコル、ビルドの詳細もそこにあります。丁寧なバグ報告こそが、一人で作る個人プロジェクトを本当に良くしてくれます — 以下の皆さんに感謝します。",
+    "credits": [
+      { "handle": "@gaeaearth", "text": "このプロジェクトで最も積極的な初期テスター：Android 12/13起動時クラッシュ（<issue4>#4</issue4>）、画面タイムアウト/再接続の問題（<issue10>#10</issue10>、<issue28>#28</issue28>でのアイドル画面修正も含む）、紛らわしい手動接続のヒント（<issue18>#18</issue18>）を報告。" },
+      { "handle": "@edoardomich", "text": "Android 12/13の起動時クラッシュを修正 (<pr5>#5</pr5>)。" },
+      { "handle": "@jpbhdrey", "text": "USBアクセサリ（AOA）トランスポートを実装 (<pr33>#33</pr33>)：ケーブルを挿してシステムのプロンプトをタップするだけ、開発者向けオプションも<code>adb</code>との格闘も不要。" },
+      { "handle": "@dyss1992", "text": "一部のQualcommデコーダーでのMirrorモードのアスペクト比バグを、制御されたビフォーアフター比較で根本原因が明らかになる形で報告 (<issue44>#44</issue44>)、没入型フルスクリーンモードも提案 (<issue45>#45</issue45>)。" }
+    ]
+  },
+  "support": {
+    "eyebrow": "プロジェクトを応援する",
+    "logo": "Ko-fi",
+    "title": "OpenDisplay Androidでモニター代が浮いたなら、コーヒーをおごってもらえると嬉しいです。",
+    "p1": "これは私、<profile>Jose Pacelli</profile>が平日の夜と週末に一人で作って維持している個人プロジェクトです — 会社ではありません。",
+    "p2": "Ko-fiで応援していただくと、このプロジェクトを維持し、支援できない人も含めて誰にでも無料で提供し続けられます。目標は、余っているAndroidタブレットを本物のセカンドモニターに変える最良の無料手段にすることです。",
+    "p3": "モニターを買わずに済んだなら、少しのチップが継続の力になります。ありがとうございます。"
+  },
+  "footer": {
+    "links": {
+      "github": "GitHub",
+      "releases": "リリース",
+      "issues": "Issue",
+      "license": "ライセンス (GPL-3.0)",
+      "codeOfConduct": "行動規範",
+      "contributing": "貢献方法",
+      "privacy": "プライバシーポリシー",
+      "original": "オリジナルプロジェクト (Mac/iOS)"
+    },
+    "disclaimer": "オリジナルのOpenDisplayプロジェクトのメンテナーとは関係ありません。同じプロトコルで通信しますが、別途保守されています。"
+  },
+  "backToTop": "トップに戻る"
+}

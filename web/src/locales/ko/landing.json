@@ -1,0 +1,196 @@
+{
+  "nav": {
+    "features": "기능",
+    "howItWorks": "작동 방식",
+    "screenshots": "스크린샷",
+    "install": "설치",
+    "compare": "비교",
+    "faq": "자주 묻는 질문",
+    "github": "GitHub",
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기"
+  },
+  "theme": {
+    "light": "테마: 라이트",
+    "dark": "테마: 다크",
+    "auto": "테마: 자동"
+  },
+  "brand": {
+    "name": "OpenDisplay",
+    "sub": "Android"
+  },
+  "hero": {
+    "badge": "초기 알파 · 실제 기기에서 테스트됨",
+    "title": "Android 태블릿이나 폰을 Mac의 <em>진짜</em> 세컨드 모니터로 사용하세요.",
+    "lead": "<a>OpenDisplay</a>의 비공식 오픈소스 Android 클라이언트입니다 — 오리지널 프로젝트는 iOS/iPadOS 클라이언트만 제공합니다. 동일한 네트워크 프로토콜로 통신하기 때문에 Mac 앱 쪽은 전혀 변경할 필요가 없습니다. 이미 Android 태블릿을 가지고 있고 미러링이 아니라 확장 디스플레이를 원하는 사람을 위한 Duet Display, Sidecar, Spacedesk의 무료 대안입니다.",
+    "specs": ["Android 8.0+ (API 26)", "macOS (오리지널 OpenDisplay 앱 경유)", "GPL-3.0"],
+    "ctaStart": "시작하기",
+    "ctaGithub": "GitHub에서 보기",
+    "kofiText": "무료이며, 혼자서 개발하고 있습니다.",
+    "kofiSupport": "Ko-fi로 후원하기 ↓"
+  },
+  "howItWorks": {
+    "eyebrow": "작동 방식",
+    "title": "Mac은 그대로 둡니다. 대기하는 쪽은 Android 기기입니다.",
+    "sub": "Android 기기가 대기하고 Mac이 접속합니다 — 이 방식 덕분에 별도 설정 없이 WiFi로 동작합니다. mDNS 자동 검색을 사용하며, 오리지널 OpenDisplay Mac 앱에는 어떤 변경도 가하지 않습니다.",
+    "mac": {
+      "heading": "MAC",
+      "headingSub": "(서버, 오리지널 OpenDisplay 앱)",
+      "steps": [
+        "CGVirtualDisplay",
+        "ScreenCaptureKit → VideoToolbox H.264",
+        "TCP [4-byte length][Annex-B frame] ═══→",
+        "← control JSON (hello, touch, scroll, ping) ═══"
+      ]
+    },
+    "android": {
+      "heading": "ANDROID",
+      "headingSub": "(이 프로젝트)",
+      "steps": ["listens on :9000", "MediaCodec → SurfaceView"]
+    }
+  },
+  "screenshots": {
+    "eyebrow": "스크린샷",
+    "title": "실제 기기, 실제 WiFi 연결.",
+    "sub": "연출된 목업이 아닙니다 — 아래 사진 모두 Android 태블릿과 Mac 간의 실제 세션입니다.",
+    "items": [
+      {
+        "alt": "책상 위 Android 태블릿이 Mac에서 WiFi로 이 랜딩 페이지를 미러링하는 모습",
+        "caption": "Mac에서 WiFi로 실시간 전송되어, 바로 이 페이지를 미러링 중인 태블릿."
+      },
+      {
+        "alt": "macOS 디스플레이 설정의 디스플레이 정렬 대화상자에 세 번째 화면으로 표시된 Android 태블릿",
+        "caption": "Mac의 시스템 설정 → 디스플레이에서 일반적인 세 번째 디스플레이로 인식됩니다."
+      },
+      {
+        "alt": "포트 9000에서 대기하며 Mac의 연결을 기다리는 OpenDisplay Android 앱 홈 화면",
+        "caption": "앱 홈 화면 — :9000에서 대기하며, Mac이 WiFi로 찾아주기를 기다리고 있습니다."
+      },
+      {
+        "alt": "상태, mDNS로 알려지는 기기 이름, 문제 해결용 기기 주소를 보여주는 OpenDisplay Android 앱 설정 대화상자",
+        "caption": "설정: 연결 상태, mDNS로 알려지는 이름, 문제 해결용 이 기기의 주소."
+      },
+      {
+        "alt": "브라우저에 이 프로젝트 자체의 GitHub 저장소를 띄운 채 Mac 화면을 미러링하는 OpenDisplay Android 앱",
+        "caption": "세션 도중: Mac 화면(이 저장소의 GitHub 페이지)이 태블릿에 실시간으로 미러링되고 있습니다."
+      }
+    ]
+  },
+  "install": {
+    "eyebrow": "설치",
+    "title": "함께 동작하는 두 개의 앱.",
+    "sub": "시작하려면 둘 다 설치하세요 — Mac 쪽은 오리지널 OpenDisplay 프로젝트를 그대로, 무수정으로 사용합니다.",
+    "mac": {
+      "tag": "1단계 · MAC에서",
+      "title": "송신 측",
+      "desc": "가상 디스플레이를 캡처해서 스트리밍합니다. 오리지널 OpenDisplay 프로그램 그대로, 무수정입니다.",
+      "cta": "Mac용 다운로드",
+      "note": "직접 빌드하고 싶으신가요? <compile>소스에서 빌드 ↗</compile>"
+    },
+    "android": {
+      "tag": "2단계 · ANDROID에서",
+      "title": "수신 측",
+      "desc": "화면을 표시하고 터치/스크롤을 다시 전송합니다.",
+      "cta": "APK 다운로드 (v0.0.41)",
+      "note": "Google Play 버전은 비공개 테스트 중입니다 — 참여하고 싶으시면 <mail>josepacelli@gmail.com</mail>으로 메일 주세요. 그동안은 위의 APK를 사이드로드하거나, <compile>소스에서 빌드 ↗</compile>하세요. <releases>이전 릴리스 보기 ↗</releases>"
+    }
+  },
+  "features": {
+    "eyebrow": "기능",
+    "title": "지금 이미 동작하는 것들.",
+    "sub": "스펙 시트가 아니라 실제 Mac 앱으로 검증했습니다.",
+    "items": [
+      { "title": "하드웨어 H.264 비디오", "desc": "<code>MediaCodec</code>으로 Surface에 직접 디코딩, CPU 변환 없음." },
+      { "title": "자동 검색", "desc": "mDNS(<code>_opensidecar._tcp</code>) — 같은 네트워크에서 Mac이 Android 기기를 스스로 찾습니다." },
+      { "title": "터치와 스크롤", "desc": "Extend 모드에서 손가락 하나는 클릭/드래그, 손가락 두 개는 스크롤이 됩니다. Mac의 Mirror 모드는 보기 전용이라 어떤 클라이언트의 입력도 조용히 무시합니다." },
+      { "title": "핀치 줌", "desc": "영상 위에서 두 손가락을 벌리면 로컬에서 확대됩니다. Mirror나 Extend 어느 모드에서든 사용 가능하며 프로토콜 변경도 필요 없고, 터치도 Mac 쪽의 정확한 위치에 전달됩니다. 확대한 뒤에는 손가락 세 개로 드래그해 확대 영역을 이동할 수 있습니다." },
+      { "title": "원격 커서", "desc": "점 또는 디코딩된 스프라이트로 Mac의 커서 위치를 실시간으로 반영합니다." },
+      { "title": "포그라운드 서비스", "desc": "앱이 백그라운드로 가도 유지되며, 화면 잠금 해제 후에도 정상적으로 재개됩니다." },
+      { "title": "오류 복구", "desc": "디코더 오류 발생 시 연결을 끊지 않고 자동으로 키프레임을 요청합니다." },
+      { "title": "수동 대체 연결", "desc": "자동 검색이 실패할 때를 위해 편집 가능한 mDNS 이름과 IP:포트 연결을 제공합니다." },
+      { "title": "USB 액세서리(AOA)", "desc": "케이블을 꽂고 시스템 프롬프트를 누르기만 하면 됩니다 — <code>adb</code>도, 개발자 옵션도 필요 없습니다." },
+      { "title": "PIP(화면 속 화면)", "desc": "연결된 상태로 앱을 벗어나도 영상이 떠 있는 창에서 계속 재생됩니다." },
+      { "title": "계정 없음, 텔레메트리 없음", "desc": "오리지널 프로젝트와 같은 철학입니다: 중앙 서버 없음, 외부로 전송되는 데이터 없음." }
+    ]
+  },
+  "compare": {
+    "eyebrow": "비교",
+    "title": "가장 잘 알려진 대안들과 비교.",
+    "sub": "Android 태블릿을 외부 모니터로 사용하는 용도 기준.",
+    "headers": ["", "OpenDisplay Android", "Duet Display", "Spacedesk"],
+    "rows": [
+      { "label": "가격", "us": "무료", "duet": "유료", "spacedesk": "무료 (핵심 기능)" },
+      { "label": "오픈소스", "us": "GPL-3.0", "duet": "아니오", "spacedesk": "아니오" },
+      { "label": "계정 필요", "us": "아니오", "duet": "예", "spacedesk": "아니오" },
+      { "label": "OpenDisplay Mac과 같은 프로토콜", "us": "예", "duet": "아니오", "spacedesk": "아니오" },
+      { "label": "중앙 서버", "us": "없음", "duet": "있음", "spacedesk": "없음" }
+    ]
+  },
+  "faq": {
+    "eyebrow": "자주 묻는 질문",
+    "title": "자주 묻는 질문.",
+    "items": [
+      {
+        "q": "iOS용 OpenDisplay와 같은 앱인가요?",
+        "a": "아닙니다. Kotlin으로 처음부터 새로 작성된 독립 클라이언트로, 오리지널 Mac 앱과 상호운용하기 위해 동일한 네트워크 프로토콜을 구현했습니다. 공식 프로젝트는 iOS/iPadOS 클라이언트만 제공합니다."
+      },
+      {
+        "q": "Google Play에 있나요?",
+        "a": "Google Play 버전은 현재 비공개 테스트 중입니다. 테스터로 참여하고 싶으시면 <mail>josepacelli@gmail.com</mail>으로 메일 주세요. 그동안은 GitHub Releases로도 배포됩니다 — <code>adb install</code>로 설치하거나 APK를 기기에 복사해서 설치하세요 (\"출처를 알 수 없는 앱\" 허용 필요)."
+      },
+      {
+        "q": "WiFi가 꼭 필요한가요?",
+        "a": "mDNS 자동 검색으로 WiFi를 통해 동작합니다. USB로 네이티브 액세서리(AOA)로 연결할 수도 있습니다 — 케이블을 꽂고 시스템 프롬프트를 누르기만 하면 되며 <code>adb</code>는 필요 없습니다. AOA를 아직 지원하지 않는 Mac 앱을 위한 대체 방법은 저장소를 참고하세요."
+      },
+      {
+        "q": "Mirror 모드에서도 터치가 되나요?",
+        "a": "안 됩니다 — Mac 쪽 Mirror 모드는 보기 전용입니다. Mac 앱은 Extend 모드에서만 터치/스크롤을 받아들입니다(미러 세션에서는 입력 인젝터 자체를 만들지 않습니다). 그래서 여기서 보내는 탭이나 스크롤은 조용히 무시됩니다. 상호작용이 필요하면 Extend 모드를 사용하세요."
+      },
+      {
+        "q": "아무 Android 태블릿이나 폰에서 동작하나요?",
+        "a": "Android 8.0(API 26) 이상이 필요합니다. 실제 기기(Samsung Galaxy Tab S9 FE+, Galaxy Note10+/Tab S7+, Android 12~16)에서 테스트했지만, 아직 다양한 기기에서 폭넓게 검증되지는 않았습니다 — 터치/스크롤/커서는 구현되어 있지만 실사용 검증은 아직 제한적입니다. 참고: v0.0.7 이하 버전은 Android 12~13(API 30-33)에서 실행 시 크래시가 발생합니다. v0.0.8 이상을 사용하세요 (<pr5>#5</pr5>에서 수정됨)."
+      },
+      {
+        "q": "Mac 앱에 어떤 변경이라도 가하나요?",
+        "a": "전혀 변경하지 않습니다 — 프로토콜 불일치가 있다면 그것은 업스트림이 아닌 이 프로젝트의 책임입니다."
+      },
+      {
+        "q": "라이선스는 무엇인가요?",
+        "a": "GPL-3.0, 오리지널 프로젝트와 동일합니다. 오픈소스이며 상업적 사용을 포함해 자유롭게 사용할 수 있습니다. 배포되는 수정 버전도 동일한 라이선스로 오픈소스를 유지해야 합니다."
+      }
+    ]
+  },
+  "contribute": {
+    "eyebrow": "Contribute",
+    "title": "이슈와 풀 리퀘스트를 환영합니다.",
+    "desc": "버그 리포트와 PR은 <repo>GitHub 저장소</repo>로 보내주세요. 아키텍처, 프로토콜, 빌드 관련 세부 사항도 거기에 있습니다. 꼼꼼한 버그 리포트야말로 혼자 만드는 사이드 프로젝트를 실제로 더 좋게 만들어줍니다 — 아래 모든 분들께 감사드립니다.",
+    "credits": [
+      { "handle": "@gaeaearth", "text": "이 프로젝트에서 가장 적극적인 초기 테스터: Android 12/13 실행 시 크래시(<issue4>#4</issue4>), 화면 타임아웃/재연결 문제(<issue10>#10</issue10>, <issue28>#28</issue28>의 유휴 화면 수정도 포함), 혼동을 주던 수동 연결 안내(<issue18>#18</issue18>)를 제보." },
+      { "handle": "@edoardomich", "text": "Android 12/13 실행 시 크래시를 수정 (<pr5>#5</pr5>)." },
+      { "handle": "@jpbhdrey", "text": "USB 액세서리(AOA) 전송 방식을 구현 (<pr33>#33</pr33>): 케이블을 꽂고 시스템 프롬프트를 누르기만 하면 끝, 개발자 옵션도 <code>adb</code>와의 씨름도 필요 없습니다." },
+      { "handle": "@dyss1992", "text": "일부 Qualcomm 디코더에서 발생하는 Mirror 모드 화면 비율 버그를, 전후 비교로 근본 원인을 명확히 드러낸 리포트로 제보 (<issue44>#44</issue44>), 몰입형 전체 화면 모드도 제안 (<issue45>#45</issue45>)." }
+    ]
+  },
+  "support": {
+    "eyebrow": "프로젝트 후원하기",
+    "logo": "Ko-fi",
+    "title": "OpenDisplay Android 덕분에 모니터를 안 사도 됐다면, 커피 한 잔 사주시는 건 어떨까요.",
+    "p1": "이건 제가, <profile>Jose Pacelli</profile>가 저녁과 주말 시간에 혼자 만들고 유지보수하는 사이드 프로젝트입니다 — 회사가 아닙니다.",
+    "p2": "Ko-fi로 후원해 주시면 이 프로젝트를 계속 유지하고, 후원할 여유가 없는 사람들에게도 무료로 제공할 수 있습니다. 남는 Android 태블릿을 진짜 세컨드 모니터로 바꾸는 가장 좋은 무료 방법이 되는 것이 제 목표입니다.",
+    "p3": "모니터를 안 사도 됐다면, 작은 팁 하나가 이 프로젝트를 계속 이어가는 힘이 됩니다. 감사합니다."
+  },
+  "footer": {
+    "links": {
+      "github": "GitHub",
+      "releases": "릴리스",
+      "issues": "이슈",
+      "license": "라이선스 (GPL-3.0)",
+      "codeOfConduct": "행동 강령",
+      "contributing": "기여 방법",
+      "privacy": "개인정보처리방침",
+      "original": "오리지널 프로젝트 (Mac/iOS)"
+    },
+    "disclaimer": "오리지널 OpenDisplay 프로젝트 관리자와는 무관합니다. 동일한 프로토콜로 통신하지만 별도로 관리됩니다."
+  },
+  "backToTop": "맨 위로"
+}

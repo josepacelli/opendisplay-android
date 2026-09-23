@@ -39,7 +39,7 @@ manual setup, via mDNS/Bonjour discovery (`_opensidecar._tcp`).
 
 ## Screenshots
 
-<img src="docs/screenshots/tablet-mirroring-site.jpeg" alt="Android tablet on a desk, mirroring this project's website from the Mac over WiFi" width="420"> <img src="docs/screenshots/app-home.jpeg" alt="OpenDisplay Android app home screen, listening on port 9000 and waiting for the Mac to connect" width="420">
+<img src="web/public/screenshots/tablet-mirroring-site.jpeg" alt="Android tablet on a desk, mirroring this project's website from the Mac over WiFi" width="420"> <img src="web/public/screenshots/app-home.jpeg" alt="OpenDisplay Android app home screen, listening on port 9000 and waiting for the Mac to connect" width="420">
 
 No staged mockups — real hardware, real WiFi connection. More shots (settings, mid-session
 mirroring, the Mac's Displays panel) on the [website](https://opendisplay.jpmo.dev.br/#screenshots).
