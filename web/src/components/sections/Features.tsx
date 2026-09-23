@@ -48,7 +48,11 @@ export function Features() {
                 <div>
                   <h4 className="text-sm font-medium text-foreground">{item.title}</h4>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    <Trans i18nKey={`features.items.${i}.desc`} t={t} components={{ code: <code /> }} />
+                    <Trans
+                      i18nKey={`features.items.${i}.desc`}
+                      t={t}
+                      components={{ code: <code />, b: <b className="font-medium text-foreground" /> }}
+                    />
                   </p>
                 </div>
               </CardContent>
