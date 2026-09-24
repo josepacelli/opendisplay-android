@@ -131,6 +131,24 @@ SCR-014: `handleCursorImage()` clamped `nw`/`nh` (SCR-007) but read the cursor s
 demonstrated (same caveat as SCR-007 — Compose tolerated the tested extreme values), so this is
 defensive hardening, not a confirmed exploit. Fixed by clamping to `0.0..4.0`, same as `nw`/`nh`.
 
+## Security review — 2026-09-24
+
+Structured review via `/secure-code-review` (OWASP ASVS 4.0.3 / CWE Top 25), scoped to the CI/build
+config changed in this session (`.github/workflows/tests.yml`, `.gitignore`, `app/build.gradle.kts`,
+launcher icon vector drawable, landing page locale strings) — not the network/protocol layer the
+reviews above cover.
+
+| ID | Title | Severity | CWE | Status |
+|---|---|---|---|---|
+| SCR-015 | GitHub Actions in `tests.yml` pinned by mutable tag (`@v7`/`@v5`), not commit SHA | Informational | — | Fixed — see [#122](https://github.com/josepacelli/opendisplay-android/issues/122) |
+
+SCR-015: `actions/checkout@v7` and `actions/setup-java@v5` referenced a mutable tag, which can be
+repointed to a different commit (e.g. a compromised maintainer account) with no diff showing up in
+this repo — the OSSF Scorecard "Pinned-Dependencies" class of finding. No secret was ever exposed
+either way: the workflow runs on `pull_request` (not `pull_request_target`), has
+`permissions: contents: read`, and references no `secrets.*`. Fixed by pinning both actions to
+their current release commit SHA, keeping the version as a trailing comment for readability.
+
 ## What this app deliberately does not have
 
 No accounts, no telemetry, no central server, no TLS on the wire protocol — same philosophy as
