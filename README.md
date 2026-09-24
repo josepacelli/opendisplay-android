@@ -1,5 +1,7 @@
 # OpenDisplay Android
 
+![OpenDisplay banner](web/public/banner.jpg)
+
 [![Latest release](https://img.shields.io/github/v/release/josepacelli/opendisplay-android?label=release)](https://github.com/josepacelli/opendisplay-android/releases/latest)
 [![Tests](https://github.com/josepacelli/opendisplay-android/actions/workflows/tests.yml/badge.svg)](https://github.com/josepacelli/opendisplay-android/actions/workflows/tests.yml)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)

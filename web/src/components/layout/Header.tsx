@@ -1,4 +1,4 @@
-import { Menu, MonitorSmartphone, Star, X } from 'lucide-react'
+import { Menu, Star, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useActiveSection } from '@/hooks/useActiveSection'
@@ -49,7 +49,7 @@ export function Header() {
     <header className="sticky top-0 z-30 border-b border-border/40 bg-background/60 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3.5">
         <div className="flex items-center gap-2 whitespace-nowrap font-medium text-foreground">
-          <MonitorSmartphone className="size-5 text-primary" aria-hidden="true" />
+          <img src="/logo-mark.png" alt="" className="size-6 rounded-md" aria-hidden="true" />
           {t('brand.name')} <span className="text-muted-foreground">{t('brand.sub')}</span>
         </div>
 
