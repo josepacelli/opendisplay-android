@@ -8,15 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val Accent = Color(0xFF6FCF97)
+private val Error = Color(0xFFEF4444)
 
 private val DarkColors = darkColorScheme(
     primary = Accent,
-    background = Color.Black,
-    surface = Color.Black,
+    background = Color(0xFF0F172A),
+    surface = Color(0xFF0F172A),
+    error = Error,
 )
 
 private val LightColors = lightColorScheme(
     primary = Accent,
+    error = Error,
 )
 
 /**
