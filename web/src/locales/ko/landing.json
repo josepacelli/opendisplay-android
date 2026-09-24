@@ -91,7 +91,7 @@
       "tag": "2단계 · ANDROID에서",
       "title": "수신 측",
       "desc": "화면을 표시하고 터치/스크롤을 다시 전송합니다.",
-      "cta": "APK 다운로드 (v0.0.43)",
+      "cta": "APK 다운로드 (v0.0.45)",
       "note": "Google Play 버전은 비공개 테스트 중입니다 — 참여하고 싶으시면 <mail>josepacelli@gmail.com</mail>으로 메일 주세요. 그동안은 위의 APK를 사이드로드하거나, <compile>소스에서 빌드 ↗</compile>하세요. <releases>이전 릴리스 보기 ↗</releases>"
     }
   },

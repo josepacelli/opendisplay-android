@@ -91,7 +91,7 @@
       "tag": "ステップ2・Android側",
       "title": "受信側",
       "desc": "映像を表示し、タッチ/スクロールを送り返します。",
-      "cta": "APKをダウンロード（v0.0.43）",
+      "cta": "APKをダウンロード（v0.0.45）",
       "note": "Google Play版はクローズドテスト中です — 参加希望の方は<mail>josepacelli@gmail.com</mail>までメールしてください。それまでは、上記のAPKをサイドロードするか、<compile>ソースからビルド ↗</compile>してください。<releases>過去のリリースを見る ↗</releases>"
     }
   },
