@@ -4,6 +4,13 @@ name: Tests
 # unit test that broke, only surfaced whenever someone happened to build locally.
 on:
   pull_request:
+    paths:
+      - "app/**"
+      - "gradle/**"
+      - "gradlew"
+      - "settings.gradle.kts"
+      - "build.gradle.kts"
+      - ".github/workflows/tests.yml"
   push:
     branches: [main]
     paths:
