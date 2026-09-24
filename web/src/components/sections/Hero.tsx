@@ -9,6 +9,12 @@ export function Hero() {
 
   return (
     <section className="py-16 text-center sm:py-24">
+      <img
+        src="/banner.jpg"
+        alt="OpenDisplay"
+        className="mx-auto mb-8 w-full max-w-2xl rounded-2xl"
+      />
+
       <Badge variant="outline" className="gap-2 border-primary/40 bg-primary/10 text-primary">
         <span className="size-1.5 rounded-full bg-primary" />
         {t('hero.badge')}
