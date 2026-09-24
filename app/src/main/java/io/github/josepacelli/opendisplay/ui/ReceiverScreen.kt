@@ -150,16 +150,11 @@ private fun IdleContent(status: String, onSettingsClick: () -> Unit, onAboutClic
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.widthIn(max = 420.dp).padding(24.dp),
     ) {
-        Box(
-            modifier = Modifier.size(96.dp).clip(CircleShape).background(Color.White),
-            contentAlignment = Alignment.Center,
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
+        Image(
+            painter = painterResource(R.drawable.app_icon_display),
+            contentDescription = null,
+            modifier = Modifier.size(96.dp),
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.app_name),

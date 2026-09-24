@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -62,6 +64,9 @@ import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 
 private val WIDE_LAYOUT_MIN_WIDTH = 600.dp
+
+/** Aspect ratio of drawable/banner.jpg (1600x639) — keeps the "Sobre" banner uncropped. */
+private const val BANNER_ASPECT_RATIO = 1600f / 639f
 
 /** Tab indices for [SettingsDialog] — in tab-row order (Details first). */
 const val SETTINGS_TAB_DETAILS = 0
@@ -315,16 +320,20 @@ private fun AboutTab() {
         modifier = Modifier.fillMaxWidth().padding(top = 32.dp, start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(
-            modifier = Modifier.size(88.dp).clip(CircleShape).background(Color.White),
-            contentAlignment = Alignment.Center,
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
+        Image(
+            painter = painterResource(R.drawable.banner),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth()
+                .aspectRatio(BANNER_ASPECT_RATIO)
+                .clip(RoundedCornerShape(12.dp)),
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Image(
+            painter = painterResource(R.drawable.app_icon_display),
+            contentDescription = null,
+            modifier = Modifier.size(88.dp),
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(8.dp))
