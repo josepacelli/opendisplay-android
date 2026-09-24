@@ -6,6 +6,13 @@ on:
   pull_request:
   push:
     branches: [main]
+    paths:
+      - "app/**"
+      - "gradle/**"
+      - "gradlew"
+      - "settings.gradle.kts"
+      - "build.gradle.kts"
+      - ".github/workflows/tests.yml"
 
 # A superseded run tells us nothing, so drop in-flight runs for the same ref.
 concurrency:
