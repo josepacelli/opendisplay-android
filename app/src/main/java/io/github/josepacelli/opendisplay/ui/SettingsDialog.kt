@@ -320,8 +320,8 @@ private fun AboutTab() {
         Image(
             painter = painterResource(R.drawable.banner),
             contentDescription = null,
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxWidth().height(110.dp).clip(RoundedCornerShape(12.dp)),
         )
         Spacer(modifier = Modifier.height(20.dp))
         Box(
