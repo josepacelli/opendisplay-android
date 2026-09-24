@@ -91,7 +91,7 @@
       "tag": "STEP 2 · ON YOUR ANDROID",
       "title": "The receiver",
       "desc": "Displays the stream and sends touch/scroll back.",
-      "cta": "Download APK (v0.0.45)",
+      "cta": "Download APK (v0.0.46)",
       "note": "Google Play version is in closed testing — want in? Email <mail>josepacelli@gmail.com</mail>. Meanwhile, sideload the APK above, or <compile>build it from source ↗</compile>. <releases>Browse older releases ↗</releases>"
     }
   },
