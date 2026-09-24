@@ -14,6 +14,7 @@ private val DarkColors = darkColorScheme(
     primary = Accent,
     background = Color(0xFF0F172A),
     surface = Color(0xFF0F172A),
+    surfaceContainerLow = Color(0xFF1E293B),
     error = Error,
 )
 

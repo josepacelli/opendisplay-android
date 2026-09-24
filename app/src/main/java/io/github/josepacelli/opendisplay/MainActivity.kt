@@ -144,7 +144,7 @@ class MainActivity : ComponentActivity() {
             OpenDisplayTheme {
                 val receiver = boundReceiver
                 if (receiver == null) {
-                    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+                    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         Text(
                             text = stringResource(R.string.status_starting),
                             color = Color.White,
