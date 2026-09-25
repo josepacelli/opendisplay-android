@@ -92,7 +92,7 @@
       "title": "The receiver",
       "desc": "Displays the stream and sends touch/scroll back.",
       "cta": "Download APK (v0.0.46)",
-      "note": "Google Play version is in closed testing — want in? Email <mail>josepacelli@gmail.com</mail>. Meanwhile, sideload the APK above, or <compile>build it from source ↗</compile>. <releases>Browse older releases ↗</releases>"
+      "note": "Google Play version is in closed testing — <optin>join here ↗</optin>. Meanwhile, sideload the APK above, or <compile>build it from source ↗</compile>. <releases>Browse older releases ↗</releases>"
     }
   },
   "features": {
@@ -136,7 +136,7 @@
       },
       {
         "q": "Is it on Google Play?",
-        "a": "The Google Play version is currently in closed testing. Want in as a tester? Email <mail>josepacelli@gmail.com</mail>. Meanwhile, it's also distributed via GitHub Releases — install it with <code>adb install</code> or by copying the APK to the device (enable \"unknown sources\")."
+        "a": "The Google Play version is currently in closed testing. <optin>Join here ↗</optin>. Meanwhile, it's also distributed via GitHub Releases — install it with <code>adb install</code> or by copying the APK to the device (enable \"unknown sources\")."
       },
       {
         "q": "Does it need WiFi?",

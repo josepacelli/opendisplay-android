@@ -92,7 +92,7 @@
       "title": "接收端",
       "desc": "显示视频流，并把触摸/滚动操作发回去。",
       "cta": "下载 APK（v0.0.46）",
-      "note": "Google Play 版本正在封闭测试 — 想参加吗？发邮件到 <mail>josepacelli@gmail.com</mail>。与此同时，可以手动安装上面的 APK，或者<compile>从源码构建 ↗</compile>。<releases>查看以往版本 ↗</releases>"
+      "note": "Google Play 版本正在封闭测试 — <optin>点此加入 ↗</optin>。与此同时，可以手动安装上面的 APK，或者<compile>从源码构建 ↗</compile>。<releases>查看以往版本 ↗</releases>"
     }
   },
   "features": {
@@ -136,7 +136,7 @@
       },
       {
         "q": "有上架 Google Play 吗？",
-        "a": "Google Play 版本目前处于封闭测试阶段。想成为测试者吗？发邮件到 <mail>josepacelli@gmail.com</mail>。与此同时，也可以通过 GitHub Releases 获取 — 用 <code>adb install</code> 安装，或把 APK 复制到设备上安装（需开启\"未知来源\"）。"
+        "a": "Google Play 版本目前处于封闭测试阶段。<optin>点此加入 ↗</optin>。与此同时，也可以通过 GitHub Releases 获取 — 用 <code>adb install</code> 安装，或把 APK 复制到设备上安装（需开启\"未知来源\"）。"
       },
       {
         "q": "必须要 WiFi 吗？",

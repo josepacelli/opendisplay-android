@@ -92,7 +92,7 @@
       "title": "O recetor",
       "desc": "Apresenta a transmissão e envia toque/deslocamento de volta.",
       "cta": "Transferir APK (v0.0.46)",
-      "note": "A versão da Google Play está em teste fechado — quer participar? Envie um e-mail para <mail>josepacelli@gmail.com</mail>. Entretanto, instale manualmente o APK acima, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
+      "note": "A versão da Google Play está em teste fechado — <optin>participe aqui ↗</optin>. Entretanto, instale manualmente o APK acima, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
     }
   },
   "features": {
@@ -136,7 +136,7 @@
       },
       {
         "q": "Está na Google Play?",
-        "a": "A versão da Google Play está atualmente em teste fechado. Quer participar como testador? Envie um e-mail para <mail>josepacelli@gmail.com</mail>. Entretanto, também é distribuída pelo GitHub Releases — instale com <code>adb install</code> ou copiando o APK para o dispositivo (ative \"origens desconhecidas\")."
+        "a": "A versão da Google Play está atualmente em teste fechado. <optin>Participe aqui ↗</optin>. Entretanto, também é distribuída pelo GitHub Releases — instale com <code>adb install</code> ou copiando o APK para o dispositivo (ative \"origens desconhecidas\")."
       },
       {
         "q": "Precisa de WiFi?",

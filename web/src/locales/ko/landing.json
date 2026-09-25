@@ -92,7 +92,7 @@
       "title": "수신 측",
       "desc": "화면을 표시하고 터치/스크롤을 다시 전송합니다.",
       "cta": "APK 다운로드 (v0.0.46)",
-      "note": "Google Play 버전은 비공개 테스트 중입니다 — 참여하고 싶으시면 <mail>josepacelli@gmail.com</mail>으로 메일 주세요. 그동안은 위의 APK를 사이드로드하거나, <compile>소스에서 빌드 ↗</compile>하세요. <releases>이전 릴리스 보기 ↗</releases>"
+      "note": "Google Play 버전은 비공개 테스트 중입니다 — <optin>여기서 참여하기 ↗</optin>. 그동안은 위의 APK를 사이드로드하거나, <compile>소스에서 빌드 ↗</compile>하세요. <releases>이전 릴리스 보기 ↗</releases>"
     }
   },
   "features": {
@@ -136,7 +136,7 @@
       },
       {
         "q": "Google Play에 있나요?",
-        "a": "Google Play 버전은 현재 비공개 테스트 중입니다. 테스터로 참여하고 싶으시면 <mail>josepacelli@gmail.com</mail>으로 메일 주세요. 그동안은 GitHub Releases로도 배포됩니다 — <code>adb install</code>로 설치하거나 APK를 기기에 복사해서 설치하세요 (\"출처를 알 수 없는 앱\" 허용 필요)."
+        "a": "Google Play 버전은 현재 비공개 테스트 중입니다. <optin>여기서 참여하기 ↗</optin>. 그동안은 GitHub Releases로도 배포됩니다 — <code>adb install</code>로 설치하거나 APK를 기기에 복사해서 설치하세요 (\"출처를 알 수 없는 앱\" 허용 필요)."
       },
       {
         "q": "WiFi가 꼭 필요한가요?",

@@ -71,7 +71,7 @@ export function Install() {
               i18nKey="install.android.note"
               t={t}
               components={{
-                mail: <a href="mailto:josepacelli@gmail.com" />,
+                optin: <a href="https://play.google.com/apps/testing/io.github.josepacelli.opendisplay" />,
                 compile: <a href="https://github.com/josepacelli/opendisplay-android#build" />,
                 releases: <a href="https://github.com/josepacelli/opendisplay-android/releases" />,
               }}
