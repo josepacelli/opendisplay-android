@@ -92,7 +92,7 @@
       "title": "O receptor",
       "desc": "Exibe a transmissão e envia toque/scroll de volta.",
       "cta": "Baixar APK (v0.0.46)",
-      "note": "A versão da Google Play está em teste fechado — quer participar? Manda um e-mail pra <mail>josepacelli@gmail.com</mail>. Enquanto isso, instale manualmente o APK acima, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
+      "note": "A versão da Google Play está em teste fechado — <optin>participe aqui ↗</optin>. Enquanto isso, instale manualmente o APK acima, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
     }
   },
   "features": {
@@ -136,7 +136,7 @@
       },
       {
         "q": "Está na Google Play?",
-        "a": "A versão da Google Play está atualmente em teste fechado. Quer participar como testador? Manda um e-mail pra <mail>josepacelli@gmail.com</mail>. Enquanto isso, também é distribuída pelo GitHub Releases — instale com <code>adb install</code> ou copiando o APK pro aparelho (ative \"fontes desconhecidas\")."
+        "a": "A versão da Google Play está atualmente em teste fechado. <optin>Participe aqui ↗</optin>. Enquanto isso, também é distribuída pelo GitHub Releases — instale com <code>adb install</code> ou copiando o APK pro aparelho (ative \"fontes desconhecidas\")."
       },
       {
         "q": "Precisa de WiFi?",
