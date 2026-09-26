@@ -53,6 +53,8 @@
     <string name="peer_replaced_warning">다른 기기(%1$s)가 연결을 가로챘습니다. 본인이 아니라면 네트워크에 누가 있는지 확인하세요.</string>
     <string name="connection_unstable_warning">연결이 불안정합니다 — 복구될 때까지 화면이 끊길 수 있습니다.</string>
 
+    <string name="settings_tab_changelog">변경 내역</string>
+
     <string name="settings_section_about">정보</string>
     <string name="about_tagline">안드로이드 태블릿이나 폰을 Mac의 진짜 보조 모니터로 만들어줍니다.</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>

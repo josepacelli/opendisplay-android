@@ -53,6 +53,8 @@
     <string name="peer_replaced_warning">別のデバイス（%1$s）に接続を取られました。心当たりがない場合は、ネットワーク内の他のデバイスを確認してください。</string>
     <string name="connection_unstable_warning">接続が不安定です — 復旧するまで映像が乱れることがあります。</string>
 
+    <string name="settings_tab_changelog">更新履歴</string>
+
     <string name="settings_section_about">情報</string>
     <string name="about_tagline">AndroidタブレットやスマホをMacの本物の拡張ディスプレイに。</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>

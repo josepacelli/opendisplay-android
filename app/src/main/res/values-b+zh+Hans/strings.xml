@@ -53,6 +53,8 @@
     <string name="peer_replaced_warning">连接已被另一台设备（%1$s）接管。如果不是你本人操作，请检查网络中的其他设备。</string>
     <string name="connection_unstable_warning">连接不稳定 — 画面可能出现卡顿，直到恢复正常。</string>
 
+    <string name="settings_tab_changelog">更新日志</string>
+
     <string name="settings_section_about">关于</string>
     <string name="about_tagline">把你的 Android 平板或手机变成 Mac 真正的第二显示器。</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
