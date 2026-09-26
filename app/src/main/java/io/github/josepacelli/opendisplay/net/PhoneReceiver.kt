@@ -351,7 +351,7 @@ class PhoneReceiver(context: Context) {
             listenLoop(
                 port,
                 { NetworkInfo.localIPv4InetAddress(appContext) },
-                onNoAddress = { _status.value = appContext.getString(R.string.status_no_wifi) },
+                onNoAddress = { _status.value = noAddressStatusMessage() },
             ) { wifiServerSocket = it }
         }
         cursorListenJob = scope.launch { cursorListenLoop(port + 1) }
@@ -359,6 +359,16 @@ class PhoneReceiver(context: Context) {
         watchdogJob = scope.launch { watchdogLoop() }
         registerConnectivityWatcher()
     }
+
+    /** Status text for when [NetworkInfo.localIPv4InetAddress] has nothing to bind to — a VPN
+     * active gets its own message since the fix is different (turn off the VPN, not WiFi).
+     * @return the right `status_*` string for the current reason. */
+    private fun noAddressStatusMessage(): String =
+        if (NetworkInfo.isActiveNetworkVpn(appContext)) {
+            appContext.getString(R.string.status_vpn_active)
+        } else {
+            appContext.getString(R.string.status_no_wifi)
+        }
 
     /** Tears down both listeners, the active connection, and mDNS advertisement. */
     fun stop() {
@@ -596,6 +606,16 @@ class PhoneReceiver(context: Context) {
      * corporate networks block multicast).
      * @return `"ip:port"`, or `null` if nothing usable is found. */
     fun localAddressHint(): String? = NetworkInfo.localIPv4Address(appContext)?.let { "$it:${lastBoundPort}" }
+
+    /** Fallback text for the settings screen when [localAddressHint] is `null` — a VPN active
+     * gets its own message since the fix is different (turn off the VPN, not WiFi).
+     * @return the right `settings_address_unavailable*` string for the current reason. */
+    fun addressUnavailableMessage(): String =
+        if (NetworkInfo.isActiveNetworkVpn(appContext)) {
+            appContext.getString(R.string.settings_address_unavailable_vpn)
+        } else {
+            appContext.getString(R.string.settings_address_unavailable)
+        }
 
     /** Sends a `touch` control message.
      * @param phase one of `"began"`, `"moved"`, `"ended"`, `"cancelled"`.

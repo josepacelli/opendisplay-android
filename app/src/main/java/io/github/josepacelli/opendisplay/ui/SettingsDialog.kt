@@ -103,6 +103,7 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
     var draftName by remember { mutableStateOf(currentName) }
     var selectedTab by remember { mutableIntStateOf(initialTab) }
     val addressHint = remember { receiver.localAddressHint() }
+    val addressUnavailableMessage = remember { receiver.addressUnavailableMessage() }
     val wide = LocalConfiguration.current.screenWidthDp.dp >= WIDE_LAYOUT_MIN_WIDTH
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
@@ -152,7 +153,11 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
                     modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(bottom = 16.dp),
                 ) {
                     when (selectedTab) {
-                        SETTINGS_TAB_DETAILS -> DetailsTab(connected = connected, addressHint = addressHint)
+                        SETTINGS_TAB_DETAILS -> DetailsTab(
+                            connected = connected,
+                            addressHint = addressHint,
+                            addressUnavailableMessage = addressUnavailableMessage,
+                        )
                         SETTINGS_TAB_GENERAL -> GeneralTab(
                             draftName = draftName,
                             onNameChange = { draftName = it },
@@ -255,9 +260,10 @@ private fun GeneralTab(
  * connection instructions. Was a collapsible section inside a single dialog
  * (issue #48); now its own always-expanded tab (issue #112).
  * @param connected whether a Mac is currently connected.
- * @param addressHint this device's local `ip:port`, or `null` if unavailable. */
+ * @param addressHint this device's local `ip:port`, or `null` if unavailable.
+ * @param addressUnavailableMessage text shown instead of [addressHint] when it's `null`. */
 @Composable
-private fun DetailsTab(connected: Boolean, addressHint: String?) {
+private fun DetailsTab(connected: Boolean, addressHint: String?, addressUnavailableMessage: String) {
     SettingsCategory(stringResource(R.string.settings_section_status)) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
             LabeledRow(
@@ -279,7 +285,7 @@ private fun DetailsTab(connected: Boolean, addressHint: String?) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
             Text(text = stringResource(R.string.settings_manual_hint), style = MaterialTheme.typography.bodySmall)
             Text(
-                text = addressHint ?: stringResource(R.string.settings_address_unavailable),
+                text = addressHint ?: addressUnavailableMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 4.dp),
             )

@@ -6,6 +6,7 @@
     <string name="status_stopped">停止中</string>
     <string name="status_listening">ポート :%1$d で待機中</string>
     <string name="status_no_wifi">WiFiネットワークがありません。WiFiをオンにするかUSBで接続してください。</string>
+    <string name="status_vpn_active">VPNが有効です。WiFiでOpenDisplayを使うにはVPNをオフにしてください。</string>
 
     <string name="notification_title">OpenDisplay for Android · v%1$s</string>
     <string name="notification_action_disconnect">切断</string>
@@ -41,6 +42,7 @@
     <string name="settings_section_network">ネットワーク</string>
     <string name="settings_manual_hint">このデバイスのネットワーク上のアドレスです。トラブルシューティング用に表示しています。WiFiの自動検出（mDNS）がMacと接続する唯一の方法で、Macアプリに手動入力の項目はありません:</string>
     <string name="settings_address_unavailable">IPアドレスを取得できません — WiFi接続を確認してください。</string>
+    <string name="settings_address_unavailable_vpn">IPアドレスを取得できません — VPNが有効です。WiFiでOpenDisplayを使うにはVPNをオフにしてください。</string>
     <string name="settings_section_how_to_connect">接続方法</string>
     <string name="settings_howto_wifi">両方の端末を同じWiFiネットワークに接続し、Macアプリの接続メニューでこのデバイスを選択してください。</string>
     <string name="settings_howto_rotate">端末を回転させると縦向きの第2モニターになります。</string>

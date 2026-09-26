@@ -6,6 +6,7 @@
     <string name="status_stopped">Parado</string>
     <string name="status_listening">A escutar na porta :%1$d</string>
     <string name="status_no_wifi">Sem rede WiFi. Ligue o WiFi ou use um cabo USB.</string>
+    <string name="status_vpn_active">VPN ativa — desligue-a para usar o OpenDisplay por WiFi.</string>
 
     <string name="notification_title">OpenDisplay para Android · v%1$s</string>
     <string name="notification_action_disconnect">Desligar</string>
@@ -41,6 +42,7 @@
     <string name="settings_section_network">Rede</string>
     <string name="settings_manual_hint">Endereço deste dispositivo na rede, mostrado apenas para depuração. A descoberta automática por WiFi (mDNS) é a única forma de o Mac ligar — não existe opção para introduzir isto manualmente na aplicação do Mac:</string>
     <string name="settings_address_unavailable">Endereço IP indisponível — verifique a ligação WiFi.</string>
+    <string name="settings_address_unavailable_vpn">Endereço IP indisponível — VPN ativa. Desligue-a para usar o OpenDisplay por WiFi.</string>
     <string name="settings_section_how_to_connect">Como ligar</string>
     <string name="settings_howto_wifi">Os dois dispositivos na mesma rede WiFi e depois escolha este dispositivo no menu de ligação da aplicação do Mac.</string>
     <string name="settings_howto_rotate">Rode o dispositivo para obter um segundo monitor vertical.</string>

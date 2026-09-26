@@ -55,4 +55,17 @@ object NetworkInfo {
             .mapNotNull { it.address as? Inet4Address }
             .firstOrNull()
     }
+
+    /** Whether the active network is a VPN — used only to pick a more specific "no address"
+     * message; the security-relevant exclusion already happens inside [localIPv4InetAddress].
+     * @param context used to read connectivity state.
+     * @return `true` if the active network's transports include VPN. */
+    fun isActiveNetworkVpn(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                ?: return false
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
+    }
 }

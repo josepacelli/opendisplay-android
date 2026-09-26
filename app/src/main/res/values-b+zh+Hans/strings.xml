@@ -6,6 +6,7 @@
     <string name="status_stopped">已停止</string>
     <string name="status_listening">正在监听端口 :%1$d</string>
     <string name="status_no_wifi">没有 WiFi 网络。请打开 WiFi 或使用 USB 连接。</string>
+    <string name="status_vpn_active">VPN 已开启 — 请关闭 VPN 以通过 WiFi 使用 OpenDisplay。</string>
 
     <string name="notification_title">OpenDisplay for Android · v%1$s</string>
     <string name="notification_action_disconnect">断开连接</string>
@@ -41,6 +42,7 @@
     <string name="settings_section_network">网络</string>
     <string name="settings_manual_hint">此设备在网络中的地址，仅供排查问题时参考。WiFi 自动发现（mDNS）是 Mac 连接的唯一方式 — Mac 应用中没有手动输入地址的选项：</string>
     <string name="settings_address_unavailable">IP 地址不可用 — 请检查 WiFi 连接。</string>
+    <string name="settings_address_unavailable_vpn">IP 地址不可用 — VPN 已开启。请关闭 VPN 以通过 WiFi 使用 OpenDisplay。</string>
     <string name="settings_section_how_to_connect">如何连接</string>
     <string name="settings_howto_wifi">两台设备连接同一个 WiFi 网络，然后在 Mac 应用的连接菜单中选择此设备。</string>
     <string name="settings_howto_rotate">旋转设备可获得竖屏的第二显示器。</string>
