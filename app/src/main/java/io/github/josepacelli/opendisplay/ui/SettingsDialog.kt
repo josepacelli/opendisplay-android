@@ -445,7 +445,7 @@ private fun SettingsCategory(title: String, showDivider: Boolean = true, content
 @Composable
 private fun ToggleListItem(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     ListItem(
-        headlineContent = { Text(label) },
+        headlineContent = { Text(label, style = MaterialTheme.typography.bodyMedium) },
         trailingContent = { Switch(checked = checked, onCheckedChange = onCheckedChange) },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         modifier = Modifier.clickable { onCheckedChange(!checked) },
