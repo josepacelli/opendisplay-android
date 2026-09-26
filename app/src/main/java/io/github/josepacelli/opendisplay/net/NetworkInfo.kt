@@ -31,6 +31,12 @@ object NetworkInfo {
      * would end up bound to whatever network the VPN routes to instead of the
      * LAN (see SECURITY.md/SCR-009, issue #135).
      *
+     * A VPN's own [android.net.Network] reports `TRANSPORT_WIFI` too — Android
+     * copies the underlying network's transport onto it — so the WiFi/Ethernet
+     * check alone still passes for it; excluding `TRANSPORT_VPN` explicitly is
+     * what keeps this from resolving to the tunnel interface when a VPN sits on
+     * top of WiFi (confirmed on real hardware, WiFi + VPN both active).
+     *
      * @param context used to read connectivity state.
      * @return the active network's first IPv4 address, or `null` if the active network isn't
      * WiFi/Ethernet or no such address exists. */
@@ -40,8 +46,9 @@ object NetworkInfo {
                 ?: return null
         val network = connectivityManager.activeNetwork ?: return null
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return null
-        val isLocal = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+        val isLocal = (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) &&
+            !capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
         if (!isLocal) return null
         val linkProperties = connectivityManager.getLinkProperties(network) ?: return null
         return linkProperties.linkAddresses
