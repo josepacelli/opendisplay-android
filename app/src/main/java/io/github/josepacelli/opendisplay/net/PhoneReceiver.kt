@@ -1268,13 +1268,14 @@ class PhoneReceiver(context: Context) {
         return prefs.getBoolean(KEY_SHOW_PERF_HUD, true)
     }
 
-    /** @return the persisted perf-overlay corner, defaulting to top-left. Falls back to the
-     * default on a bad/unrecognized stored value instead of crashing — cheap insurance for a
-     * self-controlled value, in case a future rename ever leaves a stale one behind. */
+    /** @return the persisted perf-overlay corner, defaulting to bottom-right — less likely to
+     * overlap content than top-left. Falls back to the default on a bad/unrecognized stored
+     * value instead of crashing — cheap insurance for a self-controlled value, in case a future
+     * rename ever leaves a stale one behind. */
     private fun loadPerfHudPosition(): PerfHudPosition {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val stored = prefs.getString(KEY_PERF_HUD_POSITION, null) ?: return PerfHudPosition.TOP_START
-        return runCatching { PerfHudPosition.valueOf(stored) }.getOrDefault(PerfHudPosition.TOP_START)
+        val stored = prefs.getString(KEY_PERF_HUD_POSITION, null) ?: return PerfHudPosition.BOTTOM_END
+        return runCatching { PerfHudPosition.valueOf(stored) }.getOrDefault(PerfHudPosition.BOTTOM_END)
     }
 
     /** @return the persisted immersive-fullscreen preference, defaulting to `false`. */
