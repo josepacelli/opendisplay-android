@@ -62,4 +62,51 @@
     <string name="about_github">GitHub</string>
     <string name="about_mac_app">Mac 应用</string>
     <string name="about_close">关闭</string>
+
+    <string-array name="changelog_v0_0_47">
+        <item>修复：WiFi 和 VPN 同时开启时，WiFi 监听器可能解析到 VPN 隧道地址而不是真实局域网 IP — 现在会直接关闭监听并显示明确的\"VPN 已开启\"提示。</item>
+        <item>修复设置 > 常规中标签字号不一致的问题。</item>
+        <item>性能叠加层默认位置改为右下角。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_46">
+        <item>深色主题优化：使用接近黑色的石板背景替代纯黑，并新增专用错误色。</item>
+        <item>修复浅色模式下落地页\"下载 APK\"按钮的 WCAG AA 对比度不达标问题。</item>
+        <item>设置界面和启动画面现在真正使用新的石板配色。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_45">
+        <item>品牌重塑：应用和落地页的图标、logo、横幅全面更新。</item>
+        <item>修复图标在圆形启动器遮罩（如三星 One UI）下被裁切的问题。</item>
+        <item>加固 CI：工作流触发条件按路径限定，GitHub Actions 固定到提交 SHA。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_44">
+        <item>应用启动图标重新设计，采用 Apple 和 Android 官方标志。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_43">
+        <item>设置界面重构为带标签页的全屏传统 Android 布局。</item>
+        <item>修复在几乎静止的扩展屏幕上输入和光标更新延迟的问题。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_42">
+        <item>设置和关于对话框新增半透明毛玻璃风格容器。</item>
+        <item>修复中等宽度屏幕下头部与主题/语言切换器重叠的问题。</item>
+        <item>落地页使用 React + Vite + TypeScript + Tailwind CSS v4 + shadcn/ui 重写。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_41">
+        <item>修复行为准则/贡献指南页面的翻译错误。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_40">
+        <item>与最新 Mac 发送端协议对齐：解码上限协商、UDP 光标通道、真实笔压和倾斜角度支持。</item>
+        <item>新增韩语翻译。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_39">
+        <item>韩语落地页。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_38">
+        <item>应用新增简体中文和日语。</item>
+        <item>落地页实现多语言，每种语言都有独立页面。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_37">
+        <item>修复 WiFi IP 变更后 mDNS 不再重新广播的问题。</item>
+        <item>修复 MediaCodec 重新配置节流的边界情况，避免解码器配置错乱。</item>
+        <item>安全加固：限制光标热点坐标范围，清理控制消息日志。</item>
+    </string-array>
 </resources>

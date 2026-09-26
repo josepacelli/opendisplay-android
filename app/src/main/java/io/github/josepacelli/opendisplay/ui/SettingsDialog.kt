@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -62,6 +63,9 @@ import androidx.compose.ui.window.DialogProperties
 import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 private val WIDE_LAYOUT_MIN_WIDTH = 600.dp
 
@@ -377,9 +381,10 @@ private fun AboutTab() {
     }
 }
 
-/** "Changelog" tab: every release from v0.0.36 to the current version, newest first, as a
- * version badge + date header followed by bullet highlights. Content lives in [CHANGELOG_ENTRIES]
- * and stays in English regardless of device locale (see that file's doc comment for why). */
+/** "Changelog" tab: every release from v0.0.37 to the current version, newest first, as a
+ * version badge + date header followed by bullet highlights. Content lives in
+ * [CHANGELOG_ENTRIES]/`changelog_v*` string-arrays, translated per locale like the rest of
+ * the app. */
 @Composable
 private fun ChangelogTab() {
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
@@ -394,6 +399,7 @@ private fun ChangelogTab() {
  * @param entry the release to render. */
 @Composable
 private fun ChangelogEntryCard(entry: ChangelogEntry) {
+    val highlights = stringArrayResource(entry.highlightsRes)
     Surface(
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
@@ -411,13 +417,13 @@ private fun ChangelogEntryCard(entry: ChangelogEntry) {
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = entry.date,
+                    text = formatChangelogDate(entry.dateIso),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
-            for (highlight in entry.highlights) {
+            for (highlight in highlights) {
                 Row(modifier = Modifier.padding(top = 4.dp)) {
                     Text(
                         text = "•",
@@ -430,6 +436,15 @@ private fun ChangelogEntryCard(entry: ChangelogEntry) {
             }
         }
     }
+}
+
+/** Formats a `"yyyy-MM-dd"` release date for display in the device's current locale, so
+ * [CHANGELOG_ENTRIES] doesn't need a translated date string per language.
+ * @param dateIso the release date as `"yyyy-MM-dd"`.
+ * @return a locale-formatted medium date, or [dateIso] unchanged if it doesn't parse. */
+private fun formatChangelogDate(dateIso: String): String {
+    val parsed = runCatching { SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(dateIso) }.getOrNull() ?: return dateIso
+    return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(parsed)
 }
 
 /** Four-corner picker for the performance overlay — one row of four [FilterChip]s when

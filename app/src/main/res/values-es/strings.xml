@@ -62,4 +62,51 @@
     <string name="about_github">GitHub</string>
     <string name="about_mac_app">App de Mac</string>
     <string name="about_close">Cerrar</string>
+
+    <string-array name="changelog_v0_0_47">
+        <item>Corregido: el listener de WiFi podía resolver la dirección del túnel de una VPN en lugar de la IP real de la red local cuando la VPN estaba activa junto con el WiFi — ahora se cierra por defecto, con un mensaje claro de \"VPN activa\".</item>
+        <item>Corregido el tamaño de fuente inconsistente de las etiquetas en Ajustes > General.</item>
+        <item>La superposición de rendimiento ahora usa por defecto la esquina inferior derecha.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_46">
+        <item>Mejoras en el tema oscuro: fondo casi negro (slate) en lugar de negro puro, más un color propio para errores.</item>
+        <item>Corregido un fallo de contraste WCAG AA en el botón \"Descargar APK\" de la landing page en modo claro.</item>
+        <item>La pantalla de Ajustes y la pantalla de inicio ahora sí usan la nueva paleta slate.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_45">
+        <item>Rebrand: nuevo icono, logo y banner en la app y en la landing page.</item>
+        <item>Corregido el icono de la app recortado por máscaras circulares (p. ej. Samsung One UI).</item>
+        <item>CI reforzado: los triggers de los workflows ahora están delimitados por ruta, GitHub Actions fijadas por SHA de commit.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_44">
+        <item>Icono de la app rediseñado con las marcas oficiales de Apple y Android.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_43">
+        <item>Pantalla de Ajustes reconstruida como layout tradicional de Android, a pantalla completa y con pestañas.</item>
+        <item>Corregido el retraso al escribir y en las actualizaciones del cursor en una pantalla extendida mayormente estática.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_42">
+        <item>Los diálogos de Ajustes y Acerca de ganan un contenedor translúcido, estilo vidrio esmerilado.</item>
+        <item>Corregido el encabezado que se superponía al selector de tema/idioma en pantallas de ancho medio.</item>
+        <item>Landing page reescrita en React + Vite + TypeScript + Tailwind CSS v4 + shadcn/ui.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_41">
+        <item>Corregidos errores de traducción en las páginas de Código de Conducta/Contribución.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_40">
+        <item>Paridad de protocolo con la app de Mac más reciente: negociación del techo de decodificación, canal de cursor por UDP, presión e inclinación reales del lápiz.</item>
+        <item>Añadida traducción al coreano.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_39">
+        <item>Landing page en coreano.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_38">
+        <item>Chino simplificado y japonés añadidos a la app.</item>
+        <item>La landing page se vuelve multilingüe, con página propia por idioma.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_37">
+        <item>Corregido que mDNS no volvía a anunciarse tras un cambio de IP en WiFi.</item>
+        <item>Corregido un caso extremo en el throttle de reconfiguración de MediaCodec que podía dejar mal configurado el decodificador.</item>
+        <item>Refuerzo de seguridad: valores del hotspot del cursor acotados, registro de mensajes de control saneado.</item>
+    </string-array>
 </resources>

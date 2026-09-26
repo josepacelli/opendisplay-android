@@ -62,4 +62,51 @@
     <string name="about_github">GitHub</string>
     <string name="about_mac_app">Macアプリ</string>
     <string name="about_close">閉じる</string>
+
+    <string-array name="changelog_v0_0_47">
+        <item>修正：WiFiと同時にVPNが有効な場合、WiFiリスナーが実際のLAN IPではなくVPNのトンネルアドレスを解決してしまう問題を修正 — 現在は「VPN有効」という明確なメッセージとともに閉じた状態になります。</item>
+        <item>設定 > 一般のラベルのフォントサイズが不揃いだった問題を修正。</item>
+        <item>パフォーマンスオーバーレイの初期位置を右下に変更。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_46">
+        <item>ダークテーマを改善：純粋な黒ではなくほぼ黒に近いスレート背景に、専用のエラー用カラーを追加。</item>
+        <item>ライトモードのランディングページの「APKをダウンロード」ボタンのWCAG AAコントラスト不足を修正。</item>
+        <item>設定画面とスプラッシュ画面が新しいスレートパレットを実際に使用するように修正。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_45">
+        <item>リブランド：アプリとランディングページのアイコン、ロゴ、バナーを一新。</item>
+        <item>円形のランチャーマスク（例：Samsung One UI）でアイコンが欠ける問題を修正。</item>
+        <item>CIを強化：ワークフローのトリガーをパスで絞り込み、GitHub Actionsをコミット SHA で固定。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_44">
+        <item>アプリのランチャーアイコンを、AppleとAndroidの公式マークで再デザイン。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_43">
+        <item>設定画面を、タブ付きの全画面・伝統的なAndroidレイアウトに再構築。</item>
+        <item>ほぼ静止した拡張ディスプレイでの入力とカーソル更新の遅延を修正。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_42">
+        <item>設定とAboutダイアログに半透明のフロストガラス風コンテナを追加。</item>
+        <item>中幅の画面でヘッダーがテーマ/言語切り替えに重なる問題を修正。</item>
+        <item>ランディングページをReact + Vite + TypeScript + Tailwind CSS v4 + shadcn/uiで書き直し。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_41">
+        <item>行動規範/コントリビューションページの翻訳ミスを修正。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_40">
+        <item>最新のMac送信側とプロトコルを統一：デコード上限のネゴシエーション、UDPカーソル用チャンネル、実際のペン筆圧とチルトに対応。</item>
+        <item>韓国語翻訳を追加。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_39">
+        <item>韓国語版ランディングページ。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_38">
+        <item>アプリに簡体字中国語と日本語を追加。</item>
+        <item>ランディングページが多言語化、言語ごとに専用ページ。</item>
+    </string-array>
+    <string-array name="changelog_v0_0_37">
+        <item>WiFiのIP変更後にmDNSが再アナウンスされない問題を修正。</item>
+        <item>MediaCodecの再設定スロットルのエッジケースで、デコーダーの設定が崩れる可能性があった問題を修正。</item>
+        <item>セキュリティ強化：カーソルホットスポット値の範囲制限、制御メッセージのログのサニタイズ。</item>
+    </string-array>
 </resources>
