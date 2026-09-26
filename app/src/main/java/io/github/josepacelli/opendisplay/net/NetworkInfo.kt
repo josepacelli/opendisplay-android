@@ -4,17 +4,12 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import java.net.Inet4Address
-import java.net.NetworkInterface
 
 /**
  * Local IPv4 lookup for the manual-connection fallback: when mDNS discovery
  * doesn't reach the Mac (some routers/corporate networks block multicast),
  * the user can type this address + port straight into the Mac app's host
  * override instead.
- *
- * Uses [NetworkInterface] rather than the deprecated
- * `WifiManager.connectionInfo.ipAddress` so it keeps working over Ethernet
- * adapters or a USB-tethering-provided interface too, not just WiFi.
  */
 object NetworkInfo {
 
@@ -29,32 +24,48 @@ object NetworkInfo {
      * WiFi off — so the unauthenticated listener never binds onto the cellular
      * network (see SECURITY.md/SCR-006, issue #39).
      *
+     * Resolves the address through the same active [android.net.Network] that
+     * passed the WiFi/Ethernet check, instead of scanning every
+     * [java.net.NetworkInterface] on the device — otherwise a VPN's tunnel
+     * interface (also "up, non-loopback") could win the race and the listener
+     * would end up bound to whatever network the VPN routes to instead of the
+     * LAN (see SECURITY.md/SCR-009, issue #135).
+     *
+     * A VPN's own [android.net.Network] reports `TRANSPORT_WIFI` too — Android
+     * copies the underlying network's transport onto it — so the WiFi/Ethernet
+     * check alone still passes for it; excluding `TRANSPORT_VPN` explicitly is
+     * what keeps this from resolving to the tunnel interface when a VPN sits on
+     * top of WiFi (confirmed on real hardware, WiFi + VPN both active).
+     *
      * @param context used to read connectivity state.
-     * @return the first non-loopback IPv4 address found, or `null` if the active network isn't
+     * @return the active network's first IPv4 address, or `null` if the active network isn't
      * WiFi/Ethernet or no such address exists. */
     fun localIPv4InetAddress(context: Context): Inet4Address? {
-        if (!isActiveNetworkLocal(context)) return null
-        return try {
-            NetworkInterface.getNetworkInterfaces().asSequence()
-                .filter { it.isUp && !it.isLoopback }
-                .flatMap { it.inetAddresses.asSequence() }
-                .filterIsInstance<Inet4Address>()
-                .firstOrNull()
-        } catch (e: Exception) {
-            null
-        }
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                ?: return null
+        val network = connectivityManager.activeNetwork ?: return null
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return null
+        val isLocal = (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) &&
+            !capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
+        if (!isLocal) return null
+        val linkProperties = connectivityManager.getLinkProperties(network) ?: return null
+        return linkProperties.linkAddresses
+            .mapNotNull { it.address as? Inet4Address }
+            .firstOrNull()
     }
 
-    /** WiFi or Ethernet, i.e. a LAN — never cellular, which is a WAN uplink with
-     * no business hosting an unauthenticated listener.
+    /** Whether the active network is a VPN — used only to pick a more specific "no address"
+     * message; the security-relevant exclusion already happens inside [localIPv4InetAddress].
      * @param context used to read connectivity state.
-     * @return `true` if the active network is WiFi or Ethernet. */
-    private fun isActiveNetworkLocal(context: Context): Boolean {
+     * @return `true` if the active network's transports include VPN. */
+    fun isActiveNetworkVpn(context: Context): Boolean {
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return false
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                ?: return false
         val network = connectivityManager.activeNetwork ?: return false
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
     }
 }
