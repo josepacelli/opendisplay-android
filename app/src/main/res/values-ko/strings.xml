@@ -53,6 +53,8 @@
     <string name="peer_replaced_warning">다른 기기(%1$s)가 연결을 가로챘습니다. 본인이 아니라면 네트워크에 누가 있는지 확인하세요.</string>
     <string name="connection_unstable_warning">연결이 불안정합니다 — 복구될 때까지 화면이 끊길 수 있습니다.</string>
 
+    <string name="settings_tab_changelog">변경 내역</string>
+
     <string name="settings_section_about">정보</string>
     <string name="about_tagline">안드로이드 태블릿이나 폰을 Mac의 진짜 보조 모니터로 만들어줍니다.</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
@@ -60,4 +62,51 @@
     <string name="about_github">GitHub</string>
     <string name="about_mac_app">Mac 앱</string>
     <string name="about_close">닫기</string>
+
+    <string-array name="changelog_v0_0_47">
+        <item>수정: WiFi와 VPN이 동시에 활성화된 경우 WiFi 리스너가 실제 LAN IP 대신 VPN 터널 주소를 사용하던 문제 수정 — 이제 \"VPN 활성\" 메시지와 함께 안전하게 차단됩니다.</item>
+        <item>설정 > 일반의 라벨 글꼴 크기가 일관되지 않던 문제 수정.</item>
+        <item>성능 오버레이 기본 위치를 오른쪽 아래로 변경.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_46">
+        <item>다크 테마 개선: 순수 검정 대신 짙은 슬레이트 배경 적용, 오류 전용 색상 추가.</item>
+        <item>라이트 모드 랜딩 페이지의 \"APK 다운로드\" 버튼 WCAG AA 대비 오류 수정.</item>
+        <item>설정 화면과 스플래시 화면이 새 슬레이트 팔레트를 실제로 사용하도록 수정.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_45">
+        <item>리브랜딩: 앱과 랜딩 페이지의 아이콘, 로고, 배너 전면 교체.</item>
+        <item>원형 런처 마스크(예: 삼성 One UI)에서 아이콘이 잘리던 문제 수정.</item>
+        <item>CI 강화: 워크플로 트리거를 경로별로 제한, GitHub Actions를 커밋 SHA로 고정.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_44">
+        <item>앱 런처 아이콘을 Apple과 Android 공식 마크로 재디자인.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_43">
+        <item>설정 화면을 탭이 있는 전체 화면 전통적 Android 레이아웃으로 재구성.</item>
+        <item>대부분 정적인 확장 디스플레이에서 입력과 커서 업데이트가 지연되던 문제 수정.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_42">
+        <item>설정과 정보 대화상자에 반투명 유리 스타일 배경 적용.</item>
+        <item>중간 너비 화면에서 헤더가 테마/언어 전환기와 겹치던 문제 수정.</item>
+        <item>랜딩 페이지를 React + Vite + TypeScript + Tailwind CSS v4 + shadcn/ui로 재작성.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_41">
+        <item>행동 강령/기여 안내 페이지의 번역 오류 수정.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_40">
+        <item>최신 Mac 송신 앱과 프로토콜 정합성 확보: 디코드 상한 협상, UDP 커서 채널, 실제 펜 압력·기울기 지원.</item>
+        <item>한국어 번역 추가.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_39">
+        <item>한국어 랜딩 페이지.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_38">
+        <item>앱에 중국어 간체와 일본어 추가.</item>
+        <item>랜딩 페이지가 다국어 지원, 언어별 전용 페이지 제공.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_37">
+        <item>WiFi IP 변경 후 mDNS가 다시 알리지 않던 문제 수정.</item>
+        <item>MediaCodec 재구성 제한(throttle)의 예외 상황에서 디코더 설정이 깨질 수 있던 문제 수정.</item>
+        <item>보안 강화: 커서 핫스팟 값 범위 제한, 제어 메시지 로그 정제.</item>
+    </string-array>
 </resources>

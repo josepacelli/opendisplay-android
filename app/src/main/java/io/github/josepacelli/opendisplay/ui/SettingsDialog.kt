@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -62,6 +63,9 @@ import androidx.compose.ui.window.DialogProperties
 import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 private val WIDE_LAYOUT_MIN_WIDTH = 600.dp
 
@@ -72,6 +76,7 @@ private const val BANNER_ASPECT_RATIO = 1600f / 639f
 const val SETTINGS_TAB_DETAILS = 0
 const val SETTINGS_TAB_GENERAL = 1
 const val SETTINGS_TAB_ABOUT = 2
+const val SETTINGS_TAB_CHANGELOG = 3
 
 /**
  * Full-screen settings, traditional Android style: a top app bar and a tab row splitting
@@ -79,8 +84,9 @@ const val SETTINGS_TAB_ABOUT = 2
  * collapsible section), actionable settings ("General", grouped under category headers), and
  * app info ("About" — version/license/links, merged back in from the standalone `AboutDialog`
  * split out in issue #48; tabs solve the "dialog got too long" problem that split was
- * addressing, so the separate dialog isn't needed anymore, issue #112). Shown only while
- * disconnected; once video is flowing this app has no chrome at all.
+ * addressing, so the separate dialog isn't needed anymore, issue #112), and a release history
+ * ("Changelog", issue #142). Shown only while disconnected; once video is flowing this app has
+ * no chrome at all.
  *
  * Rendered as an edge-to-edge [Dialog] rather than [androidx.compose.material3.AlertDialog]
  * so it can fill the screen while still getting back-press-to-dismiss for free.
@@ -148,6 +154,11 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
                         onClick = { selectedTab = SETTINGS_TAB_ABOUT },
                         text = { Text(stringResource(R.string.settings_section_about)) },
                     )
+                    Tab(
+                        selected = selectedTab == SETTINGS_TAB_CHANGELOG,
+                        onClick = { selectedTab = SETTINGS_TAB_CHANGELOG },
+                        text = { Text(stringResource(R.string.settings_tab_changelog)) },
+                    )
                 }
                 Column(
                     modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(bottom = 16.dp),
@@ -175,7 +186,8 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
                             zoomEnabled = zoomEnabled,
                             onToggleZoom = receiver::setZoomEnabled,
                         )
-                        else -> AboutTab()
+                        SETTINGS_TAB_ABOUT -> AboutTab()
+                        else -> ChangelogTab()
                     }
                 }
             }
@@ -367,6 +379,72 @@ private fun AboutTab() {
             }
         }
     }
+}
+
+/** "Changelog" tab: every release from v0.0.37 to the current version, newest first, as a
+ * version badge + date header followed by bullet highlights. Content lives in
+ * [CHANGELOG_ENTRIES]/`changelog_v*` string-arrays, translated per locale like the rest of
+ * the app. */
+@Composable
+private fun ChangelogTab() {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+        CHANGELOG_ENTRIES.forEachIndexed { index, entry ->
+            ChangelogEntryCard(entry)
+            if (index != CHANGELOG_ENTRIES.lastIndex) Spacer(modifier = Modifier.height(12.dp))
+        }
+    }
+}
+
+/** One release's card inside [ChangelogTab]: version badge + date, then its bullet highlights.
+ * @param entry the release to render. */
+@Composable
+private fun ChangelogEntryCard(entry: ChangelogEntry) {
+    val highlights = stringArrayResource(entry.highlightsRes)
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.primaryContainer) {
+                    Text(
+                        text = "v${entry.version}",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = formatChangelogDate(entry.dateIso),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            for (highlight in highlights) {
+                Row(modifier = Modifier.padding(top = 4.dp)) {
+                    Text(
+                        text = "•",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+                    Text(text = highlight, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+    }
+}
+
+/** Formats a `"yyyy-MM-dd"` release date for display in the device's current locale, so
+ * [CHANGELOG_ENTRIES] doesn't need a translated date string per language.
+ * @param dateIso the release date as `"yyyy-MM-dd"`.
+ * @return a locale-formatted medium date, or [dateIso] unchanged if it doesn't parse. */
+private fun formatChangelogDate(dateIso: String): String {
+    val parsed = runCatching { SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(dateIso) }.getOrNull() ?: return dateIso
+    return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(parsed)
 }
 
 /** Four-corner picker for the performance overlay — one row of four [FilterChip]s when

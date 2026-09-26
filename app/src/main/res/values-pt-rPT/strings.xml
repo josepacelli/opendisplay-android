@@ -53,6 +53,8 @@
     <string name="peer_replaced_warning">Ligação assumida por outro dispositivo (%1$s). Se não foi você, verifique quem está na rede.</string>
     <string name="connection_unstable_warning">Ligação instável — a imagem pode falhar até recuperar.</string>
 
+    <string name="settings_tab_changelog">Novidades</string>
+
     <string name="settings_section_about">Acerca de</string>
     <string name="about_tagline">Transforma o teu tablet ou telemóvel Android num segundo monitor a sério para o teu Mac.</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
@@ -60,4 +62,51 @@
     <string name="about_github">GitHub</string>
     <string name="about_mac_app">App do Mac</string>
     <string name="about_close">Fechar</string>
+
+    <string-array name="changelog_v0_0_47">
+        <item>Corrigido: o listener de WiFi podia resolver o endereço do túnel de uma VPN em vez do IP real da rede local quando a VPN estava ativa em simultâneo com o WiFi — agora fica bloqueado por predefinição, com uma mensagem clara de \"VPN ativa\".</item>
+        <item>Corrigido tamanho de letra inconsistente nas etiquetas em Definições > Geral.</item>
+        <item>A sobreposição de desempenho passa a usar por predefinição o canto inferior direito.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_46">
+        <item>Melhorias no tema escuro: fundo quase preto (slate) em vez de preto puro, mais uma cor própria para erro.</item>
+        <item>Corrigida falha de contraste WCAG AA no botão \"Transferir APK\" da página de destino no modo claro.</item>
+        <item>O ecrã de Definições e o ecrã inicial passam a usar mesmo a nova paleta slate.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_45">
+        <item>Rebrand: novo ícone, logótipo e banner na aplicação e na página de destino.</item>
+        <item>Corrigido o ícone de lançamento a ser cortado por máscaras circulares (ex.: Samsung One UI).</item>
+        <item>CI reforçado: gatilhos dos workflows delimitados por caminho, GitHub Actions fixadas por SHA do commit.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_44">
+        <item>Ícone de lançamento redesenhado com as marcas oficiais da Apple e do Android.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_43">
+        <item>Ecrã de Definições reconstruído em layout tradicional Android, em ecrã inteiro com separadores.</item>
+        <item>Corrigido atraso na escrita e nas atualizações do cursor num ecrã estendido maioritariamente estático.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_42">
+        <item>Diálogos de Definições e Acerca de ganham um contentor translúcido, estilo vidro fosco.</item>
+        <item>Corrigido o cabeçalho a sobrepor-se ao seletor de tema/idioma em ecrãs de largura média.</item>
+        <item>Página de destino reescrita em React + Vite + TypeScript + Tailwind CSS v4 + shadcn/ui.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_41">
+        <item>Corrigidos erros de tradução nas páginas de Código de Conduta/Contribuição.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_40">
+        <item>Paridade de protocolo com a aplicação Mac mais recente: negociação do limite de descodificação, canal de cursor por UDP, pressão e inclinação reais da caneta.</item>
+        <item>Adicionada tradução em coreano.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_39">
+        <item>Página de destino em coreano.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_38">
+        <item>Chinês simplificado e japonês adicionados à aplicação.</item>
+        <item>Página de destino torna-se multilingue, com página própria por idioma.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_37">
+        <item>Corrigido o mDNS a não se reanunciar após mudança de IP no WiFi.</item>
+        <item>Corrigido um caso extremo no limitador de reconfiguração do MediaCodec que podia deixar o descodificador mal configurado.</item>
+        <item>Reforço de segurança: valores do hotspot do cursor limitados, registo de mensagens de controlo sanitizado.</item>
+    </string-array>
 </resources>

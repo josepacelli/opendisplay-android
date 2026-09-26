@@ -53,6 +53,8 @@
     <string name="peer_replaced_warning">Connection taken over by another device (%1$s). If this wasn\'t you, check who\'s on the network.</string>
     <string name="connection_unstable_warning">Unstable connection — picture may glitch until it recovers.</string>
 
+    <string name="settings_tab_changelog">Changelog</string>
+
     <string name="settings_section_about">About</string>
     <string name="about_tagline">Turn your Android tablet or phone into a real second monitor for your Mac.</string>
     <string name="about_version">OpenDisplay v%1$s · GPL-3.0</string>
@@ -60,4 +62,51 @@
     <string name="about_github">GitHub</string>
     <string name="about_mac_app">Mac app</string>
     <string name="about_close">Close</string>
+
+    <string-array name="changelog_v0_0_47">
+        <item>Fixed: the WiFi listener could resolve a VPN\'s tunnel address instead of the real LAN IP when a VPN ran alongside WiFi — now fails closed instead, with a clear \"VPN active\" message.</item>
+        <item>Fixed inconsistent label font size in Settings > General.</item>
+        <item>Performance overlay now defaults to the bottom-right corner.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_46">
+        <item>Dark theme refinements: near-black slate background instead of pure black, plus a proper error color token.</item>
+        <item>Fixed a WCAG AA contrast failure on the landing page\'s \"Download APK\" button in light mode.</item>
+        <item>Settings screen and splash screen now actually use the new slate palette.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_45">
+        <item>Rebrand: new app icon, logo and banner across the app and the landing page.</item>
+        <item>Fixed the launcher icon getting clipped by circular launcher masks (e.g. Samsung One UI).</item>
+        <item>CI hardened: workflow triggers scoped by path, GitHub Actions pinned to a commit SHA.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_44">
+        <item>App launcher icon redesigned with the official Apple and Android marks.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_43">
+        <item>Settings screen rebuilt as a full-screen, traditional Android layout with tabs.</item>
+        <item>Fixed delayed typing and cursor updates on a mostly static extended display.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_42">
+        <item>Settings and About dialogs get a translucent, frosted-glass-style container.</item>
+        <item>Fixed the header overlapping the theme/language switcher on medium-width screens.</item>
+        <item>Landing page rewritten in React + Vite + TypeScript + Tailwind CSS v4 + shadcn/ui.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_41">
+        <item>Fixed translation errors in the Code of Conduct/Contributing pages.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_40">
+        <item>Protocol parity with the latest Mac sender: decode-ceiling negotiation, UDP cursor side channel, real stylus pressure and tilt.</item>
+        <item>Korean translation added.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_39">
+        <item>Korean landing page.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_38">
+        <item>Simplified Chinese and Japanese added to the app.</item>
+        <item>Landing page becomes multilingual, with its own page per language.</item>
+    </string-array>
+    <string-array name="changelog_v0_0_37">
+        <item>Fixed mDNS not re-announcing after a WiFi IP change.</item>
+        <item>Fixed a MediaCodec reconfigure throttle edge case that could leave the decoder misconfigured.</item>
+        <item>Security hardening: bounded cursor hotspot values, sanitized control-message logging.</item>
+    </string-array>
 </resources>
