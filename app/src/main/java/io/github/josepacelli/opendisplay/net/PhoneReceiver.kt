@@ -820,7 +820,7 @@ class PhoneReceiver(context: Context) {
                 }
             } catch (e: IOException) {
                 if (!running.get()) return
-                Log.warn("listener on ${bindAddress.hostAddress} failed, retrying in 1s", e)
+                Log.warn("listener failed, retrying in 1s", e)
                 Thread.sleep(1000)
             }
         }
@@ -851,7 +851,7 @@ class PhoneReceiver(context: Context) {
                 }
             } catch (e: IOException) {
                 if (!running.get()) return
-                Log.warn("cursor UDP listener on ${bindAddress.hostAddress} failed, retrying in 1s", e)
+                Log.warn("cursor UDP listener failed, retrying in 1s", e)
                 Thread.sleep(1000)
             } finally {
                 cursorSocket = null
