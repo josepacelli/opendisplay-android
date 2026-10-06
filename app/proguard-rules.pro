@@ -14,3 +14,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Release builds drop Log.info calls: they print bind/peer IP addresses (#160).
+# warn/error stay, so real failures still reach logcat.
+-assumenosideeffects class io.github.josepacelli.opendisplay.util.Log {
+    public void info(java.lang.String);
+}
