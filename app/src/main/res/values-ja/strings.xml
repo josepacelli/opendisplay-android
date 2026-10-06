@@ -70,14 +70,19 @@
     <string name="about_mac_app">Macアプリ</string>
     <string name="about_close">閉じる</string>
 
-    <string-array name="changelog_v0_0_48">
+    <string-array name="changelog_v0_0_50">
+        <item>接続中に表示されるフローティングメニューを追加（Teams風）。Macでマウスを動かしても非表示になります。</item>
+        <item>Macから送られる更新リンクは、このアプリ自身のストアページを指す場合のみ有効になりました。</item>
+        <item>Macから送られる長すぎる「更新が必要」メッセージを切り詰めるようにしました。</item>
+        <item>リリースビルドでは、端末や接続先のIPアドレスをlogcatに出力しなくなりました。</item>
+    </string-array>
+    <string-array name="changelog_older_versions">
+        <item>「更新履歴」タブが自分自身のバージョンの項目なしで配布されていた問題を修正。</item>
         <item>修正：WiFiと同時にVPNが有効な場合、WiFiリスナーが実際のLAN IPではなくVPNのトンネルアドレスを解決してしまう問題を修正 — 現在は「VPN有効」という明確なメッセージとともに閉じた状態になります。</item>
         <item>設定に「更新履歴」タブを追加 — v0.0.37以降の全リリースを、アプリの7言語すべてに翻訳して掲載。</item>
         <item>Android 15+で設定画面の上部バーがステータスバーの下に描画される問題を修正。</item>
         <item>設定 > 一般のラベルのフォントサイズが不揃いだった問題を修正。</item>
         <item>パフォーマンスオーバーレイの初期位置を右下に変更。</item>
-    </string-array>
-    <string-array name="changelog_older_versions">
         <item>ダークテーマを改善：純粋な黒ではなくほぼ黒に近いスレート背景に、専用のエラー用カラーを追加。</item>
         <item>ライトモードのランディングページの「APKをダウンロード」ボタンのWCAG AAコントラスト不足を修正。</item>
         <item>設定画面とスプラッシュ画面が新しいスレートパレットを実際に使用するように修正。</item>

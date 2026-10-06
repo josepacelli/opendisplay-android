@@ -70,14 +70,19 @@
     <string name="about_mac_app">App do Mac</string>
     <string name="about_close">Fechar</string>
 
-    <string-array name="changelog_v0_0_48">
+    <string-array name="changelog_v0_0_50">
+        <item>Novo menu flutuante enquanto ligado, ao estilo Teams. Mexer o rato no Mac também esconde o menu.</item>
+        <item>A ligação de atualização enviada pelo Mac passa a valer apenas se apontar para a página da própria app na loja.</item>
+        <item>Mensagens de \"atualização necessária\" demasiado longas, enviadas pelo Mac, passam a ser truncadas.</item>
+        <item>As versões de release deixam de escrever IPs do dispositivo ou do par no logcat.</item>
+    </string-array>
+    <string-array name="changelog_older_versions">
+        <item>Corrigido o separador Novidades a sair sem uma entrada para a própria versão.</item>
         <item>Corrigido: o listener de WiFi podia resolver o endereço do túnel de uma VPN em vez do IP real da rede local quando a VPN estava ativa em simultâneo com o WiFi — agora fica bloqueado por predefinição, com uma mensagem clara de \"VPN ativa\".</item>
         <item>Novo separador Novidades em Definições — todas as versões desde a v0.0.37, traduzidas nos 7 idiomas da app.</item>
         <item>Corrigida a barra superior de Definições a desenhar por baixo da barra de estado no Android 15+.</item>
         <item>Corrigido tamanho de letra inconsistente nas etiquetas em Definições > Geral.</item>
         <item>A sobreposição de desempenho passa a usar por predefinição o canto inferior direito.</item>
-    </string-array>
-    <string-array name="changelog_older_versions">
         <item>Melhorias no tema escuro: fundo quase preto (slate) em vez de preto puro, mais uma cor própria para erro.</item>
         <item>Corrigida falha de contraste WCAG AA no botão \"Transferir APK\" da página de destino no modo claro.</item>
         <item>O ecrã de Definições e o ecrã inicial passam a usar mesmo a nova paleta slate.</item>

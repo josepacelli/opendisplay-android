@@ -70,14 +70,19 @@
     <string name="about_mac_app">Mac app</string>
     <string name="about_close">Close</string>
 
-    <string-array name="changelog_v0_0_48">
+    <string-array name="changelog_v0_0_50">
+        <item>New floating menu while connected, Teams-style. Moving the mouse on the Mac also hides it.</item>
+        <item>The update link sent by the Mac is now only accepted if it points to this app\'s own store listing.</item>
+        <item>Overly long \"update required\" messages sent by the Mac are now truncated.</item>
+        <item>Release builds no longer write device or peer IP addresses to logcat.</item>
+    </string-array>
+    <string-array name="changelog_older_versions">
+        <item>Fixed the Changelog tab shipping without an entry for its own version.</item>
         <item>Fixed: the WiFi listener could resolve a VPN\'s tunnel address instead of the real LAN IP when a VPN ran alongside WiFi — now fails closed instead, with a clear \"VPN active\" message.</item>
         <item>New Changelog tab in Settings — every release from v0.0.37 onward, translated into all 7 app languages.</item>
         <item>Fixed the Settings top app bar drawing under the status bar on Android 15+.</item>
         <item>Fixed inconsistent label font size in Settings > General.</item>
         <item>Performance overlay now defaults to the bottom-right corner.</item>
-    </string-array>
-    <string-array name="changelog_older_versions">
         <item>Dark theme refinements: near-black slate background instead of pure black, plus a proper error color token.</item>
         <item>Fixed a WCAG AA contrast failure on the landing page\'s \"Download APK\" button in light mode.</item>
         <item>Settings screen and splash screen now actually use the new slate palette.</item>

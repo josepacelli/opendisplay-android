@@ -70,14 +70,19 @@
     <string name="about_mac_app">Mac 앱</string>
     <string name="about_close">닫기</string>
 
-    <string-array name="changelog_v0_0_48">
+    <string-array name="changelog_v0_0_50">
+        <item>연결 중 표시되는 플로팅 메뉴 추가 (Teams 스타일). Mac에서 마우스를 움직여도 메뉴가 숨겨집니다.</item>
+        <item>Mac에서 보낸 업데이트 링크는 이제 이 앱의 스토어 페이지를 가리킬 때만 허용됩니다.</item>
+        <item>Mac에서 보낸 너무 긴 \"업데이트 필요\" 메시지를 이제 잘라서 표시합니다.</item>
+        <item>릴리스 빌드에서 기기 및 상대방의 IP 주소를 더 이상 logcat에 기록하지 않습니다.</item>
+    </string-array>
+    <string-array name="changelog_older_versions">
+        <item>변경 내역 탭이 자신의 버전 항목 없이 배포되던 문제 수정.</item>
         <item>수정: WiFi와 VPN이 동시에 활성화된 경우 WiFi 리스너가 실제 LAN IP 대신 VPN 터널 주소를 사용하던 문제 수정 — 이제 \"VPN 활성\" 메시지와 함께 안전하게 차단됩니다.</item>
         <item>설정에 새 변경 내역 탭 추가 — v0.0.37 이후 모든 릴리스를 앱의 7개 언어 전부로 번역해 제공.</item>
         <item>Android 15+에서 설정 상단 바가 상태 바 아래로 그려지던 문제 수정.</item>
         <item>설정 > 일반의 라벨 글꼴 크기가 일관되지 않던 문제 수정.</item>
         <item>성능 오버레이 기본 위치를 오른쪽 아래로 변경.</item>
-    </string-array>
-    <string-array name="changelog_older_versions">
         <item>다크 테마 개선: 순수 검정 대신 짙은 슬레이트 배경 적용, 오류 전용 색상 추가.</item>
         <item>라이트 모드 랜딩 페이지의 \"APK 다운로드\" 버튼 WCAG AA 대비 오류 수정.</item>
         <item>설정 화면과 스플래시 화면이 새 슬레이트 팔레트를 실제로 사용하도록 수정.</item>
