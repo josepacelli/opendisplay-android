@@ -70,14 +70,19 @@
     <string name="about_mac_app">Mac 应用</string>
     <string name="about_close">关闭</string>
 
-    <string-array name="changelog_v0_0_48">
+    <string-array name="changelog_v0_0_50">
+        <item>新增连接时显示的悬浮菜单（Teams 风格）。在 Mac 上移动鼠标也会将其隐藏。</item>
+        <item>Mac 发来的更新链接现在只有指向本应用自己的商店页面时才会被接受。</item>
+        <item>Mac 发来的过长\"需要更新\"消息现在会被截断。</item>
+        <item>发布版本不再将设备或对端的 IP 地址写入 logcat。</item>
+    </string-array>
+    <string-array name="changelog_older_versions">
+        <item>修复更新日志标签页发布时缺少自身版本条目的问题。</item>
         <item>修复：WiFi 和 VPN 同时开启时，WiFi 监听器可能解析到 VPN 隧道地址而不是真实局域网 IP — 现在会直接关闭监听并显示明确的\"VPN 已开启\"提示。</item>
         <item>设置中新增"更新日志"标签页 — 展示自 v0.0.37 以来的每个版本，已翻译成全部 7 种应用语言。</item>
         <item>修复 Android 15+ 上设置页顶部栏绘制到状态栏下方的问题。</item>
         <item>修复设置 > 常规中标签字号不一致的问题。</item>
         <item>性能叠加层默认位置改为右下角。</item>
-    </string-array>
-    <string-array name="changelog_older_versions">
         <item>深色主题优化：使用接近黑色的石板背景替代纯黑，并新增专用错误色。</item>
         <item>修复浅色模式下落地页\"下载 APK\"按钮的 WCAG AA 对比度不达标问题。</item>
         <item>设置界面和启动画面现在真正使用新的石板配色。</item>

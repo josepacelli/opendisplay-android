@@ -70,14 +70,19 @@
     <string name="about_mac_app">App de Mac</string>
     <string name="about_close">Cerrar</string>
 
-    <string-array name="changelog_v0_0_48">
+    <string-array name="changelog_v0_0_50">
+        <item>Nuevo menú flotante mientras hay conexión, estilo Teams. Mover el ratón en el Mac también lo oculta.</item>
+        <item>El enlace de actualización enviado por el Mac ahora solo se acepta si apunta a la ficha de la propia app en la tienda.</item>
+        <item>Los mensajes de \"actualización necesaria\" demasiado largos enviados por el Mac ahora se truncan.</item>
+        <item>Las compilaciones de release ya no escriben en logcat las IP del dispositivo ni del par.</item>
+    </string-array>
+    <string-array name="changelog_older_versions">
+        <item>Corregida la pestaña Novedades, que salía sin una entrada para su propia versión.</item>
         <item>Corregido: el listener de WiFi podía resolver la dirección del túnel de una VPN en lugar de la IP real de la red local cuando la VPN estaba activa junto con el WiFi — ahora se cierra por defecto, con un mensaje claro de \"VPN activa\".</item>
         <item>Nueva pestaña Novedades en Ajustes — todas las versiones desde v0.0.37, traducidas a los 7 idiomas de la app.</item>
         <item>Corregido que la barra superior de Ajustes se dibujara debajo de la barra de estado en Android 15+.</item>
         <item>Corregido el tamaño de fuente inconsistente de las etiquetas en Ajustes > General.</item>
         <item>La superposición de rendimiento ahora usa por defecto la esquina inferior derecha.</item>
-    </string-array>
-    <string-array name="changelog_older_versions">
         <item>Mejoras en el tema oscuro: fondo casi negro (slate) en lugar de negro puro, más un color propio para errores.</item>
         <item>Corregido un fallo de contraste WCAG AA en el botón \"Descargar APK\" de la landing page en modo claro.</item>
         <item>La pantalla de Ajustes y la pantalla de inicio ahora sí usan la nueva paleta slate.</item>
