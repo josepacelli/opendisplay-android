@@ -72,8 +72,8 @@
     <string name="update_check_button">Procurar atualizações no Google Play</string>
     <string name="about_close">Fechar</string>
 
-    <string-array name="changelog_v1_0_60">
-        <item>O app agora verifica sozinho se há uma versão nova no GitHub e oferece a atualização junto com as notas da versão. Em Configurações > Sobre também há um botão para verificar na hora.</item>
+    <string-array name="changelog_v1_0_61">
+        <item>As atualizações agora vêm pelo Google Play: quando sai uma versão nova, o Play oferece assim que você abre o app. Em Configurações > Sobre há um botão que abre a página do app no Play.</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>Com cabo USB, o Android agora oferece abrir o OpenDisplay assim que o Mac conecta, e o vídeo não cai mais em quadros de certos tamanhos. Precisa do app do Mac v1.28 ou mais novo.</item>

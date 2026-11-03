@@ -87,7 +87,7 @@
     "android": {
       "title": "受信側",
       "desc": "映像を表示し、タッチ/スクロールを送り返します。",
-      "cta": "APKをダウンロード（v1.0.60）",
+      "cta": "APKをダウンロード（v1.0.61）",
       "note": "Google Play版はクローズドテスト中です — <optin>ここから参加 ↗</optin>。それまでは、上記のAPKをサイドロードするか、<compile>ソースからビルド ↗</compile>してください。<releases>過去のリリースを見る ↗</releases>"
     }
   },

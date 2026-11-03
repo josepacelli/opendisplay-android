@@ -72,8 +72,8 @@
     <string name="update_check_button">Google Playでアップデートを確認</string>
     <string name="about_close">閉じる</string>
 
-    <string-array name="changelog_v1_0_60">
-        <item>アプリがGitHubの新しいリリースを自動で確認し、リリースノートとともに更新を案内するようになりました。設定 > アプリについて から手動で確認することもできます。</item>
+    <string-array name="changelog_v1_0_61">
+        <item>アップデートはGoogle Play経由になりました。新しいバージョンが出ると、アプリを開いたときにPlayが案内します。設定 > アプリについて にPlayのアプリページを開くボタンがあります。</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>USBケーブルで接続すると、Macがつながった時点でAndroidがOpenDisplayを開くか確認するようになりました。特定のサイズのフレームで映像が途切れる問題も直りました。Mac版アプリはv1.28以降が必要です。</item>

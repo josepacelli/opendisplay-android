@@ -72,8 +72,8 @@
     <string name="update_check_button">在 Google Play 检查更新</string>
     <string name="about_close">关闭</string>
 
-    <string-array name="changelog_v1_0_60">
-        <item>应用现在会自动检查 GitHub 上的新版本，并连同更新说明一起提示更新。也可以在 设置 > 关于 中手动检查。</item>
+    <string-array name="changelog_v1_0_61">
+        <item>更新现在通过 Google Play 提供：有新版本时，打开应用后 Play 会立即提示。在 设置 > 关于 中有按钮可打开应用的 Play 页面。</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>使用 USB 数据线时，Mac 一连接，Android 就会询问是否打开 OpenDisplay，并且特定大小的帧不再导致画面中断。需要 Mac 应用 v1.28 或更高版本。</item>

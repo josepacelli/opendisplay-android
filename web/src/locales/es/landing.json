@@ -87,7 +87,7 @@
     "android": {
       "title": "El receptor",
       "desc": "Muestra la transmisión y envía toque/desplazamiento de vuelta.",
-      "cta": "Descargar APK (v1.0.60)",
+      "cta": "Descargar APK (v1.0.61)",
       "note": "La versión de Google Play está en pruebas cerradas — <optin>únete aquí ↗</optin>. Mientras tanto, instala manualmente el APK de arriba, o <compile>compílalo desde el código fuente ↗</compile>. <releases>Ver versiones anteriores ↗</releases>"
     }
   },
