@@ -72,8 +72,8 @@
     <string name="update_check_button">Google Play에서 업데이트 확인</string>
     <string name="about_close">닫기</string>
 
-    <string-array name="changelog_v1_0_60">
-        <item>앱이 GitHub의 새 릴리스를 스스로 확인하고 릴리스 노트와 함께 업데이트를 안내합니다. 설정 > 앱 정보에서 직접 확인할 수도 있습니다.</item>
+    <string-array name="changelog_v1_0_61">
+        <item>이제 업데이트는 Google Play를 통해 제공됩니다. 새 버전이 나오면 앱을 열 때 Play가 바로 안내합니다. 설정 > 앱 정보에 Play의 앱 페이지를 여는 버튼이 있습니다.</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>USB 케이블로 연결하면 Mac이 연결되는 즉시 Android가 OpenDisplay를 열지 물어봅니다. 특정 크기의 프레임에서 영상이 끊기던 문제도 해결했습니다. Mac 앱 v1.28 이상이 필요합니다.</item>

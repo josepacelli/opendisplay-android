@@ -25,6 +25,6 @@ private const val CHANGELOG_OLDER_RANGE_RES = R.array.changelog_older_versions
  * `strings.xml` locales) with its range upper bound advanced. Condensed from the actual GitHub
  * release notes (`gh release view vX.X.X`). */
 val CHANGELOG_ENTRIES = listOf(
-    ChangelogEntry("1.0.60", "2026-11-03", R.array.changelog_v1_0_60),
-    ChangelogEntry("0.0.37 – 0.0.56", "", CHANGELOG_OLDER_RANGE_RES),
+    ChangelogEntry("1.0.61", "2026-11-03", R.array.changelog_v1_0_61),
+    ChangelogEntry("0.0.37 – 1.0.60", "", CHANGELOG_OLDER_RANGE_RES),
 )

@@ -87,7 +87,7 @@
     "android": {
       "title": "O receptor",
       "desc": "Exibe a transmissão e envia toque/scroll de volta.",
-      "cta": "Baixar APK (v1.0.60)",
+      "cta": "Baixar APK (v1.0.61)",
       "note": "A versão da Google Play está em teste fechado — <optin>participe aqui ↗</optin>. Enquanto isso, instale manualmente o APK acima, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
     }
   },
