@@ -11,7 +11,6 @@
          on API 33+. Requested at runtime too (MainActivity.requestNotificationPermissionIfNeeded) —
          TODO(fase 9): show a rationale UI before that request instead of asking cold. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:allowBackup="true"
@@ -50,14 +49,5 @@
             android:exported="false"
             android:foregroundServiceType="connectedDevice" />
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
     </application>
 </manifest>

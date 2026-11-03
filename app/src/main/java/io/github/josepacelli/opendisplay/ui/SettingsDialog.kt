@@ -30,7 +30,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,7 +53,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,9 +75,6 @@ import androidx.compose.ui.window.DialogProperties
 import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
-import io.github.josepacelli.opendisplay.net.UpdateManager
-import io.github.josepacelli.opendisplay.net.UpdateState
-import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -395,20 +390,19 @@ private fun DetailsTab(connected: Boolean, addressHint: String?, addressUnavaila
     }
 }
 
-/** "About" tab: app icon, tagline, version/license, links to this client's repo and the
- * Mac sender's site, and the update checker. */
+/** "About" tab: app icon, tagline, version/license, a link to this app's Google Play page (where
+ * updates show up, #208), and links to this client's repo and the Mac sender's site. Merged back
+ * into [SettingsDialog] as a tab (issue #112) — was the standalone `AboutDialog` split out in
+ * issue #48 to keep the (then single-column) dialog from getting too long; tabs make that no
+ * longer a concern. */
 @Composable
 private fun AboutTab() {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
-    val scope = rememberCoroutineScope()
-
     val versionName = remember {
         @Suppress("DEPRECATION")
         runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull()
     }
-
-    var updateState by remember { mutableStateOf<UpdateState>(UpdateState.Idle) }
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 32.dp, start = 24.dp, end = 24.dp),
@@ -448,66 +442,10 @@ private fun AboutTab() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        when (val state = updateState) {
-            is UpdateState.Idle -> {
-                Button(onClick = {
-                    updateState = UpdateState.Checking
-                    scope.launch { updateState = UpdateManager.checkForUpdate() }
-                }) {
-                    Text(stringResource(R.string.update_check_button))
-                }
-            }
-            is UpdateState.Checking -> {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-            }
-                        is UpdateState.UpdateAvailable -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        text = stringResource(R.string.update_available_message, state.version),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    if (!state.releaseNotes.isNullOrBlank()) {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = stringResource(R.string.update_whats_new),
-                            style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier.align(Alignment.Start),
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = state.releaseNotes,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = {
-                        UpdateManager.downloadApk(context, state.downloadUrl, state.version)
-                        updateState = UpdateState.Idle
-                    }) {
-                        Text(stringResource(R.string.update_download_install))
-                    }
-                }
-            }
-            is UpdateState.Error -> {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = state.message,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { updateState = UpdateState.Idle }) {
-                        Text(stringResource(R.string.update_retry))
-                    }
-                }
-            }
+        Button(onClick = {
+            uriHandler.openUri("https://play.google.com/store/apps/details?id=${context.packageName}")
+        }) {
+            Text(stringResource(R.string.update_check_button))
         }
 
         Spacer(modifier = Modifier.height(24.dp))

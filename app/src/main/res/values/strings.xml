@@ -70,15 +70,7 @@
     <string name="about_github">GitHub</string>
     <string name="about_mac_app">Mac app</string>
     <string name="about_close">Close</string>
-    <string name="update_check_button">Check for updates</string>
-    <string name="update_available_message">Update available: %1$s</string>
-    <string name="update_download_install">Download and install</string>
-    <string name="update_retry">Retry</string>
-    <string name="update_dialog_title">Update available</string>
-    <string name="update_dialog_message">A new version %1$s is available. Download and install it now?</string>
-    <string name="update_dialog_download">Download and install</string>
-    <string name="update_dialog_later">Later</string>
-    <string name="update_whats_new">What\'s new</string>
+    <string name="update_check_button">Check for updates on Google Play</string>
 
     <string-array name="changelog_v1_0_60">
         <item>The app now checks GitHub for new releases on its own and offers the update with its release notes. There\'s also a manual check button in Settings > About.</item>

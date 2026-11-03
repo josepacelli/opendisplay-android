@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
@@ -36,7 +35,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -67,8 +65,6 @@ import io.github.josepacelli.opendisplay.R
 import io.github.josepacelli.opendisplay.net.PeerSignal
 import io.github.josepacelli.opendisplay.net.PerfHudPosition
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
-import io.github.josepacelli.opendisplay.net.UpdateManager
-import io.github.josepacelli.opendisplay.net.UpdateState
 import io.github.josepacelli.opendisplay.ui.theme.LocalLampColors
 import io.github.josepacelli.opendisplay.ui.theme.OverlayColors
 import kotlinx.coroutines.delay
@@ -112,23 +108,6 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     var settingsInitialTab by remember { mutableIntStateOf(SETTINGS_TAB_GENERAL) }
     var lastActivityAt by remember { mutableLongStateOf(0L) }
     var connectedMenuVisible by remember { mutableStateOf(true) }
-
-    // Auto-check for updates once per process, with a 24h cooldown to avoid
-    // hammering the GitHub API. Manual checks from Settings bypass the cooldown.
-    val autoUpdateContext = LocalContext.current
-    var autoUpdatePrompt by remember { mutableStateOf<UpdateState.UpdateAvailable?>(null) }
-    LaunchedEffect(receiver) {
-        if (UpdateManager.hasCheckedRecently(autoUpdateContext)) return@LaunchedEffect
-        val state = UpdateManager.checkForUpdate()
-        // Only remember the check when it actually produced a result — an error means
-        // the next launch should retry rather than wait out the cooldown.
-        if (state !is UpdateState.Error) {
-            UpdateManager.markChecked(autoUpdateContext)
-        }
-        if (state is UpdateState.UpdateAvailable) {
-            autoUpdatePrompt = state
-        }
-    }
 
     LaunchedEffect(connected) {
         if (connected) {
@@ -248,51 +227,6 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
 
     if (showSettings) {
         SettingsDialog(receiver = receiver, initialTab = settingsInitialTab, onDismiss = { showSettings = false })
-    }
-        autoUpdatePrompt?.let { prompt ->
-        AlertDialog(
-            onDismissRequest = { autoUpdatePrompt = null },
-            title = { Text(stringResource(R.string.update_dialog_title)) },
-            text = {
-                // Cột này giúp nội dung cuộn được nếu changelog quá dài
-                Column(
-                    modifier = Modifier
-                        .heightIn(max = 400.dp)
-                        .verticalScroll(rememberScrollState()),
-                ) {
-                    Text(stringResource(R.string.update_dialog_message, prompt.version))
-                    
-                    // Khối hiển thị changelog
-                    if (!prompt.releaseNotes.isNullOrBlank()) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = stringResource(R.string.update_whats_new),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = prompt.releaseNotes,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            },
-            confirmButton = {
-                Button(onClick = {
-                    UpdateManager.downloadApk(autoUpdateContext, prompt.downloadUrl, prompt.version)
-                    autoUpdatePrompt = null
-                }) {
-                    Text(stringResource(R.string.update_dialog_download))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { autoUpdatePrompt = null }) {
-                    Text(stringResource(R.string.update_dialog_later))
-                }
-            },
-        )
     }
 }
 

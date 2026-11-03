@@ -12,6 +12,14 @@ Organized by file, in source order.
 - **`notificationPermissionLauncher`** (no-op result handler): if denied, the foreground service
   still runs fine — only its persistent notification (status/version/disconnect, see #22)
   silently won't show, same as before this permission request existed.
+- **`checkPlayUpdate`** (Play In-App Updates, #208): the app ships on Google Play, so updates go
+  through Play. A self-updater that downloads the APK from GitHub (#206) needs
+  `REQUEST_INSTALL_PACKAGES`, which Play rejected on upload, and Play forbids a store app updating
+  itself from outside the store anyway. On an install that didn't come from Play (GitHub APK,
+  `adb`) the `appUpdateInfo` task just fails and nothing happens — those users update from the
+  releases page as before. IMMEDIATE, not FLEXIBLE: a flexible update finishes by restarting the
+  app, which would cut a live Mac session; the immediate flow runs at launch, before any session.
+  Only on a fresh `onCreate` (`savedInstanceState == null`), not on rotation/recreation.
 - **`openPendingAccessory`**, `hasPermission` + the `IllegalArgumentException`/`SecurityException`
   catch around `openAccessory`: the Mac resets the device to end a session, so a re-delivered
   launch intent (recents after the process died) can name an attachment that's gone or lost its
@@ -279,6 +287,11 @@ Organized by file, in source order.
   via Maven metadata that the feature only started publishing from 2.3.0. Deobfuscated Compose
   stack traces aren't worth losing release builds over until AGP's built-in Kotlin support
   catches up.
+- **`implementation(libs.androidx.fragment)`**, never used directly: `play:app-update` (#208)
+  drags in `androidx.fragment:fragment:1.0.0`, and with a pre-1.3 fragment on the classpath
+  release lint fails every `registerForActivityResult` in `MainActivity`
+  (`InvalidFragmentVersionForActivityResult`). Pinning a current fragment is the fix lint itself
+  recommends.
 
 ## web/vite.config.ts
 

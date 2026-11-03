@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<paths>
-    <!-- Cho phép chia sẻ file từ thư mục Download riêng của ứng dụng -->
-    <external-files-path name="updates" path="Download/" />
-</paths>

@@ -69,6 +69,7 @@
     <string name="about_version_unknown">OpenDisplay · GPL-3.0</string>
     <string name="about_github">GitHub</string>
     <string name="about_mac_app">App do Mac</string>
+    <string name="update_check_button">Procurar atualizações no Google Play</string>
     <string name="about_close">Fechar</string>
 
     <string-array name="changelog_v1_0_60">
