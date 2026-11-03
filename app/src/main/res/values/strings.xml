@@ -80,11 +80,12 @@
     <string name="update_dialog_later">Later</string>
     <string name="update_whats_new">What\'s new</string>
 
-    <string-array name="changelog_v0_0_56">
-        <item>With a USB cable, Android now offers to open OpenDisplay as soon as the Mac connects, and the video no longer drops on frames of certain sizes. Needs the Mac app v1.28 or newer.</item>
-        <item>A cable session that already ended is no longer reopened, and a cable that disappears while the app is starting no longer crashes it.</item>
+    <string-array name="changelog_v1_0_60">
+        <item>The app now checks GitHub for new releases on its own and offers the update with its release notes. There\'s also a manual check button in Settings > About.</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>With a USB cable, Android now offers to open OpenDisplay as soon as the Mac connects, and the video no longer drops on frames of certain sizes. Needs the Mac app v1.28 or newer.</item>
+        <item>A cable session that already ended is no longer reopened, and a cable that disappears while the app is starting no longer crashes it.</item>
         <item>New look: a navy theme in light and dark, a status light on the waiting screen, and this device\'s name in large type, since that\'s what you pick on the Mac.</item>
         <item>Settings are regrouped, and on tablets the sections sit on the left with the content beside them.</item>
         <item>The floating menu has proper icons and bigger buttons, with Disconnect set apart from the rest.</item>

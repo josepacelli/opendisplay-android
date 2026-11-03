@@ -4,7 +4,7 @@ import io.github.josepacelli.opendisplay.R
 
 /** One entry in the Settings "Changelog" tab — either a single release or a rolled-up range of
  * older ones (see [CHANGELOG_OLDER_RANGE_RES]).
- * @param version e.g. `"0.0.48"` for a single release, or `"0.0.37 – 0.0.55"` for a range —
+ * @param version e.g. `"0.0.48"` for a single release, or `"0.0.37 – 0.0.56"` for a range —
  * without the `v` prefix, rendered as `"v$version"`.
  * @param dateIso release date as `"yyyy-MM-dd"` — formatted for display with the device's
  * locale (see `formatChangelogDate` in `SettingsDialog.kt`), so no per-language date strings.
@@ -25,6 +25,6 @@ private const val CHANGELOG_OLDER_RANGE_RES = R.array.changelog_older_versions
  * `strings.xml` locales) with its range upper bound advanced. Condensed from the actual GitHub
  * release notes (`gh release view vX.X.X`). */
 val CHANGELOG_ENTRIES = listOf(
-    ChangelogEntry("0.0.56", "2026-10-27", R.array.changelog_v0_0_56),
-    ChangelogEntry("0.0.37 – 0.0.55", "", CHANGELOG_OLDER_RANGE_RES),
+    ChangelogEntry("1.0.60", "2026-11-03", R.array.changelog_v1_0_60),
+    ChangelogEntry("0.0.37 – 0.0.56", "", CHANGELOG_OLDER_RANGE_RES),
 )
