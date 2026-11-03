@@ -71,11 +71,12 @@
     <string name="about_mac_app">Macアプリ</string>
     <string name="about_close">閉じる</string>
 
-    <string-array name="changelog_v0_0_56">
-        <item>USBケーブルで接続すると、Macがつながった時点でAndroidがOpenDisplayを開くか確認するようになりました。特定のサイズのフレームで映像が途切れる問題も直りました。Mac版アプリはv1.28以降が必要です。</item>
-        <item>すでに終わったケーブルのセッションを再び開くことはなくなり、アプリの起動中にケーブルが外れてもクラッシュしなくなりました。</item>
+    <string-array name="changelog_v1_0_60">
+        <item>アプリがGitHubの新しいリリースを自動で確認し、リリースノートとともに更新を案内するようになりました。設定 > アプリについて から手動で確認することもできます。</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>USBケーブルで接続すると、Macがつながった時点でAndroidがOpenDisplayを開くか確認するようになりました。特定のサイズのフレームで映像が途切れる問題も直りました。Mac版アプリはv1.28以降が必要です。</item>
+        <item>すでに終わったケーブルのセッションを再び開くことはなくなり、アプリの起動中にケーブルが外れてもクラッシュしなくなりました。</item>
         <item>デザインを一新：ライト／ダーク両対応のネイビーテーマ、待機画面のステータスランプ、そして Mac で選ぶこの端末の名前を大きく表示。</item>
         <item>設定を整理し直しました。タブレットでは左にセクション、右に内容が並びます。</item>
         <item>フローティングメニューのアイコンを正式なものにし、ボタンも大きくしました。「切断」は他のボタンと離して配置。</item>

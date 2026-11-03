@@ -87,7 +87,7 @@
     "android": {
       "title": "O recetor",
       "desc": "Apresenta a transmissão e envia toque/deslocamento de volta.",
-      "cta": "Transferir APK (v0.0.56)",
+      "cta": "Transferir APK (v1.0.60)",
       "note": "A versão da Google Play está em teste fechado — <optin>participe aqui ↗</optin>. Entretanto, instale manualmente o APK acima, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
     }
   },

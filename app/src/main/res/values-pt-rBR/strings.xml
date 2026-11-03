@@ -71,11 +71,12 @@
     <string name="about_mac_app">App do Mac</string>
     <string name="about_close">Fechar</string>
 
-    <string-array name="changelog_v0_0_56">
-        <item>Com cabo USB, o Android agora oferece abrir o OpenDisplay assim que o Mac conecta, e o vídeo não cai mais em quadros de certos tamanhos. Precisa do app do Mac v1.28 ou mais novo.</item>
-        <item>Uma sessão por cabo que já terminou não é mais reaberta, e um cabo que some enquanto o app abre não derruba mais o app.</item>
+    <string-array name="changelog_v1_0_60">
+        <item>O app agora verifica sozinho se há uma versão nova no GitHub e oferece a atualização junto com as notas da versão. Em Configurações > Sobre também há um botão para verificar na hora.</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>Com cabo USB, o Android agora oferece abrir o OpenDisplay assim que o Mac conecta, e o vídeo não cai mais em quadros de certos tamanhos. Precisa do app do Mac v1.28 ou mais novo.</item>
+        <item>Uma sessão por cabo que já terminou não é mais reaberta, e um cabo que some enquanto o app abre não derruba mais o app.</item>
         <item>Visual novo: tema azul-marinho nos modos claro e escuro, uma luz de status na tela de espera e o nome do aparelho em letras grandes, já que é ele que você escolhe no Mac.</item>
         <item>As configurações foram reagrupadas e, no tablet, as seções ficam à esquerda com o conteúdo ao lado.</item>
         <item>O menu flutuante ganhou ícones de verdade e botões maiores, com o Desconectar separado dos outros.</item>
