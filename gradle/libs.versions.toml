@@ -8,6 +8,8 @@ lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
 composeBom = "2026.06.00"
 coroutines = "1.11.0"
+playAppUpdate = "2.1.0"
+fragment = "1.8.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -23,6 +25,8 @@ androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 
 [plugins]

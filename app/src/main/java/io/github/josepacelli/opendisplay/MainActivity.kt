@@ -38,6 +38,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import io.github.josepacelli.opendisplay.net.PhoneReceiver
 import io.github.josepacelli.opendisplay.service.ReceiverService
 import io.github.josepacelli.opendisplay.ui.ReceiverScreen
@@ -98,6 +102,26 @@ class MainActivity : ComponentActivity() {
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+
+    private val playUpdateLauncher =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {}
+
+    /** Asks Google Play whether a newer version is published and, if so, hands over to Play's own
+     * full-screen update flow (download, install, restart). */
+    private fun checkPlayUpdate() {
+        val manager = AppUpdateManagerFactory.create(this)
+        manager.appUpdateInfo.addOnSuccessListener { info ->
+            if (info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                info.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
+                manager.startUpdateFlowForResult(
+                    info,
+                    playUpdateLauncher,
+                    AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE),
+                )
+            }
+        }
+    }
 
     /** The cable arrived while the app was already open (see `singleTop`).
      * @param intent the new intent, possibly carrying a USB accessory extra. */
@@ -160,6 +184,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         requestNotificationPermissionIfNeeded()
+        if (savedInstanceState == null) checkPlayUpdate()
 
         ContextCompat.registerReceiver(
             this,

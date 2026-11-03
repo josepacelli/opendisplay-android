@@ -54,7 +54,6 @@ android {
 
     buildFeatures {
         compose = true
-        buildConfig = true
     }
 
     packaging {
@@ -70,6 +69,8 @@ composeCompiler {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.play.app.update)
+    implementation(libs.androidx.fragment)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -84,7 +85,6 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation("org.json:json:20240303")
 }
 
 jacoco {
@@ -102,8 +102,6 @@ val coverageExcludes = listOf(
     "**/net/AccessoryLink*.*",
     "**/net/SocketLink*.*",
     "**/net/NetworkInfo*.*",
-    "**/net/UpdateManager*.*",
-    "**/net/UpdateState*.*",  
     "**/video/VideoDecoder*.*",
     "**/util/Log*.*",
 )
