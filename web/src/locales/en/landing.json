@@ -88,7 +88,7 @@
       "title": "The receiver",
       "desc": "Displays the stream and sends touch/scroll back.",
       "cta": "Get it on Google Play",
-      "note": "Available on Google Play. Prefer the APK? <apk>Download v1.0.61 ↗</apk>, or <compile>build it from source ↗</compile>. <releases>Browse older releases ↗</releases>"
+      "note": "Or <compile>build it from source ↗</compile>."
     }
   },
   "features": {
@@ -129,7 +129,7 @@
       },
       {
         "q": "Is it on Google Play?",
-        "a": "Yes. OpenDisplay Android is on <play>Google Play ↗</play>, and releases will move there over time. For now the APK is also on GitHub Releases — install it with <code>adb install</code> or by copying the APK to the device (enable \"unknown sources\")."
+        "a": "Yes. OpenDisplay Android is on <play>Google Play ↗</play>."
       },
       {
         "q": "Does it need WiFi?",

@@ -73,9 +73,7 @@ export function Install() {
               i18nKey="install.android.note"
               t={t}
               components={{
-                apk: <a href="https://github.com/josepacelli/opendisplay-android/releases/latest" />,
                 compile: <a href="https://github.com/josepacelli/opendisplay-android#build" />,
-                releases: <a href="https://github.com/josepacelli/opendisplay-android/releases" />,
               }}
             />
           }

@@ -2,7 +2,6 @@
 
 ![OpenDisplay banner](web/public/banner.jpg)
 
-[![Latest release](https://img.shields.io/github/v/release/josepacelli/opendisplay-android?label=release)](https://github.com/josepacelli/opendisplay-android/releases/latest)
 [![Tests](https://github.com/josepacelli/opendisplay-android/actions/workflows/tests.yml/badge.svg)](https://github.com/josepacelli/opendisplay-android/actions/workflows/tests.yml)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/josepacelli/opendisplay-android?style=flat)](https://github.com/josepacelli/opendisplay-android/stargazers)
@@ -92,10 +91,6 @@ For using an Android tablet as an external monitor, against the best-known alter
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=io.github.josepacelli.opendisplay)
 
 OpenDisplay Android is on [Google Play](https://play.google.com/store/apps/details?id=io.github.josepacelli.opendisplay).
-Releases will move there over time.
-
-For now the APK is also on [GitHub Releases](https://github.com/josepacelli/opendisplay-android/releases/latest)
-if you'd rather sideload it (`adb install`, or copy it to the device and enable "unknown sources").
 
 ## Build
 

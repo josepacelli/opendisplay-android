@@ -88,7 +88,7 @@
       "title": "수신 측",
       "desc": "화면을 표시하고 터치/스크롤을 다시 전송합니다.",
       "cta": "Google Play에서 받기",
-      "note": "Google Play에서 받을 수 있습니다. APK를 원하시면 <apk>v1.0.61 다운로드 ↗</apk>하거나 <compile>소스에서 빌드 ↗</compile>하세요. <releases>이전 릴리스 보기 ↗</releases>"
+      "note": "<compile>소스에서 빌드 ↗</compile>할 수도 있습니다."
     }
   },
   "features": {
@@ -129,7 +129,7 @@
       },
       {
         "q": "Google Play에 있나요?",
-        "a": "네. OpenDisplay Android는 <play>Google Play ↗</play>에 있고, 릴리스도 앞으로 그쪽으로 옮겨갈 예정입니다. 당분간은 GitHub Releases에서도 APK를 받을 수 있습니다 — <code>adb install</code>로 설치하거나 APK를 기기에 복사해서 설치하세요 (\"출처를 알 수 없는 앱\" 허용 필요)."
+        "a": "네. OpenDisplay Android는 <play>Google Play ↗</play>에 있습니다."
       },
       {
         "q": "WiFi가 꼭 필요한가요?",

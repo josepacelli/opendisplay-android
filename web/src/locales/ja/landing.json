@@ -88,7 +88,7 @@
       "title": "受信側",
       "desc": "映像を表示し、タッチ/スクロールを送り返します。",
       "cta": "Google Playで入手",
-      "note": "Google Playで配信中です。APKがよければ、<apk>v1.0.61をダウンロード ↗</apk>するか、<compile>ソースからビルド ↗</compile>してください。<releases>過去のリリースを見る ↗</releases>"
+      "note": "<compile>ソースからビルド ↗</compile>することもできます。"
     }
   },
   "features": {
@@ -129,7 +129,7 @@
       },
       {
         "q": "Google Playにありますか？",
-        "a": "はい。OpenDisplay Androidは<play>Google Play ↗</play>で配信中で、今後リリースもそちらに移行していきます。当面はGitHub ReleasesでもAPKを配布します — <code>adb install</code>でインストールするか、APKを端末にコピーしてインストールしてください（\"提供元不明のアプリ\"を許可）。"
+        "a": "はい。OpenDisplay Androidは<play>Google Play ↗</play>で配信しています。"
       },
       {
         "q": "WiFiは必要ですか？",

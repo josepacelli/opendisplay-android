@@ -22,9 +22,6 @@ export function Footer() {
           <a className="text-muted-foreground no-underline hover:text-foreground" href="https://github.com/josepacelli/opendisplay-android">
             {t('footer.links.github')}
           </a>
-          <a className="text-muted-foreground no-underline hover:text-foreground" href="https://github.com/josepacelli/opendisplay-android/releases">
-            {t('footer.links.releases')}
-          </a>
           <a className="text-muted-foreground no-underline hover:text-foreground" href="https://github.com/josepacelli/opendisplay-android/issues">
             {t('footer.links.issues')}
           </a>
