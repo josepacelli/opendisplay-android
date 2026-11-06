@@ -87,8 +87,8 @@
     "android": {
       "title": "O receptor",
       "desc": "Exibe a transmissão e envia toque/scroll de volta.",
-      "cta": "Baixar APK (v1.0.61)",
-      "note": "A versão da Google Play está em teste fechado — <optin>participe aqui ↗</optin>. Enquanto isso, instale manualmente o APK acima, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
+      "cta": "Baixar na Google Play",
+      "note": "A versão da Google Play já está disponível. Prefere o APK? <apk>Baixar v1.0.61 ↗</apk>, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
     }
   },
   "features": {
@@ -129,7 +129,7 @@
       },
       {
         "q": "Está na Google Play?",
-        "a": "A versão da Google Play está atualmente em teste fechado. <optin>Participe aqui ↗</optin>. Enquanto isso, também é distribuída pelo GitHub Releases — instale com <code>adb install</code> ou copiando o APK pro aparelho (ative \"fontes desconhecidas\")."
+        "a": "Sim. O OpenDisplay Android está na <play>Google Play ↗</play>. Os releases vão migrar pra lá com o tempo. Por enquanto o APK também sai pelo GitHub Releases — instale com <code>adb install</code> ou copiando o APK pro aparelho (ative \"fontes desconhecidas\")."
       },
       {
         "q": "Precisa de WiFi?",

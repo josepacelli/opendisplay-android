@@ -87,8 +87,8 @@
     "android": {
       "title": "O recetor",
       "desc": "Apresenta a transmissão e envia toque/deslocamento de volta.",
-      "cta": "Transferir APK (v1.0.61)",
-      "note": "A versão da Google Play está em teste fechado — <optin>participe aqui ↗</optin>. Entretanto, instale manualmente o APK acima, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
+      "cta": "Obter na Google Play",
+      "note": "Disponível na Google Play. Prefere o APK? <apk>Transferir v1.0.61 ↗</apk>, ou <compile>compile a partir do código-fonte ↗</compile>. <releases>Ver versões anteriores ↗</releases>"
     }
   },
   "features": {
@@ -129,7 +129,7 @@
       },
       {
         "q": "Está na Google Play?",
-        "a": "A versão da Google Play está atualmente em teste fechado. <optin>Participe aqui ↗</optin>. Entretanto, também é distribuída pelo GitHub Releases — instale com <code>adb install</code> ou copiando o APK para o dispositivo (ative \"origens desconhecidas\")."
+        "a": "Sim. O OpenDisplay Android está na <play>Google Play ↗</play> e os releases vão migrar para lá com o tempo. Por agora o APK também sai pelo GitHub Releases — instale com <code>adb install</code> ou copiando o APK para o dispositivo (ative \"origens desconhecidas\")."
       },
       {
         "q": "Precisa de WiFi?",

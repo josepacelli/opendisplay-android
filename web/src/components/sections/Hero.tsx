@@ -3,7 +3,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 
 const MAC_DOWNLOAD = 'https://github.com/peetzweg/opendisplay/releases/latest'
-const ANDROID_DOWNLOAD = 'https://github.com/josepacelli/opendisplay-android/releases/latest'
+const ANDROID_DOWNLOAD =
+  'https://play.google.com/store/apps/details?id=io.github.josepacelli.opendisplay'
 
 /** The Mac's desktop running on past its own edge onto the tablet, with a window sitting across
  * the seam: the product's one job, drawn instead of described. Decorative for assistive tech.

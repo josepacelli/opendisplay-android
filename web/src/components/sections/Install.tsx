@@ -67,13 +67,13 @@ export function Install() {
           title={t('install.android.title')}
           desc={t('install.android.desc')}
           cta={t('install.android.cta')}
-          href="https://github.com/josepacelli/opendisplay-android/releases/latest"
+          href="https://play.google.com/store/apps/details?id=io.github.josepacelli.opendisplay"
           note={
             <Trans
               i18nKey="install.android.note"
               t={t}
               components={{
-                optin: <a href="https://play.google.com/apps/testing/io.github.josepacelli.opendisplay" />,
+                apk: <a href="https://github.com/josepacelli/opendisplay-android/releases/latest" />,
                 compile: <a href="https://github.com/josepacelli/opendisplay-android#build" />,
                 releases: <a href="https://github.com/josepacelli/opendisplay-android/releases" />,
               }}
