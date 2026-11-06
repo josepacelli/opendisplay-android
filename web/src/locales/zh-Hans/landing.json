@@ -20,7 +20,7 @@
     "sub": "Android"
   },
   "hero": {
-    "badge": "早期 Alpha 版 · 已在真机测试",
+    "badge": "1.0 版 · 已在真机测试",
     "title": "一个桌面，<br/>两块屏幕。",
     "lead": "你的 Android 平板或手机变成 Mac 真正的第二块显示器。免费开源，Mac 上的 <a>OpenDisplay</a> 应用保持原样。",
     "specs": ["Android 8.0+ (API 26)", "macOS（通过原版 OpenDisplay 应用）", "GPL-3.0"],

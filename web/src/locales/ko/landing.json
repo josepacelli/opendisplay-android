@@ -20,7 +20,7 @@
     "sub": "Android"
   },
   "hero": {
-    "badge": "초기 알파 · 실제 기기에서 테스트됨",
+    "badge": "버전 1.0 · 실제 기기에서 테스트됨",
     "title": "하나의 데스크톱.<br/>두 개의 화면.",
     "lead": "Android 태블릿이나 휴대폰이 Mac의 진짜 보조 모니터가 됩니다. 무료 오픈 소스이고, Mac의 <a>OpenDisplay</a> 앱은 그대로 둡니다.",
     "specs": ["Android 8.0+ (API 26)", "macOS (오리지널 OpenDisplay 앱 경유)", "GPL-3.0"],

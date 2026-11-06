@@ -20,7 +20,7 @@
     "sub": "Android"
   },
   "hero": {
-    "badge": "Alpha temprana · probado en hardware real",
+    "badge": "Versión 1.0 · probado en hardware real",
     "title": "Un escritorio.<br/>Dos pantallas.",
     "lead": "Tu tablet o móvil Android se convierte en un segundo monitor de verdad para tu Mac. Gratis y de código abierto, y la app <a>OpenDisplay</a> del Mac sigue exactamente igual.",
     "specs": ["Android 8.0+ (API 26)", "macOS con la app original de OpenDisplay", "GPL-3.0"],

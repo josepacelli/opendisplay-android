@@ -20,7 +20,7 @@
     "sub": "Android"
   },
   "hero": {
-    "badge": "初期アルファ版 · 実機でテスト済み",
+    "badge": "バージョン 1.0 · 実機でテスト済み",
     "title": "ひとつのデスクトップ。<br/>ふたつの画面。",
     "lead": "Android のタブレットやスマホが、Mac の本物のセカンドモニターになります。無料・オープンソースで、Mac 側の <a>OpenDisplay</a> アプリはそのまま使えます。",
     "specs": ["Android 8.0+ (API 26)", "macOS（オリジナルのOpenDisplayアプリ経由）", "GPL-3.0"],
