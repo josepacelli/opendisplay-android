@@ -37,6 +37,7 @@
     <string name="settings_pip_show">연결 중 앱을 나가면 자동으로 화면 속 화면으로 전환</string>
     <string name="settings_section_video">영상</string>
     <string name="settings_zoom_pinch">핀치로 확대, 세 손가락으로 확대 영역 이동</string>
+    <string name="settings_one_finger_scroll">한 손가락으로 스크롤 (탭은 계속 클릭)</string>
     <string name="connected_menu_handle">메뉴</string>
     <string name="connected_menu_zoom">확대</string>
     <string name="connected_menu_fullscreen">전체 화면</string>
@@ -72,10 +73,11 @@
     <string name="update_check_button">Google Play에서 업데이트 확인</string>
     <string name="about_close">닫기</string>
 
-    <string-array name="changelog_v1_0_61">
-        <item>이제 업데이트는 Google Play를 통해 제공됩니다. 새 버전이 나오면 앱을 열 때 Play가 바로 안내합니다. 설정 > 앱 정보에 Play의 앱 페이지를 여는 버튼이 있습니다.</item>
+    <string-array name="changelog_v1_0_62">
+        <item>내부 업데이트 및 유지보수입니다.</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>이제 업데이트는 Google Play를 통해 제공됩니다. 새 버전이 나오면 앱을 열 때 Play가 바로 안내합니다. 설정 > 앱 정보에 Play의 앱 페이지를 여는 버튼이 있습니다.</item>
         <item>USB 케이블로 연결하면 Mac이 연결되는 즉시 Android가 OpenDisplay를 열지 물어봅니다. 특정 크기의 프레임에서 영상이 끊기던 문제도 해결했습니다. Mac 앱 v1.28 이상이 필요합니다.</item>
         <item>이미 끝난 케이블 세션은 더 이상 다시 열리지 않으며, 앱이 시작되는 중에 케이블이 빠져도 앱이 종료되지 않습니다.</item>
         <item>새로운 디자인: 라이트/다크 모드의 네이비 테마, 대기 화면의 상태 표시등, 그리고 Mac에서 고르는 이 기기 이름을 크게 표시합니다.</item>

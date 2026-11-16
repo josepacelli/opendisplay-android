@@ -101,6 +101,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
     val connectedMenuEnabled by receiver.connectedMenuEnabled.collectAsState()
     val connectedMenuIdleSeconds by receiver.connectedMenuIdleSeconds.collectAsState()
     val zoomEnabled by receiver.zoomEnabled.collectAsState()
+    val oneFingerScroll by receiver.oneFingerScroll.collectAsState()
     val cursorPosition by receiver.cursorPosition.collectAsState()
     val serviceName by receiver.serviceName.collectAsState()
     var videoDims by remember { mutableStateOf<VideoDims?>(null) }
@@ -167,6 +168,7 @@ fun ReceiverScreen(receiver: PhoneReceiver) {
                 videoDims = videoDims,
                 onVideoDimsChanged = { videoDims = it },
                 zoomEnabled = zoomEnabled,
+                oneFingerScroll = oneFingerScroll,
                 modifier = Modifier.fillMaxSize(),
             )
             CursorOverlay(receiver = receiver, modifier = Modifier.fillMaxSize())

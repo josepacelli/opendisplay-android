@@ -37,6 +37,7 @@
     <string name="settings_pip_show">Auto-enter Picture-in-Picture when leaving the app while connected</string>
     <string name="settings_section_video">Video</string>
     <string name="settings_zoom_pinch">Pinch to zoom, three fingers to pan around</string>
+    <string name="settings_one_finger_scroll">Scroll with one finger (a tap still clicks)</string>
     <string name="connected_menu_handle">Menu</string>
     <string name="connected_menu_zoom">Zoom</string>
     <string name="connected_menu_fullscreen">Fullscreen</string>
@@ -72,10 +73,11 @@
     <string name="about_close">Close</string>
     <string name="update_check_button">Check for updates on Google Play</string>
 
-    <string-array name="changelog_v1_0_61">
-        <item>Updates now come through Google Play: when a new version is out, Play offers it as soon as you open the app. Settings > About has a button that opens the app\'s Play page.</item>
+    <string-array name="changelog_v1_0_62">
+        <item>Internal updates and maintenance.</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>Updates now come through Google Play: when a new version is out, Play offers it as soon as you open the app. Settings > About has a button that opens the app\'s Play page.</item>
         <item>With a USB cable, Android now offers to open OpenDisplay as soon as the Mac connects, and the video no longer drops on frames of certain sizes. Needs the Mac app v1.28 or newer.</item>
         <item>A cable session that already ended is no longer reopened, and a cable that disappears while the app is starting no longer crashes it.</item>
         <item>New look: a navy theme in light and dark, a status light on the waiting screen, and this device\'s name in large type, since that\'s what you pick on the Mac.</item>
