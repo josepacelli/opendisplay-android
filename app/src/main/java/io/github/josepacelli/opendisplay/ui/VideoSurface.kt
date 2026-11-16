@@ -68,6 +68,8 @@ data class VideoDims(val width: Int, val height: Int)
  * @param onVideoDimsChanged called when the decoder reports a real (possibly new) output size.
  * @param zoomEnabled whether a two-finger spread should pinch-zoom the video locally; when off,
  * two fingers always scroll (and any active zoom is reset to 100%).
+ * @param oneFingerScroll whether a one-finger drag scrolls instead of dragging the mouse (a tap
+ * still clicks).
  * @param modifier applied to the underlying `SurfaceView`.
  */
 @Composable
@@ -76,6 +78,7 @@ fun VideoSurface(
     videoDims: VideoDims?,
     onVideoDimsChanged: (VideoDims) -> Unit,
     zoomEnabled: Boolean = true,
+    oneFingerScroll: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     var decoder by remember { mutableStateOf<VideoDecoder?>(null) }
@@ -98,7 +101,7 @@ fun VideoSurface(
 
     AndroidView(
         modifier = modifier
-            .pointerInput(receiver, zoomEnabled) {
+            .pointerInput(receiver, zoomEnabled, oneFingerScroll) {
                 while (currentCoroutineContext().isActive) {
                     try {
                         awaitEachGesture {
@@ -108,6 +111,7 @@ fun VideoSurface(
                                 zoomScale = zoomScale,
                                 zoomPan = zoomPan,
                                 zoomEnabled = zoomEnabled,
+                                oneFingerScroll = oneFingerScroll,
                             )
                         }
                     } catch (c: CancellationException) {
@@ -191,6 +195,8 @@ fun VideoSurface(
  * @param zoomScale current pinch-zoom scale (1f = fit, no zoom); mutated as pinches happen.
  * @param zoomPan current pinch-zoom pan offset in screen px; mutated as pinches happen.
  * @param zoomEnabled whether a two-finger spread is allowed to commit to a local pinch-zoom.
+ * @param oneFingerScroll when on, a single finger that moves past the slop commits to `scroll`
+ * (not `touch` began/moved), so dragging never selects or drags; a tap still clicks.
  */
 private suspend fun AwaitPointerEventScope.handleGesture(
     getVideoDims: () -> VideoDims?,
@@ -198,6 +204,7 @@ private suspend fun AwaitPointerEventScope.handleGesture(
     zoomScale: MutableState<Float>,
     zoomPan: MutableState<Offset>,
     zoomEnabled: Boolean,
+    oneFingerScroll: Boolean,
 ) {
     val first = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Main)
     if (first.type == PointerType.Stylus && receiver.peerSupportsPencil) {
@@ -207,6 +214,7 @@ private suspend fun AwaitPointerEventScope.handleGesture(
     val startPos = first.position
     var committedMode: GestureMode = GestureMode.UNDECIDED
     var lastCentroid = startPos
+    var scrollFingerCount = 0
     var twoFingerStartCentroid = Offset.Zero
     var twoFingerStartDistance = 0f
     var zoomStartScale = 1f
@@ -244,12 +252,17 @@ private suspend fun AwaitPointerEventScope.handleGesture(
                 pressed.size == 1 -> {
                     val moved = pressed[0].position - startPos
                     if (abs(moved.x) > TOUCH_SLOP_PX || abs(moved.y) > TOUCH_SLOP_PX) {
-                        committedMode = GestureMode.TOUCH
-                        val (nx, ny) = normalized(first.position.x, first.position.y)
-                        receiver.sendTouch("began", nx, ny)
-                        val (mx, my) = normalized(pressed[0].position.x, pressed[0].position.y)
-                        receiver.sendTouch("moved", mx, my)
-                        lastCentroid = pressed[0].position
+                        if (oneFingerScroll) {
+                            // Nothing was sent yet, so no mouse button can get stuck.
+                            committedMode = GestureMode.SCROLL
+                        } else {
+                            committedMode = GestureMode.TOUCH
+                            val (nx, ny) = normalized(first.position.x, first.position.y)
+                            receiver.sendTouch("began", nx, ny)
+                            val (mx, my) = normalized(pressed[0].position.x, pressed[0].position.y)
+                            receiver.sendTouch("moved", mx, my)
+                            lastCentroid = pressed[0].position
+                        }
                     }
                 }
 
@@ -282,7 +295,6 @@ private suspend fun AwaitPointerEventScope.handleGesture(
 
                     (centroid - twoFingerStartCentroid).getDistance() > TOUCH_SLOP_PX -> {
                         committedMode = GestureMode.SCROLL
-                        lastCentroid = centroid
                     }
                 }
             }
@@ -302,14 +314,20 @@ private suspend fun AwaitPointerEventScope.handleGesture(
             GestureMode.SCROLL -> {
                 if (pressed.isEmpty()) return
                 val centroid = centroidOf(pressed)
-                val dims = getVideoDims()
-                if (dims != null) {
-                    val dxNorm = (centroid.x - lastCentroid.x) / size.width
-                    val dyNorm = (centroid.y - lastCentroid.y) / size.height
-                    receiver.sendScroll(
-                        dx = (dxNorm * dims.width).toDouble(),
-                        dy = (dyNorm * dims.height).toDouble(),
-                    )
+                // Entering SCROLL, or a finger added or lifted, moves the centroid without any
+                // real motion; re-anchor instead of sending that jump as a scroll.
+                if (pressed.size != scrollFingerCount) {
+                    scrollFingerCount = pressed.size
+                } else {
+                    val dims = getVideoDims()
+                    if (dims != null) {
+                        val dxNorm = (centroid.x - lastCentroid.x) / size.width
+                        val dyNorm = (centroid.y - lastCentroid.y) / size.height
+                        receiver.sendScroll(
+                            dx = (dxNorm * dims.width).toDouble(),
+                            dy = (dyNorm * dims.height).toDouble(),
+                        )
+                    }
                 }
                 lastCentroid = centroid
             }

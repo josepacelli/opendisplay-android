@@ -138,6 +138,7 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
     val immersiveFullscreen by receiver.immersiveFullscreen.collectAsState()
     val pipEnabled by receiver.pipEnabled.collectAsState()
     val zoomEnabled by receiver.zoomEnabled.collectAsState()
+    val oneFingerScroll by receiver.oneFingerScroll.collectAsState()
     val connectedMenuEnabled by receiver.connectedMenuEnabled.collectAsState()
     val connectedMenuIdleSeconds by receiver.connectedMenuIdleSeconds.collectAsState()
     
@@ -195,6 +196,8 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
                             onTogglePip = receiver::setPipEnabled,
                             zoomEnabled = zoomEnabled,
                             onToggleZoom = receiver::setZoomEnabled,
+                            oneFingerScroll = oneFingerScroll,
+                            onToggleOneFingerScroll = receiver::setOneFingerScroll,
                             connectedMenuEnabled = connectedMenuEnabled,
                             onToggleConnectedMenu = receiver::setConnectedMenuEnabled,
                             connectedMenuIdleSeconds = connectedMenuIdleSeconds,
@@ -259,6 +262,8 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
  * @param onTogglePip called with the new state when the switch is flipped.
  * @param zoomEnabled current toggle state.
  * @param onToggleZoom called with the new state when the switch is flipped.
+ * @param oneFingerScroll current toggle state.
+ * @param onToggleOneFingerScroll called with the new state when the switch is flipped.
  * @param connectedMenuEnabled current toggle state.
  * @param onToggleConnectedMenu called with the new state when the switch is flipped.
  * @param connectedMenuIdleSeconds current idle delay, in seconds.
@@ -281,6 +286,8 @@ private fun GeneralTab(
     onTogglePip: (Boolean) -> Unit,
     zoomEnabled: Boolean,
     onToggleZoom: (Boolean) -> Unit,
+    oneFingerScroll: Boolean,
+    onToggleOneFingerScroll: (Boolean) -> Unit,
     connectedMenuEnabled: Boolean,
     onToggleConnectedMenu: (Boolean) -> Unit,
     connectedMenuIdleSeconds: Int,
@@ -315,6 +322,7 @@ private fun GeneralTab(
         ToggleListItem(stringResource(R.string.settings_immersive_show), immersiveFullscreen, onToggleImmersive)
         ToggleListItem(stringResource(R.string.settings_pip_show), pipEnabled, onTogglePip)
         ToggleListItem(stringResource(R.string.settings_zoom_pinch), zoomEnabled, onToggleZoom)
+        ToggleListItem(stringResource(R.string.settings_one_finger_scroll), oneFingerScroll, onToggleOneFingerScroll)
     }
 
     SettingsCategory(stringResource(R.string.settings_section_connected_menu)) {

@@ -37,6 +37,7 @@
     <string name="settings_pip_show">Entrar automáticamente en imagen en imagen al salir de la app estando conectado</string>
     <string name="settings_section_video">Vídeo</string>
     <string name="settings_zoom_pinch">Pellizco para ampliar, tres dedos para mover el área ampliada</string>
+    <string name="settings_one_finger_scroll">Desplazar con un dedo (tocar sigue haciendo clic)</string>
     <string name="connected_menu_handle">Menú</string>
     <string name="connected_menu_zoom">Zoom</string>
     <string name="connected_menu_fullscreen">Pantalla completa</string>
@@ -72,10 +73,11 @@
     <string name="update_check_button">Buscar actualizaciones en Google Play</string>
     <string name="about_close">Cerrar</string>
 
-    <string-array name="changelog_v1_0_61">
-        <item>Las actualizaciones ahora llegan por Google Play: cuando sale una versión nueva, Play la ofrece en cuanto abres la app. En Ajustes > Acerca de hay un botón que abre la página de la app en Play.</item>
+    <string-array name="changelog_v1_0_62">
+        <item>Actualizaciones internas y mantenimiento.</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>Las actualizaciones ahora llegan por Google Play: cuando sale una versión nueva, Play la ofrece en cuanto abres la app. En Ajustes > Acerca de hay un botón que abre la página de la app en Play.</item>
         <item>Con cable USB, Android ahora ofrece abrir OpenDisplay en cuanto el Mac se conecta, y el vídeo ya no se corta con fotogramas de ciertos tamaños. Requiere la app del Mac v1.28 o posterior.</item>
         <item>Una sesión por cable que ya terminó ya no se reabre, y un cable que desaparece mientras la app arranca ya no la cierra de golpe.</item>
         <item>Nuevo aspecto: tema azul marino en claro y oscuro, una luz de estado en la pantalla de espera y el nombre del dispositivo en letra grande, porque es el que eliges en el Mac.</item>

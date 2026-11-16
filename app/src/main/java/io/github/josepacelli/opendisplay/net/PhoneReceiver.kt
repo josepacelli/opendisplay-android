@@ -145,6 +145,7 @@ class PhoneReceiver(context: Context) {
         private const val KEY_IMMERSIVE_FULLSCREEN = "immersiveFullscreen"
         private const val KEY_PIP_ENABLED = "pipEnabled"
         private const val KEY_ZOOM_ENABLED = "zoomEnabled"
+        private const val KEY_ONE_FINGER_SCROLL = "oneFingerScroll"
         private const val KEY_CONNECTED_MENU_EDGE = "connectedMenuEdge"
         private const val KEY_CONNECTED_MENU_ENABLED = "connectedMenuEnabled"
         private const val KEY_CONNECTED_MENU_IDLE_SECONDS = "connectedMenuIdleSeconds"
@@ -407,6 +408,13 @@ class PhoneReceiver(context: Context) {
      * in Settings. Defaults on; disabling it also resets any active zoom back to 100%. */
     private val _zoomEnabled = MutableStateFlow(loadZoomEnabled())
     val zoomEnabled: StateFlow<Boolean> = _zoomEnabled.asStateFlow()
+
+    /** Whether a one-finger drag on [io.github.josepacelli.opendisplay.ui.VideoSurface] scrolls
+     * (like a touchscreen laptop, #445 upstream) instead of becoming a mouse drag/selection. A tap
+     * still clicks. User-editable in Settings. Defaults off: direct touch-as-mouse is the
+     * documented behavior and the only way to drag windows or select text by touch. */
+    private val _oneFingerScroll = MutableStateFlow(loadOneFingerScroll())
+    val oneFingerScroll: StateFlow<Boolean> = _oneFingerScroll.asStateFlow()
 
     /** Screen edge [io.github.josepacelli.opendisplay.ui.ConnectedMenu] docks against — remembered
      * across sessions once dragged. Defaults to the top edge. */
@@ -723,6 +731,17 @@ class PhoneReceiver(context: Context) {
         appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_ZOOM_ENABLED, enabled)
+            .apply()
+    }
+
+    /** Turn one-finger scrolling on/off and persist the choice.
+     * @param enabled whether a one-finger drag should send `scroll` instead of a mouse drag. */
+    fun setOneFingerScroll(enabled: Boolean) {
+        if (enabled == _oneFingerScroll.value) return
+        _oneFingerScroll.value = enabled
+        appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_ONE_FINGER_SCROLL, enabled)
             .apply()
     }
 
@@ -1544,6 +1563,12 @@ class PhoneReceiver(context: Context) {
     private fun loadZoomEnabled(): Boolean {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean(KEY_ZOOM_ENABLED, true)
+    }
+
+    /** @return whether one-finger scrolling is on; defaults to off. */
+    private fun loadOneFingerScroll(): Boolean {
+        val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_ONE_FINGER_SCROLL, false)
     }
 
     /** @return the persisted [ConnectedMenuEdge], defaulting to [ConnectedMenuEdge.TOP]. */

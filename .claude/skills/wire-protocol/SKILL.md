@@ -8,7 +8,7 @@ description: Reference for the OpenDisplay wire protocol (pv 3) that this Androi
 **Source of truth: upstream `PROTOCOL.md`** in `peetzweg/opendisplay` (normative for `pv <= 3`,
 RFC 2119 wording), plus `COMPATIBILITY.md` for how it evolves. This skill is a summary plus the
 Android implementation status; when they disagree, PROTOCOL.md wins and this file is stale.
-Last checked against upstream commit `6f4b474` (2026-10-22), spec history up to 2026-10-01.
+Last checked against upstream commit `45bae1f` (v1.30.3, 2026-11-14); §2.3 (USB/AOA) added 2026-10-24.
 
 ```sh
 git clone --depth 1 https://github.com/peetzweg/opendisplay.git /tmp/opendisplay-upstream
@@ -28,7 +28,7 @@ Before changing networking, handshake, framing or the session lifecycle:
    degrade instead of rejecting.
 3. The rules that most often collide with security work: unknown types and fields are ignored
    (§6); an unparseable control payload is ignored, never fatal; a new connection replaces the
-   active one (§1); silence over 5 s is death and both ends ping every 2 s (§8.2); `hello` is
+   active one once it sends bytes (§1); silence over 5 s is death and both ends ping every 2 s (§8.2); `hello` is
    always the first message (§6.1); the JSON/video demux stays intact (§4).
 4. If a divergence is deliberate, document it in `RATIONALE.md` and in the table below, test
    against the real Mac, and decide it with the owner before merging.
@@ -39,13 +39,21 @@ Before changing networking, handshake, framing or the session lifecycle:
   connection carries video, control and telemetry in both directions. No TLS, no auth at pv 3.
 - `TCP_NODELAY` on (`SocketLink`, `net/Link.kt`).
 - **One sender at a time.** A new inbound connection MUST be adopted and the old one dropped
-  (§1). The official receiver adopts a newcomer immediately when there is no live session; with
-  a live session it sends the newcomer a provisional `hello` (without `cursorPort`) and adopts
-  it only once it sends bytes back, so the twin IPv4/IPv6 dial the Mac races doesn't evict the
-  winner (`Shared/StreamReceiver.swift`, listener `newConnectionHandler`; PROTOCOL.md §6.4).
-- **Bindings** (§2): WiFi via Bonjour; Apple USB via usbmuxd (not on Android). Android adds two
-  of its own, which the spec allows: `adb forward` to the loopback listener (Mac `host`/`port`
-  override), and USB accessory (AOA, `AccessoryLink`), which needs a Mac fork.
+  once the newcomer proves itself with bytes (§1, normative since the 2026-11 PROTOCOL.md). The
+  official receiver adopts a newcomer immediately when there is no live session; with a live
+  session it sends the newcomer a provisional `hello` (without `cursorPort`), keeps serving the
+  live sender, and adopts the newcomer when its first bytes arrive, handing those bytes to the
+  new session; a newcomer that closes or stays silent is dropped. Adopting resets decoder state
+  and sends the full `hello`. This keeps the twin IPv4/IPv6 dial the Mac races from evicting the
+  winner (Android: `proveNewcomer`, `PrefixedLink`) (`Shared/StreamReceiver.swift`, listener `newConnectionHandler`; PROTOCOL.md §6.4).
+- **Bindings** (§2): WiFi via Bonjour; Apple USB via usbmuxd (not on Android); Android USB via
+  AOA (§2.3, `AccessoryLink`, Mac app ≥ v1.28.0). §2.3 MUSTs: filter without `version`; whole
+  16 KB reads with a 0-byte read as ZLP not EOF (`PacketInputStream`); one attachment = one
+  session (`usedAccessory`). On macOS a running adb server holds every device with USB debugging
+  on, so the Mac can't ask it for accessory mode; the Mac (≥ v1.30.2) retries every 3 s and
+  lists the phone once `adb kill-server` frees it. Nothing to do on Android (issue #212 is docs
+  only). We also keep `adb forward` to the loopback listener (Mac
+  `host`/`port` override).
 
 ### Bonjour (§2.1)
 
@@ -101,7 +109,7 @@ tolerated; unparseable payload ignored. New fields arrive without a version bump
 
 | `type` | Fields we send | Notes |
 |---|---|---|
-| `hello` | `pixelsWide`, `pixelsHigh`, `scale`, `device: "Android"`, `id`, `pv: 3`, `panel`?, `maxEncodeWide/High`?, `cursorPort`? | First message on every connection. Re-sent on rotation / any panel change (`setPanelSize`). See below. |
+| `hello` | `pixelsWide`, `pixelsHigh`, `scale`, `device: "Android"`, `id`, `pv: 3`, `panel`?, `maxEncodeWide/High`?, `cursorPort`? | First message on every connection. Re-sent on rotation, fold, window resize or any panel change (`setPanelSize`, fed by `currentWindowMetrics`). The Mac settles a burst of hellos (25 ms after a lone change, 150 ms after the last of a burst), so no receiver-side debounce. See below. |
 | `ping` | `t` (ms since epoch, our clock) | Every 2 s. Mac answers `pong`. |
 | `touch` | `phase` (`began`/`moved`/`ended`/`cancelled`), `x`, `y` (normalized video space), `t`? (Mac clock, once offset is known) | |
 | `scroll` | `dx`, `dy` | **Video pixels**, natural-scrolling sign. |
@@ -208,7 +216,7 @@ object WireProtocol {
 | `hello.videoCaps` / HEVC / `streamConfig` | Not offered / ignored | Optional, legacy H.264 |
 | `proximity`, receiver `stats` | Not sent | Optional |
 | `addrs`, `power` | Never sent | Mac-receiver only by design |
-| Bindings | `adb forward` loopback, AOA accessory | Allowed by §2 |
+| Bindings | WiFi, AOA accessory (§2.3), `adb forward` loopback | AOA is normative; forward is allowed by §2 |
 
 ## Mac-side behavior worth knowing
 
