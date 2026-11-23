@@ -73,8 +73,9 @@
     <string name="update_check_button">在 Google Play 检查更新</string>
     <string name="about_close">关闭</string>
 
-    <string-array name="changelog_v1_0_62">
-        <item>内部更新与维护。</item>
+    <string-array name="changelog_v1_0_63">
+        <item>现在可以在设置中选择是否使用单指滚动。</item>
+        <item>没有 Wi-Fi 硬件的设备现在也可以安装应用。</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>更新现在通过 Google Play 提供：有新版本时，打开应用后 Play 会立即提示。在 设置 > 关于 中有按钮可打开应用的 Play 页面。</item>

@@ -73,8 +73,9 @@
     <string name="update_check_button">Procurar atualizações no Google Play</string>
     <string name="about_close">Fechar</string>
 
-    <string-array name="changelog_v1_0_62">
-        <item>Atualizações internas e manutenção.</item>
+    <string-array name="changelog_v1_0_63">
+        <item>Rolar com um dedo agora é uma opção nas Configurações.</item>
+        <item>Aparelhos sem hardware de Wi-Fi agora podem instalar o app.</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>As atualizações agora vêm pelo Google Play: quando sai uma versão nova, o Play oferece assim que você abre o app. Em Configurações > Sobre há um botão que abre a página do app no Play.</item>
