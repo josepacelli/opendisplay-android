@@ -73,8 +73,9 @@
     <string name="update_check_button">Google Playでアップデートを確認</string>
     <string name="about_close">閉じる</string>
 
-    <string-array name="changelog_v1_0_62">
-        <item>内部的な更新とメンテナンスです。</item>
+    <string-array name="changelog_v1_0_63">
+        <item>1本指でのスクロールを設定でオン／オフできるようになりました。</item>
+        <item>Wi-Fiハードウェアのない端末でもアプリをインストールできるようになりました。</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>アップデートはGoogle Play経由になりました。新しいバージョンが出ると、アプリを開いたときにPlayが案内します。設定 > アプリについて にPlayのアプリページを開くボタンがあります。</item>

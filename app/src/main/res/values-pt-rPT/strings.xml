@@ -73,8 +73,9 @@
     <string name="update_check_button">Procurar atualizações no Google Play</string>
     <string name="about_close">Fechar</string>
 
-    <string-array name="changelog_v1_0_62">
-        <item>Atualizações internas e manutenção.</item>
+    <string-array name="changelog_v1_0_63">
+        <item>Deslocar com um dedo é agora uma opção nas Definições.</item>
+        <item>Dispositivos sem hardware de Wi-Fi podem agora instalar a app.</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>As atualizações chegam agora pelo Google Play: quando sai uma versão nova, o Play propõe-na assim que abre a app. Em Definições > Acerca de há um botão que abre a página da app no Play.</item>

@@ -73,8 +73,9 @@
     <string name="about_close">Close</string>
     <string name="update_check_button">Check for updates on Google Play</string>
 
-    <string-array name="changelog_v1_0_62">
-        <item>Internal updates and maintenance.</item>
+    <string-array name="changelog_v1_0_63">
+        <item>Scrolling with one finger is now an option in Settings.</item>
+        <item>Devices without Wi-Fi hardware can now install the app.</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>Updates now come through Google Play: when a new version is out, Play offers it as soon as you open the app. Settings > About has a button that opens the app\'s Play page.</item>

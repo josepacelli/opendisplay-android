@@ -73,8 +73,9 @@
     <string name="update_check_button">Google Play에서 업데이트 확인</string>
     <string name="about_close">닫기</string>
 
-    <string-array name="changelog_v1_0_62">
-        <item>내부 업데이트 및 유지보수입니다.</item>
+    <string-array name="changelog_v1_0_63">
+        <item>한 손가락 스크롤을 설정에서 켜고 끌 수 있습니다.</item>
+        <item>Wi-Fi 하드웨어가 없는 기기에서도 앱을 설치할 수 있습니다.</item>
     </string-array>
     <string-array name="changelog_older_versions">
         <item>이제 업데이트는 Google Play를 통해 제공됩니다. 새 버전이 나오면 앱을 열 때 Play가 바로 안내합니다. 설정 > 앱 정보에 Play의 앱 페이지를 여는 버튼이 있습니다.</item>
