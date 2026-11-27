@@ -1,5 +1,7 @@
 package io.github.josepacelli.opendisplay.ui
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -29,8 +31,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -170,41 +172,40 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
                     SETTINGS_TAB_CHANGELOG to stringResource(R.string.settings_tab_changelog),
                 )
                 val content = @Composable {
-                    when (selectedTab) {
-                        SETTINGS_TAB_DETAILS -> DetailsTab(
-                            connected = connected,
-                            addressHint = addressHint,
-                            addressUnavailableMessage = addressUnavailableMessage,
-                        )
-                        SETTINGS_TAB_GENERAL -> GeneralTab(
-                            draftName = draftName,
-                            onNameChange = { draftName = it },
-                            currentName = currentName,
-                            onSaveName = { 
-                                receiver.setServiceName(it)
-                                // draftName is now in sync with currentName after flow emits
-                            },
-                            showNotification = showNotification,
-                            onToggleNotification = receiver::setShowNotification,
-                            showPerfHud = showPerfHud,
-                            onTogglePerfHud = receiver::setShowPerfHud,
-                            perfHudPosition = perfHudPosition,
-                            onPerfHudPositionChange = receiver::setPerfHudPosition,
-                            immersiveFullscreen = immersiveFullscreen,
-                            onToggleImmersive = receiver::setImmersiveFullscreen,
-                            pipEnabled = pipEnabled,
-                            onTogglePip = receiver::setPipEnabled,
-                            zoomEnabled = zoomEnabled,
-                            onToggleZoom = receiver::setZoomEnabled,
-                            oneFingerScroll = oneFingerScroll,
-                            onToggleOneFingerScroll = receiver::setOneFingerScroll,
-                            connectedMenuEnabled = connectedMenuEnabled,
-                            onToggleConnectedMenu = receiver::setConnectedMenuEnabled,
-                            connectedMenuIdleSeconds = connectedMenuIdleSeconds,
-                            onConnectedMenuIdleSecondsChange = receiver::setConnectedMenuIdleSeconds,
-                        )
-                        SETTINGS_TAB_ABOUT -> AboutTab()
-                        else -> ChangelogTab()
+                    Crossfade(targetState = selectedTab, animationSpec = tween(180), label = "settings-tab") { tab ->
+                        when (tab) {
+                            SETTINGS_TAB_DETAILS -> DetailsTab(
+                                connected = connected,
+                                addressHint = addressHint,
+                                addressUnavailableMessage = addressUnavailableMessage,
+                            )
+                            SETTINGS_TAB_GENERAL -> GeneralTab(
+                                draftName = draftName,
+                                onNameChange = { draftName = it },
+                                currentName = currentName,
+                                onSaveName = receiver::setServiceName,
+                                showNotification = showNotification,
+                                onToggleNotification = receiver::setShowNotification,
+                                showPerfHud = showPerfHud,
+                                onTogglePerfHud = receiver::setShowPerfHud,
+                                perfHudPosition = perfHudPosition,
+                                onPerfHudPositionChange = receiver::setPerfHudPosition,
+                                immersiveFullscreen = immersiveFullscreen,
+                                onToggleImmersive = receiver::setImmersiveFullscreen,
+                                pipEnabled = pipEnabled,
+                                onTogglePip = receiver::setPipEnabled,
+                                zoomEnabled = zoomEnabled,
+                                onToggleZoom = receiver::setZoomEnabled,
+                                oneFingerScroll = oneFingerScroll,
+                                onToggleOneFingerScroll = receiver::setOneFingerScroll,
+                                connectedMenuEnabled = connectedMenuEnabled,
+                                onToggleConnectedMenu = receiver::setConnectedMenuEnabled,
+                                connectedMenuIdleSeconds = connectedMenuIdleSeconds,
+                                onConnectedMenuIdleSecondsChange = receiver::setConnectedMenuIdleSeconds,
+                            )
+                            SETTINGS_TAB_ABOUT -> AboutTab()
+                            else -> ChangelogTab()
+                        }
                     }
                 }
                 BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
@@ -308,29 +309,34 @@ private fun GeneralTab(
             )
             Button(
                 onClick = { onSaveName(draftName) },
-                // Chỉ bật nút Save khi tên thực sự thay đổi và không được để trống
                 enabled = draftName != currentName && draftName.isNotBlank(),
-                modifier = Modifier.height(56.dp) // Chiều cao bằng với OutlinedTextField mặc định
+                modifier = Modifier.height(56.dp),
             ) {
                 Text(stringResource(R.string.settings_save))
             }
         }
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
         ToggleListItem(stringResource(R.string.settings_notification_show), showNotification, onToggleNotification)
     }
 
     SettingsCategory(stringResource(R.string.settings_section_video)) {
         ToggleListItem(stringResource(R.string.settings_immersive_show), immersiveFullscreen, onToggleImmersive)
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
         ToggleListItem(stringResource(R.string.settings_pip_show), pipEnabled, onTogglePip)
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
         ToggleListItem(stringResource(R.string.settings_zoom_pinch), zoomEnabled, onToggleZoom)
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
         ToggleListItem(stringResource(R.string.settings_one_finger_scroll), oneFingerScroll, onToggleOneFingerScroll)
     }
 
     SettingsCategory(stringResource(R.string.settings_section_connected_menu)) {
         ToggleListItem(stringResource(R.string.settings_connected_menu_show), connectedMenuEnabled, onToggleConnectedMenu)
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
         Text(
             text = stringResource(R.string.settings_connected_menu_idle_label),
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 8.dp),
         )
         ConnectedMenuIdlePicker(
             connectedMenuIdleSeconds,
@@ -341,6 +347,7 @@ private fun GeneralTab(
 
     SettingsCategory(stringResource(R.string.settings_section_perf_hud)) {
         ToggleListItem(stringResource(R.string.settings_perf_hud_show), showPerfHud, onTogglePerfHud)
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
         PerfHudPositionPicker(perfHudPosition, onPerfHudPositionChange, modifier = Modifier.padding(16.dp))
     }
 }
@@ -354,12 +361,15 @@ private fun GeneralTab(
 @Composable
 private fun DetailsTab(connected: Boolean, addressHint: String?, addressUnavailableMessage: String) {
     SettingsCategory(stringResource(R.string.settings_section_status)) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             LabeledRow(
                 stringResource(R.string.settings_status_listening),
                 stringResource(R.string.settings_status_listening_value, PhoneReceiver.DEFAULT_PORT),
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(vertical = 12.dp),
+            )
             LabeledRow(
                 stringResource(R.string.settings_status_connection),
                 stringResource(
@@ -371,29 +381,53 @@ private fun DetailsTab(connected: Boolean, addressHint: String?, addressUnavaila
     }
 
     SettingsCategory(stringResource(R.string.settings_section_network)) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-            Text(text = stringResource(R.string.settings_manual_hint), style = MaterialTheme.typography.bodySmall)
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             Text(
-                text = addressHint ?: addressUnavailableMessage,
-                style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
-                modifier = Modifier.padding(top = 8.dp),
+                text = stringResource(R.string.settings_manual_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Spacer(modifier = Modifier.height(12.dp))
+            Surface(
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_wifi),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(20.dp),
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = addressHint ?: addressUnavailableMessage,
+                        style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            }
         }
     }
 
     SettingsCategory(stringResource(R.string.settings_section_how_to_connect)) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-            Text(stringResource(R.string.settings_howto_wifi), style = MaterialTheme.typography.bodySmall)
-            Text(
-                stringResource(R.string.settings_howto_rotate),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(top = 6.dp),
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+            Text(stringResource(R.string.settings_howto_wifi), style = MaterialTheme.typography.bodyMedium)
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(vertical = 10.dp),
             )
-            Text(
-                stringResource(R.string.settings_howto_touch),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(top = 6.dp),
+            Text(stringResource(R.string.settings_howto_rotate), style = MaterialTheme.typography.bodyMedium)
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(vertical = 10.dp),
             )
+            Text(stringResource(R.string.settings_howto_touch), style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -413,57 +447,86 @@ private fun AboutTab() {
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 32.dp, start = 24.dp, end = 24.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp, start = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = painterResource(R.drawable.banner),
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth()
-                .aspectRatio(BANNER_ASPECT_RATIO)
-                .clip(RoundedCornerShape(12.dp)),
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Image(
-            painter = painterResource(R.drawable.app_icon_display),
-            contentDescription = null,
-            modifier = Modifier.size(88.dp),
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.about_tagline),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.widthIn(max = 360.dp),
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = versionName?.let { stringResource(R.string.about_version, it) }
-                ?: stringResource(R.string.about_version_unknown),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainerLow,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            shape = MaterialTheme.shapes.extraLarge,
+            modifier = Modifier.widthIn(max = 520.dp).fillMaxWidth(),
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.banner),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxWidth()
+                        .aspectRatio(BANNER_ASPECT_RATIO)
+                        .clip(RoundedCornerShape(14.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(14.dp)),
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Image(
+                    painter = painterResource(R.drawable.app_icon_display),
+                    contentDescription = null,
+                    modifier = Modifier.size(80.dp),
+                )
+                Spacer(modifier = Modifier.height(14.dp))
+                Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.about_tagline),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.widthIn(max = 360.dp),
+                )
+                Spacer(modifier = Modifier.height(14.dp))
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                ) {
+                    Text(
+                        text = versionName?.let { stringResource(R.string.about_version, it) }
+                            ?: stringResource(R.string.about_version_unknown),
+                        style = MaterialTheme.typography.labelLarge.copy(fontFeatureSettings = "tnum"),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                    )
+                }
 
-        Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-        Button(onClick = {
-            uriHandler.openUri("https://play.google.com/store/apps/details?id=${context.packageName}")
-        }) {
-            Text(stringResource(R.string.update_check_button))
-        }
+                Button(
+                    onClick = {
+                        uriHandler.openUri("https://play.google.com/store/apps/details?id=${context.packageName}")
+                    },
+                    modifier = Modifier.heightIn(min = 48.dp),
+                ) {
+                    Text(stringResource(R.string.update_check_button))
+                }
 
-        Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = {
-                uriHandler.openUri("https://github.com/josepacelli/opendisplay-android")
-            }) { Text(stringResource(R.string.about_github)) }
-            OutlinedButton(onClick = { uriHandler.openUri("https://opendisplay.app/") }) {
-                Text(stringResource(R.string.about_mac_app))
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedButton(
+                        onClick = {
+                            uriHandler.openUri("https://github.com/josepacelli/opendisplay-android")
+                        },
+                        modifier = Modifier.heightIn(min = 48.dp),
+                    ) { Text(stringResource(R.string.about_github)) }
+                    OutlinedButton(
+                        onClick = { uriHandler.openUri("https://opendisplay.app/") },
+                        modifier = Modifier.heightIn(min = 48.dp),
+                    ) {
+                        Text(stringResource(R.string.about_mac_app))
+                    }
+                }
             }
         }
         Spacer(modifier = Modifier.height(32.dp))
@@ -492,6 +555,7 @@ private fun ChangelogEntryCard(entry: ChangelogEntry) {
     Surface(
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
@@ -499,7 +563,7 @@ private fun ChangelogEntryCard(entry: ChangelogEntry) {
                 Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.primaryContainer) {
                     Text(
                         text = "v${entry.version}",
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge.copy(fontFeatureSettings = "tnum"),
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                     )
@@ -508,19 +572,19 @@ private fun ChangelogEntryCard(entry: ChangelogEntry) {
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = formatChangelogDate(entry.dateIso),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall.copy(fontFeatureSettings = "tnum"),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             for (highlight in highlights) {
-                Row(modifier = Modifier.padding(top = 4.dp)) {
+                Row(modifier = Modifier.padding(top = 6.dp)) {
                     Text(
                         text = "•",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(end = 8.dp),
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.padding(end = 10.dp),
                     )
                     Text(text = highlight, style = MaterialTheme.typography.bodyMedium)
                 }
@@ -557,36 +621,48 @@ private fun PerfHudPositionPicker(
         Triple(PerfHudPosition.BOTTOM_END, Alignment.BottomEnd, stringResource(R.string.settings_perf_hud_position_bottom_end)),
     )
     Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .widthIn(max = 280.dp).fillMaxWidth().aspectRatio(16f / 10f)
-                .border(2.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
-                .selectableGroup()
-                .padding(4.dp),
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.widthIn(max = 280.dp).fillMaxWidth().aspectRatio(16f / 10f),
         ) {
-            for ((position, alignment, label) in options) {
-                val isSelected = selected == position
-                Box(
-                    contentAlignment = alignment,
-                    modifier = Modifier
-                        .align(alignment)
-                        .size(width = 72.dp, height = 48.dp)
-                        .clip(MaterialTheme.shapes.small)
-                        .selectable(selected = isSelected, role = Role.RadioButton, onClick = { onSelect(position) })
-                        .semantics { contentDescription = label }
-                        .padding(8.dp),
-                ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .selectableGroup()
+                    .padding(6.dp),
+            ) {
+                for ((position, alignment, label) in options) {
+                    val isSelected = selected == position
                     Box(
-                        modifier = if (isSelected) {
-                            Modifier.size(width = 40.dp, height = 14.dp)
-                                .background(MaterialTheme.colorScheme.primary, MaterialTheme.shapes.extraSmall)
-                        } else {
-                            Modifier.size(10.dp).background(MaterialTheme.colorScheme.outlineVariant, CircleShape)
-                        },
-                    )
+                        contentAlignment = alignment,
+                        modifier = Modifier
+                            .align(alignment)
+                            .size(width = 72.dp, height = 48.dp)
+                            .clip(MaterialTheme.shapes.small)
+                            .selectable(selected = isSelected, role = Role.RadioButton, onClick = { onSelect(position) })
+                            .semantics { contentDescription = label }
+                            .padding(8.dp),
+                    ) {
+                        Box(
+                            modifier = if (isSelected) {
+                                Modifier.size(width = 42.dp, height = 14.dp)
+                                    .background(MaterialTheme.colorScheme.primary, MaterialTheme.shapes.extraSmall)
+                            } else {
+                                Modifier.size(10.dp).background(MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                            },
+                        )
+                    }
                 }
             }
         }
+        Box(
+            modifier = Modifier
+                .padding(top = 4.dp)
+                .size(width = 56.dp, height = 4.dp)
+                .background(MaterialTheme.colorScheme.outlineVariant, CircleShape),
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = options.first { it.first == selected }.third,
@@ -616,7 +692,7 @@ private fun ConnectedMenuIdlePicker(
         for (seconds in CONNECTED_MENU_IDLE_OPTIONS) {
             val isSelected = selected == seconds
             Surface(
-                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
                 border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier.selectable(selected = isSelected, role = Role.RadioButton, onClick = { onSelect(seconds) }),
@@ -671,6 +747,7 @@ private fun SettingsGroup(content: @Composable () -> Unit) {
 private fun SettingsGroupSurface(content: @Composable () -> Unit) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shape = MaterialTheme.shapes.large,
         modifier = Modifier.fillMaxWidth(),
     ) {

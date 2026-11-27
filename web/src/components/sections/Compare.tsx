@@ -18,14 +18,24 @@ const FAVOURABLE: [boolean, boolean, boolean][] = [
   [true, false, true],
 ]
 
-function Cell({ value, positive }: { value: string; positive: boolean }) {
+function Cell({ value, positive, highlighted }: { value: string; positive: boolean; highlighted?: boolean }) {
   return (
-    <TableCell className={positive ? 'text-foreground' : 'text-muted-foreground'}>
-      <span className="inline-flex items-center gap-1.5">
+    <TableCell
+      className={
+        'px-4 py-3.5 ' +
+        (positive ? 'text-foreground' : 'text-muted-foreground') +
+        (highlighted ? ' bg-secondary/45 font-medium' : '')
+      }
+    >
+      <span className="inline-flex items-center gap-2">
         {positive ? (
-          <Check className="size-4 text-accent" aria-hidden="true" />
+          <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+            <Check className="size-3.5" aria-hidden="true" />
+          </span>
         ) : (
-          <X className="size-4 text-muted-foreground/60" aria-hidden="true" />
+          <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground/70">
+            <X className="size-3.5" aria-hidden="true" />
+          </span>
         )}
         {value}
       </span>
@@ -41,20 +51,35 @@ export function Compare() {
   return (
     <PageSection id="compare">
       <SectionHeading title={t('compare.title')} sub={t('compare.sub')} />
-      <div className="overflow-x-auto rounded-lg border border-border">
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card">
         <Table>
           <TableHeader>
-            <TableRow>
-              {headers.map((h) => (
-                <TableHead key={h}>{h}</TableHead>
+            <TableRow className="border-border hover:bg-transparent">
+              {headers.map((h, idx) => (
+                <TableHead
+                  key={h}
+                  className={
+                    'h-12 px-4 font-heading text-base ' +
+                    (idx === 1 ? 'bg-secondary/65 font-semibold text-foreground' : 'font-medium text-muted-foreground')
+                  }
+                >
+                  {idx === 1 ? (
+                    <span className="inline-flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-accent" aria-hidden="true" />
+                      {h}
+                    </span>
+                  ) : (
+                    h
+                  )}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.map((row, i) => (
-              <TableRow key={row.label}>
-                <TableCell className="font-medium text-foreground">{row.label}</TableCell>
-                <Cell value={row.us} positive={FAVOURABLE[i][0]} />
+              <TableRow key={row.label} className="border-border">
+                <TableCell className="px-4 py-3.5 font-medium text-foreground">{row.label}</TableCell>
+                <Cell value={row.us} positive={FAVOURABLE[i][0]} highlighted />
                 <Cell value={row.duet} positive={FAVOURABLE[i][1]} />
                 <Cell value={row.spacedesk} positive={FAVOURABLE[i][2]} />
               </TableRow>

@@ -302,13 +302,13 @@ The palette is navy and blue, taken from the blue app icon. Saturated colour is 
 This build diverges from the original direction contract in five places, all on purpose. (1) Graphite and amber became navy and blue, because the owner asked for a dark blue that matches the app icon. (2) The display face is Hanken Grotesk, not Roboto Flex: Roboto is the platform family and can't be the app's own display voice. It ships as four static weight files because `FontVariation` on a resource font did not apply weight on the test device. (3) The planned three-stage strip (Listening / Mac found / Streaming) became three lamp colours. The app has no real "Mac found" state, and the idle screen unmounts on connect, so a "Streaming" stage would never be seen. (4) Network and version meta sit bottom-left of the idle panel, in the slot the stage strip held, instead of in a card on the grille side. (5) Overlay chrome stays fixed dark navy whatever the system theme, because it sits on the Mac's desktop.
 
 **Key Characteristics:**
-- One panel, one lamp, one large name. The lamp colour is the status.
-- Navy tonal layering, no shadows.
+- One panel, one lamp, one large name. The lamp colour is the status, paired with a pill status readout.
+- Navy tonal layering with 1dp `navy-hairline` (`paper-hairline`) surface borders, no shadows.
 - Hanken Grotesk light for display, semibold for small titles. Body and labels use the system face.
 - Tabular figures on every number: port, IP, version, step numbers, delays, HUD.
 - Pill buttons. Off-white filled primary on dark, navy filled primary on light.
-- Overlay chrome on video is always dark navy, translucent, and hides itself.
-- The landing page (`web/`) is the same world on paper and navy: ink primary, blue only for links, the seam and live state, Hanken Grotesk light headings, ruled lists, one picture of the product's job.
+- Overlay chrome on video is always dark navy, translucent, bordered with a 1dp hairline, and hides itself.
+- The landing page (`web/`) is the same world on paper and navy: ink primary, blue only for links, the seam and live state, Hanken Grotesk light headings, bento cards with 1px hairline borders, and a hardware showcase of the product's job.
 
 ### The landing page
 
@@ -419,7 +419,7 @@ Spacing uses a 4dp base: 4, 8, 12, 16, 20, 24, 32, 40, 56. The contract asked fo
 
 One centred column, 1200px max with 24px side gutters, shared by the header, hero text, install bar, every section and the footer. Only the hero strip breaks out of it. Sections sit on a 48px vertical rhythm (64px from `sm`), with 40px between a section heading and its content. Headings and body text are left-aligned on the column; only the footer is centred. Anchored sections keep a 76px scroll margin for the sticky header.
 
-Collections are ruled lists, not card grids: each item is a 1px top hairline, then its content, in a grid of 1 / 2 (`sm`) / 3 (`lg`) columns with 40px column gaps. Features, how it works, install steps and contributor credits all use it.
+Collections use structured bento cards (`bg-card`, 1px `--border` contour, `rounded-2xl`) in a grid of 1 / 2 (`sm`) / 3 (`lg`) columns. Features, how it works, screenshots (with click-to-expand lightbox preview), install steps and contributor credits all use this surface grammar.
 
 Breakpoints are Tailwind's: `sm` 640px (larger type, two-column lists), `lg` 1024px (three-column lists, the install bar becomes one row, the strip switches to aspect-ratio sizing, the grille appears), `xl` 1280px (the inline nav appears; below it, a menu button). The brand's "Android" suffix hides under 400px.
 

@@ -1,13 +1,16 @@
 package io.github.josepacelli.opendisplay.ui
 
 import android.provider.Settings
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -279,6 +282,7 @@ private fun IdleContent(
         val panelPadding = if (short) 24.dp else 56.dp
         Surface(
             color = MaterialTheme.colorScheme.surfaceContainerLow,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             shape = MaterialTheme.shapes.extraLarge,
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -339,20 +343,29 @@ private fun IdleContent(
  * @param gap space between the lamp row and the name — tighter on short screens. */
 @Composable
 private fun StatusBlock(lamp: LampState, status: String, deviceName: String, nameStyle: TextStyle, gap: Dp) {
-    val statusColor = when (lamp) {
+    val targetColor = when (lamp) {
         LampState.LISTENING -> MaterialTheme.colorScheme.tertiary
         LampState.PROBLEM -> MaterialTheme.colorScheme.error
         LampState.OFF -> MaterialTheme.colorScheme.onSurfaceVariant
     }
+    val statusColor by animateColorAsState(targetColor, animationSpec = tween(250), label = "status-color")
     Row(verticalAlignment = Alignment.CenterVertically) {
         IndicatorLamp(lamp)
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = status,
-            color = statusColor,
-            style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
-            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
-        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Surface(
+            color = statusColor.copy(alpha = 0.12f),
+            border = BorderStroke(1.dp, statusColor.copy(alpha = 0.32f)),
+            shape = CircleShape,
+        ) {
+            Text(
+                text = status,
+                color = statusColor,
+                style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .semantics { liveRegion = LiveRegionMode.Polite },
+            )
+        }
     }
     Spacer(modifier = Modifier.height(gap))
     Text(
@@ -370,16 +383,17 @@ private fun StatusBlock(lamp: LampState, status: String, deviceName: String, nam
     )
 }
 
-/** The idle screen's signature: a lamp whose colour is the connection state. While listening, a
- * ring slowly breathes out of it — skipped when the system's animations are turned off.
+/** The idle screen's signature: a lamp whose colour is the connection state. While listening,
+ * dual radar rings slowly breathe out of it — skipped when the system's animations are turned off.
  * @param lamp the state to show. */
 @Composable
 private fun IndicatorLamp(lamp: LampState) {
-    val color = when (lamp) {
+    val targetColor = when (lamp) {
         LampState.LISTENING -> MaterialTheme.colorScheme.tertiary
         LampState.PROBLEM -> MaterialTheme.colorScheme.error
         LampState.OFF -> LocalLampColors.current.off
     }
+    val color by animateColorAsState(targetColor, animationSpec = tween(250), label = "lamp-color")
     val context = LocalContext.current
     val animate = lamp == LampState.LISTENING && remember {
         Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) > 0f
@@ -388,7 +402,7 @@ private fun IndicatorLamp(lamp: LampState) {
         rememberInfiniteTransition(label = "lamp").animateFloat(
             initialValue = 0f,
             targetValue = 1f,
-            animationSpec = infiniteRepeatable(tween(2200, easing = LinearOutSlowInEasing)),
+            animationSpec = infiniteRepeatable(tween(2400, easing = LinearOutSlowInEasing)),
             label = "lamp-pulse",
         ).value
     } else {
@@ -397,15 +411,22 @@ private fun IndicatorLamp(lamp: LampState) {
     Canvas(modifier = Modifier.size(64.dp)) {
         val core = 12.dp.toPx()
         drawCircle(color.copy(alpha = 0.10f), radius = core + 18.dp.toPx())
-        drawCircle(color.copy(alpha = 0.18f), radius = core + 8.dp.toPx())
+        drawCircle(color.copy(alpha = 0.20f), radius = core + 8.dp.toPx())
         if (animate) {
             drawCircle(
-                color.copy(alpha = 0.45f * (1f - pulse)),
+                color.copy(alpha = 0.50f * (1f - pulse)),
                 radius = core + 20.dp.toPx() * pulse,
                 style = Stroke(width = 2.dp.toPx()),
             )
+            val secondaryPulse = (pulse + 0.5f) % 1f
+            drawCircle(
+                color.copy(alpha = 0.35f * (1f - secondaryPulse)),
+                radius = core + 20.dp.toPx() * secondaryPulse,
+                style = Stroke(width = 1.5.dp.toPx()),
+            )
         }
         drawCircle(color, radius = core)
+        drawCircle(Color.White.copy(alpha = 0.25f), radius = core, style = Stroke(width = 1.dp.toPx()))
     }
 }
 
@@ -415,6 +436,7 @@ private fun IndicatorLamp(lamp: LampState) {
 private fun Steps() {
     Surface(
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shape = MaterialTheme.shapes.large,
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -447,7 +469,8 @@ private fun StepRow(number: Int, text: String) {
     }
 }
 
-/** Network address and version, in tabular figures so the numbers line up.
+/** Network address and version inside a compact hardware readout plaque, in tabular figures so
+ * the numbers line up.
  * @param addressHint this device's `ip:port`, or `null`. */
 @Composable
 private fun MetaBlock(addressHint: String?) {
@@ -457,22 +480,39 @@ private fun MetaBlock(addressHint: String?) {
         runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull()
     }
     val numbers = MaterialTheme.typography.labelLarge.copy(fontFeatureSettings = "tnum")
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                painter = painterResource(R.drawable.ic_wifi),
-                contentDescription = stringResource(R.string.settings_section_network),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(18.dp),
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(text = addressHint ?: "—", style = numbers, color = MaterialTheme.colorScheme.onSurface)
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shape = MaterialTheme.shapes.medium,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(34.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh, CircleShape),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_wifi),
+                    contentDescription = stringResource(R.string.settings_section_network),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(text = addressHint ?: "—", style = numbers, color = MaterialTheme.colorScheme.onSurface)
+                Text(
+                    text = versionName?.let { stringResource(R.string.about_version, it) }
+                        ?: stringResource(R.string.about_version_unknown),
+                    style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
-        Text(
-            text = versionName?.let { stringResource(R.string.about_version, it) } ?: stringResource(R.string.about_version_unknown),
-            style = numbers,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }
 
@@ -538,6 +578,7 @@ private fun PerfHud(receiver: PhoneReceiver, modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
         modifier = modifier
             .background(OverlayColors.strip, MaterialTheme.shapes.small)
+            .border(1.dp, OverlayColors.stripBorder, MaterialTheme.shapes.small)
             .padding(horizontal = 10.dp, vertical = 6.dp),
     )
 }
@@ -558,6 +599,7 @@ private fun PeerSignalBanner(signal: PeerSignal, modifier: Modifier = Modifier) 
         modifier = modifier.padding(horizontal = 16.dp).widthIn(max = 640.dp),
         color = MaterialTheme.colorScheme.errorContainer,
         contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.4f)),
         shape = MaterialTheme.shapes.large,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)) {
@@ -577,6 +619,7 @@ private fun ConnectionUnstableBanner(modifier: Modifier = Modifier) {
         modifier = modifier.padding(horizontal = 16.dp),
         color = OverlayColors.strip,
         contentColor = OverlayColors.ink,
+        border = BorderStroke(1.dp, OverlayColors.stripBorder),
         shape = CircleShape,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp)) {
