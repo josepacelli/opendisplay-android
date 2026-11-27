@@ -1,7 +1,5 @@
 package io.github.josepacelli.opendisplay.ui
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -172,40 +170,38 @@ fun SettingsDialog(receiver: PhoneReceiver, initialTab: Int = SETTINGS_TAB_GENER
                     SETTINGS_TAB_CHANGELOG to stringResource(R.string.settings_tab_changelog),
                 )
                 val content = @Composable {
-                    Crossfade(targetState = selectedTab, animationSpec = tween(180), label = "settings-tab") { tab ->
-                        when (tab) {
-                            SETTINGS_TAB_DETAILS -> DetailsTab(
-                                connected = connected,
-                                addressHint = addressHint,
-                                addressUnavailableMessage = addressUnavailableMessage,
-                            )
-                            SETTINGS_TAB_GENERAL -> GeneralTab(
-                                draftName = draftName,
-                                onNameChange = { draftName = it },
-                                currentName = currentName,
-                                onSaveName = receiver::setServiceName,
-                                showNotification = showNotification,
-                                onToggleNotification = receiver::setShowNotification,
-                                showPerfHud = showPerfHud,
-                                onTogglePerfHud = receiver::setShowPerfHud,
-                                perfHudPosition = perfHudPosition,
-                                onPerfHudPositionChange = receiver::setPerfHudPosition,
-                                immersiveFullscreen = immersiveFullscreen,
-                                onToggleImmersive = receiver::setImmersiveFullscreen,
-                                pipEnabled = pipEnabled,
-                                onTogglePip = receiver::setPipEnabled,
-                                zoomEnabled = zoomEnabled,
-                                onToggleZoom = receiver::setZoomEnabled,
-                                oneFingerScroll = oneFingerScroll,
-                                onToggleOneFingerScroll = receiver::setOneFingerScroll,
-                                connectedMenuEnabled = connectedMenuEnabled,
-                                onToggleConnectedMenu = receiver::setConnectedMenuEnabled,
-                                connectedMenuIdleSeconds = connectedMenuIdleSeconds,
-                                onConnectedMenuIdleSecondsChange = receiver::setConnectedMenuIdleSeconds,
-                            )
-                            SETTINGS_TAB_ABOUT -> AboutTab()
-                            else -> ChangelogTab()
-                        }
+                    when (selectedTab) {
+                        SETTINGS_TAB_DETAILS -> DetailsTab(
+                            connected = connected,
+                            addressHint = addressHint,
+                            addressUnavailableMessage = addressUnavailableMessage,
+                        )
+                        SETTINGS_TAB_GENERAL -> GeneralTab(
+                            draftName = draftName,
+                            onNameChange = { draftName = it },
+                            currentName = currentName,
+                            onSaveName = receiver::setServiceName,
+                            showNotification = showNotification,
+                            onToggleNotification = receiver::setShowNotification,
+                            showPerfHud = showPerfHud,
+                            onTogglePerfHud = receiver::setShowPerfHud,
+                            perfHudPosition = perfHudPosition,
+                            onPerfHudPositionChange = receiver::setPerfHudPosition,
+                            immersiveFullscreen = immersiveFullscreen,
+                            onToggleImmersive = receiver::setImmersiveFullscreen,
+                            pipEnabled = pipEnabled,
+                            onTogglePip = receiver::setPipEnabled,
+                            zoomEnabled = zoomEnabled,
+                            onToggleZoom = receiver::setZoomEnabled,
+                            oneFingerScroll = oneFingerScroll,
+                            onToggleOneFingerScroll = receiver::setOneFingerScroll,
+                            connectedMenuEnabled = connectedMenuEnabled,
+                            onToggleConnectedMenu = receiver::setConnectedMenuEnabled,
+                            connectedMenuIdleSeconds = connectedMenuIdleSeconds,
+                            onConnectedMenuIdleSecondsChange = receiver::setConnectedMenuIdleSeconds,
+                        )
+                        SETTINGS_TAB_ABOUT -> AboutTab()
+                        else -> ChangelogTab()
                     }
                 }
                 BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
