@@ -57,17 +57,17 @@ export function Header() {
       />
       <header ref={menuRef} className="sticky top-3 z-30 mx-auto max-w-[1200px] px-4 sm:px-6">
         <div
-          className="glass flex items-center gap-4 rounded-full px-5 py-2.5"
+          className="glass flex items-center justify-between gap-3 rounded-full px-4 py-2 sm:px-5"
           data-glass-refraction="16"
           data-glass-bezel="18"
         >
-          <a href="#" className="flex items-center gap-2.5 whitespace-nowrap font-heading text-base font-medium text-foreground no-underline">
+          <a href="#" className="flex shrink-0 items-center gap-2 whitespace-nowrap font-heading text-base font-medium text-foreground no-underline">
             <img src="/logo-mark.png" alt="" className="size-7 rounded-lg ring-1 ring-border/60" aria-hidden="true" />
             <span>{t('brand.name')}</span>
             <span className="hidden text-muted-foreground min-[400px]:inline">{t('brand.sub')}</span>
           </a>
 
-          <nav className="hidden min-w-0 flex-1 items-center gap-1 xl:flex">
+          <nav className="hidden items-center gap-0.5 xl:flex">
             {links.map((link) => {
               const isActive = active === link.id
               return (
@@ -75,28 +75,27 @@ export function Header() {
                   key={link.id}
                   href={`#${link.id}`}
                   className={cn(
-                    'inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm no-underline transition-colors',
+                    'shrink-0 rounded-full px-2.5 py-1.5 text-[13.5px] whitespace-nowrap no-underline transition-colors',
                     isActive
                       ? 'bg-[var(--lg-highlight)] font-medium text-foreground'
                       : 'text-muted-foreground hover:bg-[var(--lg-highlight)] hover:text-foreground',
                   )}
                 >
-                  {isActive && <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />}
                   {link.label}
                 </a>
               )
             })}
+          </nav>
+
+          <div className="flex shrink-0 items-center gap-1">
             <a
               href="https://github.com/josepacelli/opendisplay-android"
-              className="ml-auto flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--lg-highlight)] px-3.5 py-1.5 text-sm font-medium text-foreground no-underline transition-colors hover:bg-secondary"
+              className="hidden shrink-0 items-center gap-1.5 rounded-full bg-[var(--lg-highlight)] px-3 py-1.5 text-[13px] font-medium whitespace-nowrap text-foreground no-underline transition-colors hover:bg-secondary xl:inline-flex"
             >
-              <Star className="size-4 text-accent" aria-hidden="true" />
+              <Star className="size-3.5 text-accent" aria-hidden="true" />
               <span>{t('nav.github')}</span>
               <span className="text-muted-foreground tabular-nums">{stars ?? '···'}</span>
             </a>
-          </nav>
-
-          <div className="ml-auto flex items-center gap-1.5 xl:ml-0">
             <ThemeToggle />
             <LangSwitch />
 
@@ -107,7 +106,7 @@ export function Header() {
                 aria-expanded={menuOpen}
                 aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
                 onClick={() => setMenuOpen((v) => !v)}
-                className="flex size-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-[var(--lg-highlight)] hover:text-foreground"
+                className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-[var(--lg-highlight)] hover:text-foreground"
               >
                 {menuOpen ? (
                   <X className="size-5" aria-hidden="true" />

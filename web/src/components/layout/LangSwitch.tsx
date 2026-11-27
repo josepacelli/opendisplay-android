@@ -30,7 +30,7 @@ export function LangSwitch() {
         aria-haspopup="true"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:bg-[var(--lg-highlight)] hover:text-foreground"
+        className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[13px] whitespace-nowrap text-muted-foreground transition-colors hover:bg-[var(--lg-highlight)] hover:text-foreground"
       >
         <Globe className="size-4" aria-hidden="true" />
         <span>{current}</span>
