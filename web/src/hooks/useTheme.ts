@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import '@/lib/liquid-glass.js'
 
 export type Theme = 'light' | 'dark' | 'auto'
 
@@ -11,6 +12,7 @@ function applyTheme(theme: Theme) {
   } else {
     document.documentElement.setAttribute('data-theme', theme)
   }
+  document.documentElement.setAttribute('data-glass-appearance', theme)
 }
 
 function readStoredTheme(): Theme {
@@ -18,13 +20,15 @@ function readStoredTheme(): Theme {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored === 'light' || stored === 'dark' || stored === 'auto') return stored
   } catch {
-    // localStorage indisponível (aba anônima, storage bloqueado) — cai pro padrão
+    return 'auto'
   }
   return 'auto'
 }
 
-// Roda assim que o módulo é importado (todo entry point importa este arquivo),
-// antes do primeiro render — evita flash do tema errado em qualquer página.
+/**
+ * Apply the stored theme as soon as this module is imported by any entry point,
+ * before the first React render, preventing a wrong-theme flash on load.
+ */
 applyTheme(readStoredTheme())
 
 export function useTheme() {
@@ -35,7 +39,7 @@ export function useTheme() {
     try {
       localStorage.setItem(STORAGE_KEY, next)
     } catch {
-      // ignora — a preferência só não persiste nesta sessão
+      /* Preference stays in memory for the current session when storage is blocked. */
     }
     setThemeState(next)
   }, [])

@@ -12,9 +12,10 @@ export function BackToTopButton() {
       type="button"
       aria-label={t('backToTop')}
       onClick={scrollToTop}
+      data-glass-interactive
       className={cn(
-        'fixed bottom-6 right-6 z-30 flex size-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-all duration-200 hover:bg-secondary',
-        visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0',
+        'glass lg-button lg-icon fixed right-6 bottom-6 z-30 transition-transform duration-200',
+        visible ? 'translate-y-0 scale-100' : 'pointer-events-none translate-y-2 scale-0',
       )}
     >
       <ArrowUp className="size-5" aria-hidden="true" />

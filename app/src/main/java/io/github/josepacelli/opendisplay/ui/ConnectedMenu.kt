@@ -13,6 +13,7 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -206,12 +207,17 @@ fun ConnectedMenu(
 @Composable
 private fun GripButton(expanded: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val label = stringResource(R.string.connected_menu_handle)
+    val background by animateColorAsState(
+        if (expanded) OverlayColors.buttonOn else OverlayColors.button,
+        label = "grip-bg",
+    )
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .size(GRIP_SIZE)
             .clip(CircleShape)
-            .background(if (expanded) OverlayColors.buttonOn else OverlayColors.button)
+            .background(background)
+            .border(1.dp, OverlayColors.stripBorder, CircleShape)
             .clickable(onClickLabel = label, onClick = onClick),
     ) {
         Icon(
@@ -313,6 +319,13 @@ private fun MenuActionButton(
                 .size(ACTION_SIZE)
                 .clip(CircleShape)
                 .background(background)
+                .then(
+                    if (!danger && on != true) {
+                        Modifier.border(1.dp, OverlayColors.stripBorder, CircleShape)
+                    } else {
+                        Modifier
+                    },
+                )
                 .semantics { if (on != null) toggleableState = ToggleableState(on) }
                 .clickable(onClickLabel = label, onClick = onClick),
         ) {

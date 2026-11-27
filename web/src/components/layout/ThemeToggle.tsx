@@ -16,7 +16,7 @@ export function ThemeToggle() {
       onClick={cycle}
       aria-label={t(`theme.${theme}`)}
       title={t(`theme.${theme}`)}
-      className="relative flex size-9 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+      className="relative flex size-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-[var(--lg-highlight)] hover:text-foreground"
     >
       {(Object.entries(ICONS) as [Theme, typeof Sun][]).map(([mode, Icon]) => (
         <Icon

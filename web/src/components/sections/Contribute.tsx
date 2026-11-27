@@ -41,11 +41,11 @@ export function Contribute() {
           components={{ repo: <a href="https://github.com/josepacelli/opendisplay-android" /> }}
         />
       </p>
-      <div className="mt-10 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {credits.map((credit, i) => (
-          <div key={credit.handle} className="border-t border-border pt-4">
-            <p className="text-sm text-muted-foreground [&_a]:text-accent [&_a]:no-underline [&_a:hover]:underline [&_code]:rounded [&_code]:border [&_code]:border-border [&_code]:bg-secondary [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.85em]">
-              <strong className="text-foreground">{credit.handle}</strong> —{' '}
+          <div key={credit.handle} className="rounded-2xl border border-border bg-card p-5">
+            <p className="font-heading text-base font-medium text-foreground">{credit.handle}</p>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground [&_a]:text-accent [&_a]:no-underline [&_a:hover]:underline [&_code]:rounded [&_code]:border [&_code]:border-border [&_code]:bg-secondary [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.85em] [&_code]:text-foreground">
               <Trans i18nKey={`contribute.credits.${i}.text`} t={t} components={CREDIT_COMPONENTS[i]} />
             </p>
           </div>

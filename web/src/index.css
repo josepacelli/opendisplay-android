@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/hanken-grotesk";
+@import "./liquid-glass.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -86,6 +87,9 @@
     --sidebar-ring: rgba(30, 91, 216, 0.45);
     --grille: #c9d1e0;
     --seam: #1e5bd8;
+    --lg-font: var(--font-sans);
+    --lg-accent: var(--seam);
+    --lg-pb-tint: rgb(227 232 242 / 0.55);
 }
 
 /*
@@ -128,6 +132,8 @@
     --sidebar-ring: rgba(76, 141, 255, 0.5);
     --grille: #2a3452;
     --seam: #4c8dff;
+    --lg-accent: var(--seam);
+    --lg-pb-tint: rgb(14 21 38 / 0.55);
   }
 }
 
@@ -165,6 +171,8 @@
     --sidebar-ring: rgba(76, 141, 255, 0.5);
     --grille: #2a3452;
     --seam: #4c8dff;
+    --lg-accent: var(--seam);
+    --lg-pb-tint: rgb(14 21 38 / 0.55);
 }
 
 @layer base {
