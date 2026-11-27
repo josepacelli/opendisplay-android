@@ -73,11 +73,12 @@
     <string name="update_check_button">Procurar atualizações no Google Play</string>
     <string name="about_close">Fechar</string>
 
-    <string-array name="changelog_v1_0_63">
-        <item>Deslocar com um dedo é agora uma opção nas Definições.</item>
-        <item>Dispositivos sem hardware de Wi-Fi podem agora instalar a app.</item>
+    <string-array name="changelog_v1_0_64">
+        <item>Visual refinado: painel de estado com moldura e pulso de radar no ecrã de espera, e contornos finos no HUD de desempenho, no menu flutuante e nas definições.</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>Deslocar com um dedo é agora uma opção nas Definições.</item>
+        <item>Dispositivos sem hardware de Wi-Fi podem agora instalar a app.</item>
         <item>As atualizações chegam agora pelo Google Play: quando sai uma versão nova, o Play propõe-na assim que abre a app. Em Definições > Acerca de há um botão que abre a página da app no Play.</item>
         <item>Com cabo USB, o Android passa a oferecer a abertura do OpenDisplay assim que o Mac liga, e o vídeo deixa de cair em imagens de certos tamanhos. Requer a app do Mac v1.28 ou mais recente.</item>
         <item>Uma sessão por cabo que já terminou deixa de ser reaberta, e um cabo que desaparece enquanto a app arranca já não a faz falhar.</item>
