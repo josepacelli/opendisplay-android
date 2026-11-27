@@ -73,11 +73,12 @@
     <string name="update_check_button">Google Playでアップデートを確認</string>
     <string name="about_close">閉じる</string>
 
-    <string-array name="changelog_v1_0_63">
-        <item>1本指でのスクロールを設定でオン／オフできるようになりました。</item>
-        <item>Wi-Fiハードウェアのない端末でもアプリをインストールできるようになりました。</item>
+    <string-array name="changelog_v1_0_64">
+        <item>見た目を整えました。待機画面にフレーム付きのステータスパネルとレーダーのパルスを追加し、パフォーマンスHUD、フローティングメニュー、設定に細い枠線を付けました。</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>1本指でのスクロールを設定でオン／オフできるようになりました。</item>
+        <item>Wi-Fiハードウェアのない端末でもアプリをインストールできるようになりました。</item>
         <item>アップデートはGoogle Play経由になりました。新しいバージョンが出ると、アプリを開いたときにPlayが案内します。設定 > アプリについて にPlayのアプリページを開くボタンがあります。</item>
         <item>USBケーブルで接続すると、Macがつながった時点でAndroidがOpenDisplayを開くか確認するようになりました。特定のサイズのフレームで映像が途切れる問題も直りました。Mac版アプリはv1.28以降が必要です。</item>
         <item>すでに終わったケーブルのセッションを再び開くことはなくなり、アプリの起動中にケーブルが外れてもクラッシュしなくなりました。</item>

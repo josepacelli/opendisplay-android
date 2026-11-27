@@ -73,11 +73,12 @@
     <string name="about_close">Close</string>
     <string name="update_check_button">Check for updates on Google Play</string>
 
-    <string-array name="changelog_v1_0_63">
-        <item>Scrolling with one finger is now an option in Settings.</item>
-        <item>Devices without Wi-Fi hardware can now install the app.</item>
+    <string-array name="changelog_v1_0_64">
+        <item>Refined look: a framed status panel and radar pulse on the waiting screen, and thin outlines on the performance HUD, floating menu and settings.</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>Scrolling with one finger is now an option in Settings.</item>
+        <item>Devices without Wi-Fi hardware can now install the app.</item>
         <item>Updates now come through Google Play: when a new version is out, Play offers it as soon as you open the app. Settings > About has a button that opens the app\'s Play page.</item>
         <item>With a USB cable, Android now offers to open OpenDisplay as soon as the Mac connects, and the video no longer drops on frames of certain sizes. Needs the Mac app v1.28 or newer.</item>
         <item>A cable session that already ended is no longer reopened, and a cable that disappears while the app is starting no longer crashes it.</item>

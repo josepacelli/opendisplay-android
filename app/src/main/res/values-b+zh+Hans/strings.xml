@@ -73,11 +73,12 @@
     <string name="update_check_button">在 Google Play 检查更新</string>
     <string name="about_close">关闭</string>
 
-    <string-array name="changelog_v1_0_63">
-        <item>现在可以在设置中选择是否使用单指滚动。</item>
-        <item>没有 Wi-Fi 硬件的设备现在也可以安装应用。</item>
+    <string-array name="changelog_v1_0_64">
+        <item>界面更精致：等待界面新增带边框的状态面板和雷达脉冲，性能 HUD、悬浮菜单和设置加入了细轮廓线。</item>
     </string-array>
     <string-array name="changelog_older_versions">
+        <item>现在可以在设置中选择是否使用单指滚动。</item>
+        <item>没有 Wi-Fi 硬件的设备现在也可以安装应用。</item>
         <item>更新现在通过 Google Play 提供：有新版本时，打开应用后 Play 会立即提示。在 设置 > 关于 中有按钮可打开应用的 Play 页面。</item>
         <item>使用 USB 数据线时，Mac 一连接，Android 就会询问是否打开 OpenDisplay，并且特定大小的帧不再导致画面中断。需要 Mac 应用 v1.28 或更高版本。</item>
         <item>已经结束的数据线会话不会再被重新打开，应用启动时数据线被拔出也不再导致应用崩溃。</item>
